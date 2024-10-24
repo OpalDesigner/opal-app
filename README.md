@@ -1,2 +1,2 @@
-# opal-vision-os
-Vision OS app for Apple Vision Pro by OpalAI 
+# Opal App
+Vision OS app by OpalAI 
