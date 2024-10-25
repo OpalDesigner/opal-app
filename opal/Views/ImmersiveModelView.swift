@@ -17,7 +17,7 @@ class ModelControlData: ObservableObject {
 }
 
 struct ImmersiveModelView: View {
-    // Access Shared data
+    // Access Shared data in NavigationControlUI.swift
     @ObservedObject var modelControlData: ModelControlData
 
     // Model properties
@@ -51,7 +51,7 @@ struct ImmersiveModelView: View {
             object.position = modelControlData.position
             object.orientation = simd_quatf(angle: modelControlData.rotation, axis: SIMD3<Float>(0, 1, 0))
             print("\(modelName) Immersive Position:    \(object.position)")
-            print("\(modelName) Immersive Orientation: \(simd_angle(object.orientation))")
+            print("\(modelName) Immersive Orientation: \(String(format: "%.2f", simd_angle(object.orientation) * 180 / .pi))°")
         }
     }
 }

@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct opalApp: App {
-    //this variable is edited by NavigationControlUI to walkthrough 3D space
+    // Access Shared data in NavigationControlUI.swift
     @StateObject var modelControlData = ModelControlData()
         
     var body: some Scene {

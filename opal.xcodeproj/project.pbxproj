@@ -149,10 +149,10 @@
 		659AD4CC2CCB0D3C00F834E0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */,
-				659AD4C92CCB0D3C00F834E0 /* HandInteractionView.swift */,
-				659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */,
 				659AD4CB2CCB0D3C00F834E0 /* RealityModelView.swift */,
+				659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */,
+				659AD4C92CCB0D3C00F834E0 /* HandInteractionView.swift */,
+				659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
