@@ -9,12 +9,20 @@
 /* Begin PBXBuildFile section */
 		659AD49E2CCB0B2500F834E0 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 659AD49D2CCB0B2500F834E0 /* RealityKitContent */; };
 		659AD4A02CCB0B2500F834E0 /* opalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD49F2CCB0B2500F834E0 /* opalApp.swift */; };
-		659AD4A22CCB0B2500F834E0 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4A12CCB0B2500F834E0 /* ContentView.swift */; };
-		659AD4A42CCB0B2500F834E0 /* ImmersiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4A32CCB0B2500F834E0 /* ImmersiveView.swift */; };
 		659AD4A62CCB0B2500F834E0 /* ImageBasedLighting.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4A52CCB0B2500F834E0 /* ImageBasedLighting.skybox */; };
 		659AD4A82CCB0B2500F834E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4A72CCB0B2500F834E0 /* Assets.xcassets */; };
 		659AD4AB2CCB0B2500F834E0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4AA2CCB0B2500F834E0 /* Preview Assets.xcassets */; };
 		659AD4B62CCB0B2600F834E0 /* opalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4B52CCB0B2600F834E0 /* opalTests.swift */; };
+		659AD4C32CCB0D1D00F834E0 /* HomeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4BF2CCB0D1D00F834E0 /* HomeArea.swift */; };
+		659AD4C42CCB0D1D00F834E0 /* ModelArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C02CCB0D1D00F834E0 /* ModelArea.swift */; };
+		659AD4C52CCB0D1D00F834E0 /* TeamArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C12CCB0D1D00F834E0 /* TeamArea.swift */; };
+		659AD4C72CCB0D2A00F834E0 /* Mars_Habitat.reality in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4C62CCB0D2A00F834E0 /* Mars_Habitat.reality */; };
+		659AD4CD2CCB0D3C00F834E0 /* BubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */; };
+		659AD4CE2CCB0D3C00F834E0 /* HandInteractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C92CCB0D3C00F834E0 /* HandInteractionView.swift */; };
+		659AD4CF2CCB0D3C00F834E0 /* ImmersiveModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */; };
+		659AD4D02CCB0D3C00F834E0 /* RealityModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4CB2CCB0D3C00F834E0 /* RealityModelView.swift */; };
+		659AD4D32CCB0D6B00F834E0 /* NavigationControlUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4D12CCB0D6B00F834E0 /* NavigationControlUI.swift */; };
+		659AD4D62CCB0D7600F834E0 /* HandTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4D42CCB0D7600F834E0 /* HandTrackingViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,14 +39,22 @@
 		659AD4982CCB0B2500F834E0 /* opal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = opal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		659AD49C2CCB0B2500F834E0 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		659AD49F2CCB0B2500F834E0 /* opalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = opalApp.swift; sourceTree = "<group>"; };
-		659AD4A12CCB0B2500F834E0 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		659AD4A32CCB0B2500F834E0 /* ImmersiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImmersiveView.swift; sourceTree = "<group>"; };
 		659AD4A52CCB0B2500F834E0 /* ImageBasedLighting.skybox */ = {isa = PBXFileReference; lastKnownFileType = file.skybox; path = ImageBasedLighting.skybox; sourceTree = "<group>"; };
 		659AD4A72CCB0B2500F834E0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		659AD4AA2CCB0B2500F834E0 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		659AD4AC2CCB0B2500F834E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		659AD4B12CCB0B2600F834E0 /* opalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = opalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		659AD4B52CCB0B2600F834E0 /* opalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = opalTests.swift; sourceTree = "<group>"; };
+		659AD4BF2CCB0D1D00F834E0 /* HomeArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeArea.swift; sourceTree = "<group>"; };
+		659AD4C02CCB0D1D00F834E0 /* ModelArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelArea.swift; sourceTree = "<group>"; };
+		659AD4C12CCB0D1D00F834E0 /* TeamArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamArea.swift; sourceTree = "<group>"; };
+		659AD4C62CCB0D2A00F834E0 /* Mars_Habitat.reality */ = {isa = PBXFileReference; lastKnownFileType = file; path = Mars_Habitat.reality; sourceTree = "<group>"; };
+		659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleView.swift; sourceTree = "<group>"; };
+		659AD4C92CCB0D3C00F834E0 /* HandInteractionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandInteractionView.swift; sourceTree = "<group>"; };
+		659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImmersiveModelView.swift; sourceTree = "<group>"; };
+		659AD4CB2CCB0D3C00F834E0 /* RealityModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealityModelView.swift; sourceTree = "<group>"; };
+		659AD4D12CCB0D6B00F834E0 /* NavigationControlUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControlUI.swift; sourceTree = "<group>"; };
+		659AD4D42CCB0D7600F834E0 /* HandTrackingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandTrackingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,8 +99,11 @@
 			isa = PBXGroup;
 			children = (
 				659AD49F2CCB0B2500F834E0 /* opalApp.swift */,
-				659AD4A12CCB0B2500F834E0 /* ContentView.swift */,
-				659AD4A32CCB0B2500F834E0 /* ImmersiveView.swift */,
+				659AD4C62CCB0D2A00F834E0 /* Mars_Habitat.reality */,
+				659AD4C22CCB0D1D00F834E0 /* Areas */,
+				659AD4CC2CCB0D3C00F834E0 /* Views */,
+				659AD4D22CCB0D6B00F834E0 /* UI */,
+				659AD4D52CCB0D7600F834E0 /* Hand Interaction */,
 				659AD4A52CCB0B2500F834E0 /* ImageBasedLighting.skybox */,
 				659AD4A72CCB0B2500F834E0 /* Assets.xcassets */,
 				659AD4AC2CCB0B2500F834E0 /* Info.plist */,
@@ -115,6 +134,43 @@
 				659AD4B52CCB0B2600F834E0 /* opalTests.swift */,
 			);
 			path = opalTests;
+			sourceTree = "<group>";
+		};
+		659AD4C22CCB0D1D00F834E0 /* Areas */ = {
+			isa = PBXGroup;
+			children = (
+				659AD4BF2CCB0D1D00F834E0 /* HomeArea.swift */,
+				659AD4C02CCB0D1D00F834E0 /* ModelArea.swift */,
+				659AD4C12CCB0D1D00F834E0 /* TeamArea.swift */,
+			);
+			path = Areas;
+			sourceTree = "<group>";
+		};
+		659AD4CC2CCB0D3C00F834E0 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */,
+				659AD4C92CCB0D3C00F834E0 /* HandInteractionView.swift */,
+				659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */,
+				659AD4CB2CCB0D3C00F834E0 /* RealityModelView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		659AD4D22CCB0D6B00F834E0 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				659AD4D12CCB0D6B00F834E0 /* NavigationControlUI.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		659AD4D52CCB0D7600F834E0 /* Hand Interaction */ = {
+			isa = PBXGroup;
+			children = (
+				659AD4D42CCB0D7600F834E0 /* HandTrackingViewModel.swift */,
+			);
+			path = "Hand Interaction";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -204,6 +260,7 @@
 				659AD4A82CCB0B2500F834E0 /* Assets.xcassets in Resources */,
 				659AD4AB2CCB0B2500F834E0 /* Preview Assets.xcassets in Resources */,
 				659AD4A62CCB0B2500F834E0 /* ImageBasedLighting.skybox in Resources */,
+				659AD4C72CCB0D2A00F834E0 /* Mars_Habitat.reality in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,9 +278,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				659AD4A22CCB0B2500F834E0 /* ContentView.swift in Sources */,
+				659AD4CD2CCB0D3C00F834E0 /* BubbleView.swift in Sources */,
+				659AD4C42CCB0D1D00F834E0 /* ModelArea.swift in Sources */,
+				659AD4D62CCB0D7600F834E0 /* HandTrackingViewModel.swift in Sources */,
+				659AD4CF2CCB0D3C00F834E0 /* ImmersiveModelView.swift in Sources */,
+				659AD4C52CCB0D1D00F834E0 /* TeamArea.swift in Sources */,
 				659AD4A02CCB0B2500F834E0 /* opalApp.swift in Sources */,
-				659AD4A42CCB0B2500F834E0 /* ImmersiveView.swift in Sources */,
+				659AD4D32CCB0D6B00F834E0 /* NavigationControlUI.swift in Sources */,
+				659AD4CE2CCB0D3C00F834E0 /* HandInteractionView.swift in Sources */,
+				659AD4C32CCB0D1D00F834E0 /* HomeArea.swift in Sources */,
+				659AD4D02CCB0D3C00F834E0 /* RealityModelView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,18 +435,20 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"opal/Preview Content\"";
 				DEVELOPMENT_TEAM = 49PG29W6M8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = OpalDesigner;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.app.opal;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.app.opaldesigner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -397,18 +463,20 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "\"opal/Preview Content\"";
 				DEVELOPMENT_TEAM = 49PG29W6M8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = OpalDesigner;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.app.opal;
+				MARKETING_VERSION = 0.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.app.opaldesigner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "xros xrsimulator";
 				SWIFT_EMIT_LOC_STRINGS = YES;

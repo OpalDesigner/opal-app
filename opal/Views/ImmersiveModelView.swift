@@ -1,0 +1,68 @@
+//
+//  ImmersiveModelView.swift
+//  TestApp
+//
+//  Created by Vik Parth on 10/18/24.
+//
+
+import SwiftUI
+import RealityKit
+import RealityKitContent
+
+//This code creates the full Immersive view where you are inside of a 3D set
+class ModelControlData: ObservableObject {
+    @Published var position: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
+    @Published var scale: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
+    @Published var rotation: Float = 0
+}
+
+struct ImmersiveModelView: View {
+    // Access Shared data
+    @ObservedObject var modelControlData: ModelControlData
+
+    // Model properties
+    let id = UUID()
+    let modelName: String
+    let initialPosition: SIMD3<Float>
+    let initialScale: Float
+    
+    // State variables
+    @State private var object = Entity()
+    
+    var body: some View {
+        RealityView{ content in
+            //Load your 3D model
+            guard let model = try? await Entity(
+                named: modelName, in: realityKitContentBundle)
+            else{fatalError("Unable to load scene model: \(modelName)")}
+            
+            model.scale *= SIMD3<Float>(repeating: initialScale)
+            content.add(model)
+            print("\(modelName) Immersive Scale: \(model.scale)")
+            
+            guard let object = model.findEntity(named: modelName)
+            else {fatalError("Unable to find entity in scene model: \(modelName)")}
+            self.object = object
+            
+            //Update Global Variables
+            modelControlData.position = initialPosition
+            
+        } update: { content in
+            object.position = modelControlData.position
+            object.orientation = simd_quatf(angle: modelControlData.rotation, axis: SIMD3<Float>(0, 1, 0))
+            print("\(modelName) Immersive Position:    \(object.position)")
+            print("\(modelName) Immersive Orientation: \(simd_angle(object.orientation))")
+        }
+    }
+}
+
+
+//Test Sample Preview on Xcode Preview Window
+#Preview {
+    ImmersiveModelView(
+        modelControlData: ModelControlData(),
+        modelName: "Coffee_Shop",
+        initialPosition: SIMD3<Float>(0, 0, 0),
+        initialScale: 0.001
+    )
+}
