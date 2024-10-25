@@ -23,6 +23,7 @@
 		659AD4D02CCB0D3C00F834E0 /* RealityModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4CB2CCB0D3C00F834E0 /* RealityModelView.swift */; };
 		659AD4D32CCB0D6B00F834E0 /* NavigationControlUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4D12CCB0D6B00F834E0 /* NavigationControlUI.swift */; };
 		659AD4D62CCB0D7600F834E0 /* HandTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4D42CCB0D7600F834E0 /* HandTrackingViewModel.swift */; };
+		65B7ABFB2CCB38F00068ED3D /* PluginArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B7ABFA2CCB38F00068ED3D /* PluginArea.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		659AD4CB2CCB0D3C00F834E0 /* RealityModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealityModelView.swift; sourceTree = "<group>"; };
 		659AD4D12CCB0D6B00F834E0 /* NavigationControlUI.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControlUI.swift; sourceTree = "<group>"; };
 		659AD4D42CCB0D7600F834E0 /* HandTrackingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandTrackingViewModel.swift; sourceTree = "<group>"; };
+		65B7ABFA2CCB38F00068ED3D /* PluginArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginArea.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -139,8 +141,9 @@
 		659AD4C22CCB0D1D00F834E0 /* Areas */ = {
 			isa = PBXGroup;
 			children = (
-				659AD4BF2CCB0D1D00F834E0 /* HomeArea.swift */,
 				659AD4C02CCB0D1D00F834E0 /* ModelArea.swift */,
+				65B7ABFA2CCB38F00068ED3D /* PluginArea.swift */,
+				659AD4BF2CCB0D1D00F834E0 /* HomeArea.swift */,
 				659AD4C12CCB0D1D00F834E0 /* TeamArea.swift */,
 			);
 			path = Areas;
@@ -288,6 +291,7 @@
 				659AD4CE2CCB0D3C00F834E0 /* HandInteractionView.swift in Sources */,
 				659AD4C32CCB0D1D00F834E0 /* HomeArea.swift in Sources */,
 				659AD4D02CCB0D3C00F834E0 /* RealityModelView.swift in Sources */,
+				65B7ABFB2CCB38F00068ED3D /* PluginArea.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

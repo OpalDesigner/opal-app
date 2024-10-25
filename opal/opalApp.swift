@@ -20,13 +20,17 @@ struct opalApp: App {
                     .tabItem{
                         Label("Home", systemImage: "house.fill")
                     }
+                PluginArea()
+                    .tabItem{
+                        Label("Import", systemImage: "square.and.arrow.down")
+                    }
                 HomeArea()
                     .tabItem{
-                        Label("Build", systemImage: "building.2.fill")
+                        Label("About", systemImage: "building.2.fill")
                     }
                 TeamArea()
                     .tabItem{
-                        Label("About", systemImage: "person")
+                        Label("Team", systemImage: "person")
                     }
             }
         }
