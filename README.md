@@ -1,7 +1,7 @@
 # Opal App
 Vision OS app by OpalAI 
 
-Opal AI is a spatial design visualization tool for set and film production. People can use this to easily view, navigate and share ****fly-throughs of their sets. ****Current spatial rendering & visualization tools are complicated to use due to poor UI/UX and disjointed design workflows:
+Opal AI is a spatial design visualization tool for set and film production. People can use this to easily view, navigate and share fly-throughs of their sets. Current spatial rendering & visualization tools are complicated to use due to poor UI/UX and disjointed design workflows:
 
 Workflow:
 - Step 1: Open 3D model in Unreal Engine or Blender**
