@@ -81,10 +81,10 @@ struct NavigationControlUI: View {
         }
     }
     
-    // Helper function to turn left 90 degrees
+    // Helper function to turn left 45 degrees
     func turnLeft() async {
         let stepSize: Float = 0.5 * .pi / 180 // 5 degrees at a time
-        let steps = Int(90 / 0.5)
+        let steps = Int(45 / 0.5)
         let radius: Float = 0 // Since we want to rotate in place
         let currentPosition = modelControlData.position
         
@@ -94,10 +94,10 @@ struct NavigationControlUI: View {
         }
     }
     
-    // Helper function to turn left 90 degrees
+    // Helper function to turn left 45 degrees
     func turnRight() async {
         let stepSize: Float = 0.5 * .pi / 180 // 5 degrees at a time
-        let steps = Int(90 / 0.5)
+        let steps = Int(45 / 0.5)
         for _ in 0..<steps {
             modelControlData.rotation += stepSize
             try? await Task.sleep(nanoseconds: 16_666_667)
@@ -215,7 +215,7 @@ struct NavigationControlUI: View {
                         // Action for Move Backward
                         Button {
                             Task {
-                                await moveBackward(1)
+                                await moveBackward(2)
                             }
                         } label: {
                             Label("", systemImage: "arrow.down")
@@ -225,7 +225,7 @@ struct NavigationControlUI: View {
                         // Action for Elevate Down
                         Button {
                             Task {
-                                await moveLower(2)
+                                await moveLower(1)
                             }
                         } label: {
                             Label("", systemImage: "arrow.down.to.line")

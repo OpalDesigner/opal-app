@@ -28,46 +28,51 @@ struct RealityModelView: View {
     var body: some View {
         Spacer()
         RealityView { content in
+            //Load your 3D model
             guard let model = try? await Entity(named: modelName, in: realityKitContentBundle)
             else {fatalError("Unable to load scene model: \(modelName)")}
-            model.scale *= SIMD3<Float>(repeating: initialScale)
             content.add(model)
             
-            //ADD PHYSICS TO ALLOW THE OBJECT BE INTERACTABLE
+            //Add Physics to the 3D model
             model.components.set(InputTargetComponent(allowedInputTypes: .indirect))
             model.generateCollisionShapes(recursive: true)
             model.components.set(GroundingShadowComponent(castsShadow: true))
             
-            //OBTAIN ANIMATIONS
+            //Add Animation to the 3D model
             if(model.availableAnimations.count > 0){
                 let anim = model.availableAnimations[0]
                 model.playAnimation(anim.repeat())
             }
             
-            //ADD LIGHTING
+            //Add Lighting to the 3D model
             //model.components.set(ImageBasedLightComponent(source: .single(environment), intensityExponent: 3))
             //model.components.set(ImageBasedLightReceiverComponent(imageBasedLight: model))
             
-            //OBTAIN AUDIO
+            //Add Audio to the 3D model
             //guard let audioResource = try? AudioFileResource.load(named: "your_audio_file.wav", in: realityKitContentBundle)
             //model.playAudio(audioResource)
             //if let audioPlaybackController = model.components[AudioPlaybackController.self] {
             //    audioPlaybackController.play()
             //}
-
+            
+            // Find the specific object
             guard let object = model.findEntity(named: modelName)
             else {fatalError("Unable to find entity in scene model: \(modelName)")}
-            self.object = object
-            object.position = initialPosition
-            currentScale = object.scale.x  // Set initial scale
             
-            print("\(modelName) Initial Scale: \(initialScale)")
-            print("\(modelName) Model Scale: \(model.scale)")
-            print("\(modelName) Object Scale: \(object.scale)")
+            // Apply position and scale to the specific object
+            object.position = initialPosition
+            object.scale = SIMD3<Float>(repeating: initialScale)
+            self.object = object
+            
+            // Update local variables
+            currentScale = object.scale.x
+            
+            //Print values
+            print("\(modelName) Object Position:    \(object.position)")
+            print("\(modelName) Object Scale:       \(object.scale)")
         }
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
         .animation(.easeInOut(duration: 1), value: modelRotation)
-        /*
         .gesture(
             DragGesture()
                 .targetedToEntity(object)
@@ -75,8 +80,6 @@ struct RealityModelView: View {
                     object.position = value.convert(value.location3D, from: .local, to: object.parent!)
                 })
         )
-         */
-        
         .gesture(
             MagnificationGesture()
                 .onChanged { value in
@@ -90,8 +93,6 @@ struct RealityModelView: View {
                     
                     // Apply the scale
                     object.scale = SIMD3<Float>(repeating: clampedScale)
-                    print("Clamped scale: \(clampedScale)")
-                    print("Object scale: \(object.scale.x)")
                 }
                 .onEnded { value in
                     // Save the new scale
@@ -104,7 +105,6 @@ struct RealityModelView: View {
                     object.scale = SIMD3<Float>(repeating: currentScale)
                 }
         )
-        
         .toolbar {
             ToolbarItem(placement: .bottomOrnament) {
                 Button {
@@ -156,7 +156,7 @@ struct RealityModelView: View {
 #Preview {
     RealityModelView(
         modelName: "Coffee_Shop",
-        initialPosition: SIMD3<Float>(100, 0, 0),
-        initialScale: 0.0006
+        initialPosition: SIMD3<Float>(0, 0, 0),
+        initialScale: 0.001
     )
 }
