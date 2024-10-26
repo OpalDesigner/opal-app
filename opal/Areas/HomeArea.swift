@@ -19,7 +19,7 @@ struct HomeArea: View {
             VStack(spacing: 20) {
                 Text("Welcome to Opal Designer")
                     .font(.largeTitle)
-                Text("Opal is a spatial design visualization tool that combines realistic graphics with intuitive and playful animation.")
+                Text("Opal is a set design visualization tool that combines realistic graphics with intuitive and playful animation.")
                     .font(.system(size: 20))
             }
             .frame(width: 500, height: 200)
@@ -35,7 +35,7 @@ struct HomeArea: View {
                     .animation(.easeInOut(duration: 1), value: modelRotation)
                     .scaleEffect(modelScale)
                     .animation(.spring(), value: modelScale)
-                    .overlay(alignment: .bottomTrailing){
+                    .overlay(alignment: .topTrailing){
                         VStack{
                             Text("Mars Rover")
                             
@@ -51,6 +51,7 @@ struct HomeArea: View {
                                 Label("", systemImage: modelScale == 1 ? "plus.magnifyingglass" : "minus.magnifyingglass")
                             }
                             
+                            /*
                             Button {
                                 modelAnimation.toggle()
                                 /*
@@ -65,6 +66,7 @@ struct HomeArea: View {
                             } label: {
                                 Label("", systemImage: modelAnimation ? "pause.circle" : "play.circle")
                             }
+                             */
                         }
                     }
                 } placeholder: {

@@ -92,7 +92,6 @@ struct ModelItemView: View {
                             Button(action: {
                                 isImmersiveOpen.toggle()
                                 if(model.immersiveID != ""){
-                                    
                                     //When Immersive View is open, also allow for Navigation View
                                     Task {
                                         if isImmersiveOpen {

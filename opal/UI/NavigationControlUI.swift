@@ -18,8 +18,119 @@ struct NavigationControlUI: View {
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
+    // Add state to track if automation is running
+    @State private var isAutomating = false
+        
+    // Helper function to move forward a specific distance
+    func moveForward(_ meters: Float) async {
+        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
+        let steps = Int(meters / stepSize)
+        for _ in 0..<steps {
+            modelControlData.position.z += stepSize
+            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
+        }
+    }
+    
+    // Helper function to move backward a specific distance
+    func moveBackward(_ meters: Float) async {
+        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
+        let steps = Int(meters / stepSize)
+        for _ in 0..<steps {
+            modelControlData.position.z -= stepSize
+            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
+        }
+    }
+    
+    // Helper function to move up a specific distance
+    func moveLeft(_ meters: Float) async {
+        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
+        let steps = Int(meters / stepSize)
+        for _ in 0..<steps {
+            modelControlData.position.x += stepSize
+            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
+        }
+    }
+    
+    // Helper function to move down a specific distance
+    func moveRight(_ meters: Float) async {
+        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
+        let steps = Int(meters / stepSize)
+        for _ in 0..<steps {
+            modelControlData.position.x -= stepSize
+            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
+        }
+    }
+    
+    // Helper function to move up a specific distance
+    func moveHigher(_ meters: Float) async {
+        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
+        let steps = Int(meters / stepSize)
+        for _ in 0..<steps {
+            modelControlData.position.y -= stepSize
+            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
+        }
+    }
+    
+    // Helper function to move down a specific distance
+    func moveLower(_ meters: Float) async {
+        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
+        let steps = Int(meters / stepSize)
+        for _ in 0..<steps {
+            modelControlData.position.y += stepSize
+            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
+        }
+    }
+    
+    // Helper function to turn left 90 degrees
+    func turnLeft() async {
+        let stepSize: Float = 0.5 * .pi / 180 // 5 degrees at a time
+        let steps = Int(90 / 0.5)
+        let radius: Float = 0 // Since we want to rotate in place
+        let currentPosition = modelControlData.position
+        
+        for _ in 0..<steps {
+            modelControlData.rotation -= stepSize
+            try? await Task.sleep(nanoseconds: 16_666_667)
+        }
+    }
+    
+    // Helper function to turn left 90 degrees
+    func turnRight() async {
+        let stepSize: Float = 0.5 * .pi / 180 // 5 degrees at a time
+        let steps = Int(90 / 0.5)
+        for _ in 0..<steps {
+            modelControlData.rotation += stepSize
+            try? await Task.sleep(nanoseconds: 16_666_667)
+        }
+    }
+    
+    // Function to perform automated movement
+    func customMovement() async {
+        isAutomating = true
+        
+        // Execute a custom move sequence
+        await moveForward(2)    // Forward 2 meters
+        await moveBackward(2)    // Forward 1 meter
+        await turnLeft()        // Turn left 90 degrees
+        await moveForward(2)    // Forward 2 meters
+        await moveBackward(2)    // Forward 1 meter
+        await turnLeft()        // Turn left 90 degrees
+        await moveForward(2)    // Forward 2 meters
+        await moveBackward(2)    // Forward 1 meter
+        await turnLeft()        // Turn left 90 degrees
+        await moveForward(2)    // Forward 2 meters
+        await moveBackward(2)    // Forward 1 meter
+        await turnLeft()        // Turn left 90 degrees
+        
+        isAutomating = false
+    }
+            
     var body: some View {
         VStack {
+            Text("Navigate 3D space")
+                .font(.headline) // Add a headline font
+                .padding()
+            
             HStack {
                 Button {
                     dismissWindow(id: "NavigationControlUI")
@@ -27,9 +138,14 @@ struct NavigationControlUI: View {
                     Label("", systemImage: "house.fill")
                 }
                 
-                Text("Navigate 3D space")
-                    .font(.headline) // Add a headline font
-                    .padding()
+                Button {
+                    Task {
+                        await customMovement()
+                    }
+                } label: {
+                    Label("", systemImage: "figure.walk.motion")
+                        .foregroundColor(isAutomating ? .gray : .primary)
+                }
             }
 
             VStack {
@@ -38,14 +154,18 @@ struct NavigationControlUI: View {
                     HStack {
                         // Action for Rotate Left
                         Button {
-                            modelControlData.rotation -= 45 * .pi / 180
+                            Task {
+                                await turnLeft()
+                            }
                         } label: {
                             Label("", systemImage: "rotate.left")
                         }
                         
                         // Action for Move Forward
                         Button {
-                            modelControlData.position.z += 50
+                            Task {
+                                await moveForward(2)
+                            }
                         } label: {
                             Label("", systemImage: "arrow.up")
                                 .foregroundColor(.orange)
@@ -53,7 +173,9 @@ struct NavigationControlUI: View {
                         
                         // Action for Rotate Right
                         Button {
-                            modelControlData.rotation += 45 * .pi / 180
+                            Task {
+                                await turnRight()
+                            }
                         } label: {
                             Label("", systemImage: "rotate.right")
                         }
@@ -62,14 +184,18 @@ struct NavigationControlUI: View {
                     HStack {
                         // Action for Move Left
                         Button {
-                            modelControlData.position.x += 50
+                            Task {
+                                await moveLeft(1)
+                            }
                         } label: {
                             Label("", systemImage: "arrow.left")
                                 .foregroundColor(.orange)
                         }
                         // Action for Move Right
                         Button {
-                            modelControlData.position.x -= 50
+                            Task {
+                                await moveRight(1)
+                            }
                         } label: {
                             Label("", systemImage: "arrow.right")
                                 .foregroundColor(.orange)
@@ -79,14 +205,18 @@ struct NavigationControlUI: View {
                     HStack {
                         // Action for Elevate Up
                         Button {
-                            modelControlData.position.y -= 50
+                            Task {
+                                await moveHigher(1)
+                            }
                         } label: {
                             Label("", systemImage: "arrow.up.to.line")
                         }
                         
                         // Action for Move Backward
                         Button {
-                            modelControlData.position.z -= 50
+                            Task {
+                                await moveBackward(1)
+                            }
                         } label: {
                             Label("", systemImage: "arrow.down")
                                 .foregroundColor(.orange)
@@ -94,7 +224,9 @@ struct NavigationControlUI: View {
                         
                         // Action for Elevate Down
                         Button {
-                            modelControlData.position.y += 50
+                            Task {
+                                await moveLower(2)
+                            }
                         } label: {
                             Label("", systemImage: "arrow.down.to.line")
                         }

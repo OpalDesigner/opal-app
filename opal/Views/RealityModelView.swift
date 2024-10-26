@@ -67,7 +67,6 @@ struct RealityModelView: View {
         }
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
         .animation(.easeInOut(duration: 1), value: modelRotation)
-        
         /*
         .gesture(
             DragGesture()
