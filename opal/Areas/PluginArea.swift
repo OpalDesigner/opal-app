@@ -27,7 +27,7 @@ struct PluginArea: View {
                     Button{
                         
                     }label: {
-                        Label("Connect", systemImage: "arrow.triangle.2.circlepath.circle")
+                        Label("Import", systemImage: "arrow.triangle.2.circlepath.circle")
                     }
                 }
                 .frame(width: 250, height: 300)
@@ -46,7 +46,7 @@ struct PluginArea: View {
                     Button{
                         
                     }label: {
-                        Label("Connect", systemImage: "arrow.triangle.2.circlepath.circle")
+                        Label("Import", systemImage: "arrow.triangle.2.circlepath.circle")
                     }
                 }
                 .frame(width: 250, height: 300)

@@ -10,7 +10,7 @@ import RealityKitContent
 import ARKit
 import SwiftUI
 
-//This code is not yet complete. This is to allow you to place real objects in realworld using ARkit and SceneReconstruction (detect planes, surfaces)
+//This code is not yet complete. This is to allow you to place objects on real world surfaces using ARkit and SceneReconstruction (detect planes, surfaces)
 
 struct HandInteractionView: View {
     @StateObject var model = HandTrackingViewModel()
