@@ -44,26 +44,44 @@ struct ImmersiveModelView: View {
             
             // Create a camera entity that will be our viewpoint
             let cameraEntity = Entity()
-            let rotation = simd_quatf(angle: modelControlData.cameraRotation, axis: [0, 1, 0])
-            let position = modelControlData.cameraPosition
-            cameraEntity.transform = .init(
-                scale: .one,
-                rotation: rotation,
-                translation: position
-            )
+            updateCameraTransform(cameraEntity)
             content.add(cameraEntity)
+            
         } update: { content in
             if let cameraEntity = content.entities.first {
-                let rotation = simd_quatf(angle: modelControlData.cameraRotation, axis: [0, 1, 0])
-                let position = modelControlData.cameraPosition
-                cameraEntity.transform = .init(
-                    scale: .one,
-                    rotation: rotation,
-                    translation: position
-                )
+                updateCameraTransform(cameraEntity)
             }
         }
     }
+    
+    private func updateCameraTransform(_ camera: Entity) {
+        let c = cos(modelControlData.cameraRotation)
+        let s = sin(modelControlData.cameraRotation)
+        
+        // Set camera rotation matrix around Y axis
+        let rotationMatrix = float4x4(columns: (
+            SIMD4<Float>(c, 0, -s, 0),
+            SIMD4<Float>(0, 1, 0, 0),
+            SIMD4<Float>(s, 0, c, 0),
+            SIMD4<Float>(0, 0, 0, 1)
+        ))
+        
+        // Set camera translation matrix
+        let pos = modelControlData.cameraPosition
+        let translationMatrix = float4x4(columns: (
+            SIMD4<Float>(1, 0, 0, 0),
+            SIMD4<Float>(0, 1, 0, 0),
+            SIMD4<Float>(0, 0, 1, 0),
+            SIMD4<Float>(pos.x, pos.y, pos.z, 1)
+        ))
+        
+        // Multiplication order matters. First rotate, then translate
+        let transform = rotationMatrix * translationMatrix
+        
+        // Apply the combined transform
+        camera.transform.matrix = transform
+    }
+    
 }
 
 //Test Sample Preview on Xcode Preview Window

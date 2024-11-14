@@ -24,9 +24,19 @@ struct NavigationControlUI: View {
     func moveForward(_ meters: Float) async {
         let stepSize: Float = 0.05
         let steps = Int(meters / stepSize)
-        let cameraVector = SIMD3<Float>(0, 0, 1)
+        
+        // Rotate the base vector by the camera's rotation
+        let baseVector = SIMD3<Float>(0, 0, 1)
+        let c = cos(modelControlData.cameraRotation)
+        let s = sin(modelControlData.cameraRotation)
+        let rotatedVector = SIMD3<Float>(
+            baseVector.x * c - baseVector.z * s,
+            baseVector.y,
+            baseVector.x * s + baseVector.z * c
+        )
+        
         for _ in 0..<steps {
-            modelControlData.cameraPosition += cameraVector * stepSize
+            modelControlData.cameraPosition += rotatedVector * stepSize
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Moving Forward")
@@ -37,9 +47,20 @@ struct NavigationControlUI: View {
     func moveBackward(_ meters: Float) async {
         let stepSize: Float = 0.05
         let steps = Int(meters / stepSize)
-        let cameraVector = SIMD3<Float>(0, 0, 1)
+        
+        // Rotate the base vector by the camera's rotation
+        let baseVector = SIMD3<Float>(0, 0, 1)
+        let c = cos(modelControlData.cameraRotation)
+        let s = sin(modelControlData.cameraRotation)
+        let rotatedVector = SIMD3<Float>(
+             baseVector.x * c - baseVector.z * s,
+             baseVector.y,
+             baseVector.x * s + baseVector.z * c
+        )
+        
         for _ in 0..<steps {
-            modelControlData.cameraPosition -= cameraVector * stepSize
+            //modelControlData.cameraPosition -= cameraVector * stepSize
+            modelControlData.cameraPosition -= rotatedVector * stepSize
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Moving Backward")
@@ -50,9 +71,19 @@ struct NavigationControlUI: View {
     func moveLeft(_ meters: Float) async {
         let stepSize: Float = 0.05
         let steps = Int(meters / stepSize)
-        let cameraVector = SIMD3<Float>(1, 0, 0)
+        let baseVector = SIMD3<Float>(1, 0, 0)
+        
+        // Rotate the base vector by the camera's rotation
+        let c = cos(modelControlData.cameraRotation)
+        let s = sin(modelControlData.cameraRotation)
+        let rotatedVector = SIMD3<Float>(
+            baseVector.x * c - baseVector.z * s,
+            baseVector.y,
+            baseVector.x * s + baseVector.z * c
+        )
+        
         for _ in 0..<steps {
-            modelControlData.cameraPosition += cameraVector * stepSize
+            modelControlData.cameraPosition += rotatedVector * stepSize
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Moving Left")
@@ -63,9 +94,19 @@ struct NavigationControlUI: View {
     func moveRight(_ meters: Float) async {
         let stepSize: Float = 0.05
         let steps = Int(meters / stepSize)
-        let cameraVector = SIMD3<Float>(1, 0, 0)
+        let baseVector = SIMD3<Float>(1, 0, 0)
+        
+        // Rotate the base vector by the camera's rotation
+        let c = cos(modelControlData.cameraRotation)
+        let s = sin(modelControlData.cameraRotation)
+        let rotatedVector = SIMD3<Float>(
+            baseVector.x * c - baseVector.z * s,
+            baseVector.y,
+            baseVector.x * s + baseVector.z * c
+        )
+        
         for _ in 0..<steps {
-            modelControlData.cameraPosition -= cameraVector * stepSize
+            modelControlData.cameraPosition -= rotatedVector * stepSize
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Moving Right")
@@ -73,10 +114,9 @@ struct NavigationControlUI: View {
         print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°\n")
     }
     
-    // Helper function to turn left 45 degrees
-    func turnLeft() async {
-        let stepSize: Float = 45 * .pi / 180 // 45 degrees at a time
-        let steps = Int(45 / 45)
+    func turnLeft(degrees: Float) async {
+        let stepSize: Float = degrees * .pi / 180 // 45 degrees at a time
+        let steps = Int(degrees / 45)
         var newRotation = modelControlData.cameraRotation - stepSize
         
         // Normalize between 0 and 2π
@@ -92,10 +132,9 @@ struct NavigationControlUI: View {
         print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°\n")
     }
     
-    // Helper function to turn right 45 degrees
-    func turnRight() async {
-        let stepSize: Float = 45 * .pi / 180 // 45 degrees at a time
-        let steps = Int(45 / 45)
+    func turnRight(degrees: Float) async {
+        let stepSize: Float = degrees * .pi / 180 // 45 degrees at a time
+        let steps = Int(degrees / 45)
         var newRotation = modelControlData.cameraRotation + stepSize
         
         // Normalize between 0 and 2π
@@ -136,30 +175,51 @@ struct NavigationControlUI: View {
     // Function to perform automated movement
     func customMovement() async {
         isAutomating = true
-        await moveForward(2)    // Forward 2 meters
-        await moveBackward(2)    // Forward 1 meter
-        await turnLeft()        // Turn left 90 degrees
-        await moveForward(2)    // Forward 2 meters
-        await moveBackward(2)    // Forward 1 meter
-        await turnLeft()        // Turn left 90 degrees
-        await moveForward(2)    // Forward 2 meters
-        await moveBackward(2)    // Forward 1 meter
-        await turnLeft()        // Turn left 90 degrees
-        await moveForward(2)    // Forward 2 meters
-        await moveBackward(2)    // Forward 1 meter
-        await turnLeft()        // Turn left 90 degrees
-        await moveForward(2)    // Forward 2 meters
-        await moveBackward(2)    // Forward 1 meter
-        await turnLeft()        // Turn left 90 degrees
-        await moveForward(2)    // Forward 2 meters
-        await moveBackward(2)    // Forward 1 meter
-        await turnLeft()        // Turn left 90 degrees
-        await moveForward(2)    // Forward 2 meters
-        await moveBackward(2)    // Forward 1 meter
-        await turnLeft()        // Turn left 90 degrees
-        await moveForward(2)    // Forward 2 meters
-        await moveBackward(2)    // Forward 1 meter
-        await turnLeft()        // Turn left 90 degrees
+        await moveForward(4)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnLeft(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnLeft(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await moveForward(6)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnLeft(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnLeft(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await moveForward(1)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await moveForward(2)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnRight(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await moveForward(1)
         isAutomating = false
     }
             
@@ -187,12 +247,14 @@ struct NavigationControlUI: View {
                 } label: {
                     Label("", systemImage: "house.fill")
                 }
+                .disabled(isAutomating)
                 
                 Button {
                     modelControlData.cameraPosition = SIMD3<Float>(0, 0, 0)
                 } label: {
                     Label("", systemImage: "location")
                 }
+                .disabled(isAutomating)
                 
                 Button {
                     Task {
@@ -208,11 +270,12 @@ struct NavigationControlUI: View {
                 // Action for Rotate Left
                 Button {
                     Task {
-                        await turnLeft()
+                        await turnLeft(degrees: 45)
                     }
                 } label: {
                     Label("", systemImage: "rotate.left")
                 }
+                .disabled(isAutomating)
                 
                 // Action for Move Forward
                 Button {
@@ -221,17 +284,18 @@ struct NavigationControlUI: View {
                     }
                 } label: {
                     Label("", systemImage: "arrow.up")
-                        .foregroundColor(.orange)
                 }
+                .disabled(isAutomating)
                 
                 // Action for Rotate Right
                 Button {
                     Task {
-                        await turnRight()
+                        await turnRight(degrees: 45)
                     }
                 } label: {
                     Label("", systemImage: "rotate.right")
                 }
+                .disabled(isAutomating)
             }
             
             HStack {
@@ -242,8 +306,9 @@ struct NavigationControlUI: View {
                     }
                 } label: {
                     Label("", systemImage: "arrow.left")
-                        .foregroundColor(.orange)
                 }
+                .disabled(isAutomating)
+                
                 // Action for Move Right
                 Button {
                     Task {
@@ -251,8 +316,8 @@ struct NavigationControlUI: View {
                     }
                 } label: {
                     Label("", systemImage: "arrow.right")
-                        .foregroundColor(.orange)
                 }
+                .disabled(isAutomating)
             }
             
             HStack {
@@ -264,6 +329,7 @@ struct NavigationControlUI: View {
                 } label: {
                     Label("", systemImage: "arrow.up.to.line")
                 }
+                .disabled(isAutomating)
                 
                 // Action for Move Backward
                 Button {
@@ -272,8 +338,8 @@ struct NavigationControlUI: View {
                     }
                 } label: {
                     Label("", systemImage: "arrow.down")
-                        .foregroundColor(.orange)
                 }
+                .disabled(isAutomating)
                 
                 // Action for Elevate Down
                 Button {
@@ -283,6 +349,7 @@ struct NavigationControlUI: View {
                 } label: {
                     Label("", systemImage: "arrow.down.to.line")
                 }
+                .disabled(isAutomating)
             }
         }
         .onAppear{
