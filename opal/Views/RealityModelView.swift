@@ -21,6 +21,10 @@ struct RealityModelView: View {
     // State variables
     @State private var object = Entity()
     
+    // Add state for tracking the model's center
+    @State private var modelCenter: SIMD3<Float> = .zero
+    @State private var modelPivot: SIMD3<Float> = .zero
+    
     // State variables for the gestures
     @State private var currentScale: Float = 1.0
     @State private var currentRotationY: Float = 0.0
@@ -38,122 +42,93 @@ struct RealityModelView: View {
             guard let model = try? await Entity(named: modelName, in: realityKitContentBundle)
             else {fatalError("Unable to load scene model: \(modelName)")}
             content.add(model)
+
+            // Find the specific object, initialize position and scale, and store it for gestures
+            guard let object = model.findEntity(named: modelName)
+            else {fatalError("Unable to find entity in scene model: \(modelName)")}
+            object.position = initialPosition
+            object.scale = SIMD3<Float>(repeating: initialScale)
+            currentScale = initialScale
+            self.object = object
             
-            //Add Physics to the 3D model
+            // Obtain model geometric center and pivot point World Coordinates
+            let bounds = object.visualBounds(relativeTo: object)
+            let localCenter = (bounds.min + bounds.max) * 0.5
+            modelCenter = object.convert(position: localCenter, to: nil)
+            modelPivot = object.convert(position: .zero, to: nil)
+            
+            // Translate geometric center to pivot point using transform
+            var transform = object.transform
+            transform.translation = modelPivot - modelCenter
+            object.transform = transform
+            
+            // Add Physics to the 3D model
             model.components.set(InputTargetComponent(allowedInputTypes: .indirect))
             model.generateCollisionShapes(recursive: true)
             model.components.set(GroundingShadowComponent(castsShadow: true))
             
-            //Add Animation to the 3D model
+            // Add Animation to the 3D model
             if(model.availableAnimations.count > 0){
                 let anim = model.availableAnimations[0]
                 model.playAnimation(anim.repeat())
             }
             
-            //Add Lighting to the 3D model
-            //model.components.set(ImageBasedLightComponent(source: .single(environment), intensityExponent: 3))
-            //model.components.set(ImageBasedLightReceiverComponent(imageBasedLight: model))
+            // Debug statements
+            /*
+            #if DEBUG
+              let centerSphere = ModelEntity(mesh: .generateSphere(radius: 0.01))
+              centerSphere.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
+              centerSphere.position = modelPivot
+              content.add(centerSphere)
+            #endif
+             */
+            print("\n\(modelName) Debug Information:")
+            print("Object Position:                         \(object.position)")
+            print("Object Scale:                            \(object.scale)")
+            print("Object Orientation:                      \(object.orientation)")
             
-            //Add Audio to the 3D model
-            //guard let audioResource = try? AudioFileResource.load(named: "your_audio_file.wav", in: realityKitContentBundle)
-            //model.playAudio(audioResource)
-            //if let audioPlaybackController = model.components[AudioPlaybackController.self] {
-            //    audioPlaybackController.play()
-            //}
-            
-            // Find the specific object
-            guard let object = model.findEntity(named: modelName)
-            else {fatalError("Unable to find entity in scene model: \(modelName)")}
-            
-            // Apply position and scale to the specific object
-            object.position = initialPosition
-            object.scale = SIMD3<Float>(repeating: initialScale)
-            self.object = object
-            
-            // Update local variables
-            currentScale = object.scale.x
-            
-            // Print values
-            print("\(modelName) Object Position:    \(object.position)")
-            print("\(modelName) Object Scale:       \(object.scale)")
         }
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
         .animation(.easeInOut(duration: 1), value: modelRotation)
         .gesture(
+            //Enable Rotation and Magnification
             SimultaneousGesture(
-                //Drag gesture to move the 3D model
-                DragGesture()
-                    .targetedToEntity(object)
-                    .onChanged { value in
-                        object.position = value.convert(value.location3D, from: .local, to: object.parent!)
+                RotateGesture()
+                    .updating($rotationAngle) { value, _, _ in
+                        let currentRotation = Float(value.rotation.degrees)
+                        let totalRotation = currentRotationY + currentRotation
+                        object.orientation = simd_quatf(angle: totalRotation * .pi / 180, axis: SIMD3<Float>(0, 1, 0))
+                                                 
+                        // Print values during gesture
+                        let rotationDegrees = Int(totalRotation.truncatingRemainder(dividingBy: 360))
+                        print("\(modelName) Current Rotation: \(rotationDegrees)°")
                     }
-                    .onEnded { _ in
-                        // Print final position with decimal places
-                        print("\(modelName) Final Position: x:\(String(format: "%.3f", object.position.x)), y:\(String(format: "%.3f", object.position.y)), z:\(String(format: "%.3f", object.position.z))")
+                    .onEnded { value in
+                        // Update the current rotation and normalize the value
+                        currentRotationY += Float(value.rotation.degrees)
+                        currentRotationY = currentRotationY.truncatingRemainder(dividingBy: 360)
                     },
-                
-                //Rotation and Scale can happen together
-                SimultaneousGesture(
-                    // Rotation gesture
-                    RotateGesture()
-                        .updating($rotationAngle) { value, state, _ in
-                            let rotation = Float(value.rotation.degrees)
-                            state = rotation
-                            
-                            // Calculate total rotation by adding current rotation and new gesture rotation
-                            let totalRotation = currentRotationY + rotation
-                            object.orientation = simd_quatf(angle: totalRotation * .pi / 180, axis: SIMD3<Float>(0, 1, 0))
-                                                    
-                            // Print values during gesture
-                            /*
-                            let rotationDegrees = Int(totalRotation.truncatingRemainder(dividingBy: 360))
-                            print("\(modelName) Rotation: \(rotationDegrees)°")
-                            */
-                        }
-                        .onEnded { value in
-                            // Update the current rotation when gesture ends
-                            currentRotationY += Float(value.rotation.degrees)
-                            
-                            // Normalize the rotation angle
-                            currentRotationY = currentRotationY.truncatingRemainder(dividingBy: 360)
-                            
-                            // Print final rotation
-                            print("\(modelName) Final Rotation: \(Int(currentRotationY))°")
-                        },
-                    MagnificationGesture()
-                        .onChanged { value in
-                            // Calculate new scale based on gesture value
-                            let newScale = currentScale * Float(value)
-                            
-                            // Apply limits (25% to 150% of original scale)
-                            let minScale = initialScale * 0.5
-                            let maxScale = initialScale * 1.5
-                            let clampedScale = max(minScale, min(newScale, maxScale))
-                            
-                            // Apply the scale
-                            object.scale = SIMD3<Float>(repeating: clampedScale)
-                            
-                            // Print values during gesture
-                            /*
-                            let scalePercentage = Int((clampedScale / initialScale) * 100)
-                            print("\(modelName) Object Current Scale: \(scalePercentage)%")
-                            */
-                        }
-                        .onEnded { value in
-                            // Save the new scale
-                            let newScale = currentScale * Float(value)
-                            let minScale = initialScale  * 0.5
-                            let maxScale = initialScale  * 1.5
-                            currentScale = max(minScale, min(newScale, maxScale))
-                            
-                            // Ensure final scale is set
-                            object.scale = SIMD3<Float>(repeating: currentScale)
-                            
-                            // Print final values
-                            let finalPercentage = Int((currentScale / initialScale) * 100)
-                            print("\(modelName) Object Final Scale: \(finalPercentage)%")
-                        }
-                )
+                MagnificationGesture()
+                    .onChanged { value in
+                        // Calculate new scale based on current gesture value
+                        let newScale = currentScale * Float(value)
+                        let minScale = initialScale * 0.5
+                        let maxScale = initialScale * 1.5
+                        let clampedScale = max(minScale, min(newScale, maxScale))
+                        object.scale = SIMD3<Float>(repeating: clampedScale)
+                        
+                        // Print values during gesture
+                        let scalePercentage = Int((clampedScale / initialScale) * 100)
+                        print("\(modelName) Current Scale: \(scalePercentage)%")
+                    }
+                    .onEnded { value in
+                        // Save the new scale
+                        let newScale = currentScale * Float(value)
+                        let minScale = initialScale  * 0.5
+                        let maxScale = initialScale  * 1.5
+                        currentScale = max(minScale, min(newScale, maxScale))
+                        object.scale = SIMD3<Float>(repeating: currentScale)
+                    }
             )
         )
         .toolbar {

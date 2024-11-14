@@ -67,7 +67,7 @@ struct opalApp: App {
             WindowGroup(id: "HouseInteriorRealityView") {
                 RealityModelView(
                     modelName: "House_Interior",
-                    initialPosition: SIMD3<Float>(-0.5, 0, 0.5),
+                    initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.001)
             }
             .windowStyle(.volumetric)
@@ -142,8 +142,8 @@ struct opalApp: App {
             WindowGroup(id: "MechDroneRealityView") {
                 RealityModelView(
                     modelName: "Mech_Drone",
-                    initialPosition: SIMD3<Float>(0, -0.1, 0),
-                    initialScale: 0.02)
+                    initialPosition: SIMD3<Float>(0, 0, 0),
+                    initialScale: 0.01)
             }
             .windowStyle(.volumetric)
             .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
@@ -151,8 +151,8 @@ struct opalApp: App {
             WindowGroup(id: "BusterDroneRealityView") {
                 RealityModelView(
                     modelName: "Buster_Drone",
-                    initialPosition: SIMD3<Float>(0, 0.5, 0),
-                    initialScale: 0.004)
+                    initialPosition: SIMD3<Float>(0, 0, 0),
+                    initialScale: 0.002)
             }
             .windowStyle(.volumetric)
             .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
