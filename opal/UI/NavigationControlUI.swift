@@ -230,6 +230,7 @@ struct NavigationControlUI: View {
                 .padding()
             
             // Display coordinates
+            /*
             VStack {
                 Text("Camera Position:")
                     .font(.subheadline)
@@ -239,6 +240,7 @@ struct NavigationControlUI: View {
                     Text("Z: \(String(format: "%.f", modelControlData.cameraPosition.z))")
                 }
             }
+             */
 
             // Move controls
             HStack {
@@ -256,6 +258,8 @@ struct NavigationControlUI: View {
                 }
                 .disabled(isAutomating)
                 
+                //Animate movement
+                /*
                 Button {
                     Task {
                         await customMovement()
@@ -264,6 +268,7 @@ struct NavigationControlUI: View {
                     Label("", systemImage: "figure.walk.motion")
                         .foregroundColor(isAutomating ? .gray : .primary)
                 }
+                 */
             }
             
             HStack {
@@ -298,11 +303,12 @@ struct NavigationControlUI: View {
                 .disabled(isAutomating)
             }
             
+            //Strafing left and right can cause nausea
             HStack {
                 // Action for Move Left
                 Button {
                     Task {
-                        await moveLeft(1)
+                        await moveLeft(0.5)
                     }
                 } label: {
                     Label("", systemImage: "arrow.left")
@@ -312,7 +318,7 @@ struct NavigationControlUI: View {
                 // Action for Move Right
                 Button {
                     Task {
-                        await moveRight(1)
+                        await moveRight(0.5)
                     }
                 } label: {
                     Label("", systemImage: "arrow.right")
@@ -324,7 +330,7 @@ struct NavigationControlUI: View {
                 // Action for Elevate Up
                 Button {
                     Task {
-                        await moveHigher(1)
+                        await moveHigher(0.5)
                     }
                 } label: {
                     Label("", systemImage: "arrow.up.to.line")
@@ -344,7 +350,7 @@ struct NavigationControlUI: View {
                 // Action for Elevate Down
                 Button {
                     Task {
-                        await moveLower(1)
+                        await moveLower(0.5)
                     }
                 } label: {
                     Label("", systemImage: "arrow.down.to.line")
