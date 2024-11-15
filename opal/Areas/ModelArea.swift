@@ -28,7 +28,8 @@ struct ModelArea: View {
         ModelInfo(imageName: "convenience-store", windowID: "ConvenienceStoreRealityView", immersiveID: "ConvenienceStoreImmersiveView"),
         ModelInfo(imageName: "old-hotel", windowID: "OldHotelRealityView", immersiveID: "OldHotelImmersiveView"),
         ModelInfo(imageName: "mech-drone", windowID: "MechDroneRealityView", immersiveID: ""),
-        ModelInfo(imageName: "buster-drone", windowID: "BusterDroneRealityView", immersiveID: "")
+        ModelInfo(imageName: "buster-drone", windowID: "BusterDroneRealityView", immersiveID: ""),
+        ModelInfo(imageName: "solar-system", windowID: "SolarSystemRealityView", immersiveID: "")
     ]
 
     var body: some View {

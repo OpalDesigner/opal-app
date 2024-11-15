@@ -19,13 +19,11 @@ struct RealityModelView: View {
     let initialScale: Float
 
     // State variables
-    @State private var object = Entity()
-    
-    // Add state for tracking the model's center
+    @State private var model = Entity()
+
+    // Add state for tracking the model properties
     @State private var modelCenter: SIMD3<Float> = .zero
     @State private var modelPivot: SIMD3<Float> = .zero
-    
-    // State variables for the model rotation, magnification and animation
     @State private var modelRotation: Double = 0.0
     @State private var currentScale: Float = 1.0
     @State private var modelAnimation: Float = 0.0
@@ -35,28 +33,24 @@ struct RealityModelView: View {
         Spacer()
         RealityView { content in
             //Load your 3D model
-            guard let model = try? await Entity(named: modelName, in: realityKitContentBundle)
+            guard let rootEntity = try? await Entity(named: modelName, in: realityKitContentBundle)
             else {fatalError("Unable to load scene model: \(modelName)")}
-            content.add(model)
-
-            // Find the specific object, initialize position and scale, and store it for gestures
-            guard let object = model.findEntity(named: modelName)
-            else {fatalError("Unable to find entity in scene model: \(modelName)")}
-            object.position = initialPosition
-            object.scale = SIMD3<Float>(repeating: initialScale)
+            content.add(rootEntity)
+            model = rootEntity
+            model.position = initialPosition
+            model.scale = SIMD3<Float>(repeating: initialScale)
             currentScale = initialScale
-            self.object = object
             
             // Obtain model geometric center and pivot point World Coordinates
-            let bounds = object.visualBounds(relativeTo: object)
+            let bounds = model.visualBounds(relativeTo: rootEntity)
             let localCenter = (bounds.min + bounds.max) * 0.5
-            modelCenter = object.convert(position: localCenter, to: nil)
-            modelPivot = object.convert(position: .zero, to: nil)
+            modelCenter = model.convert(position: localCenter, to: nil)
+            modelPivot = model.convert(position: .zero, to: nil)
             
             // Translate geometric center to pivot point using transform
-            var transform = object.transform
+            var transform = model.transform
             transform.translation = modelPivot - modelCenter
-            object.transform = transform
+            model.transform = transform
             
             // Add Physics to the 3D model
             model.components.set(InputTargetComponent(allowedInputTypes: .indirect))
@@ -79,8 +73,10 @@ struct RealityModelView: View {
             #endif
              */
             print("\n\(modelName) Debug Information:")
-            print("Position: \(object.position)")
-            print("Scale:    \(object.scale)")
+            print("Position: \(model.position)")
+            print("Scale:    \(model.scale)")
+            print("Center:   \(modelCenter)")
+            print("Pivot:    \(modelPivot)")
         }
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
         .animation(.easeInOut(duration: 1), value: modelRotation)
@@ -99,7 +95,7 @@ struct RealityModelView: View {
                     let minScale = initialScale * 0.5
                     let maxScale = initialScale * 1.5
                     let clampedScale = max(minScale, min(newScale, maxScale))
-                    object.scale = SIMD3<Float>(repeating: clampedScale)
+                    model.scale = SIMD3<Float>(repeating: clampedScale)
                     
                     // Print debug information
                     let scalePercentage = Int((clampedScale / initialScale) * 100)
@@ -111,7 +107,7 @@ struct RealityModelView: View {
                     let minScale = initialScale  * 0.5
                     let maxScale = initialScale  * 1.5
                     currentScale = max(minScale, min(newScale, maxScale))
-                    object.scale = SIMD3<Float>(repeating: currentScale)
+                    model.scale = SIMD3<Float>(repeating: currentScale)
                 }
         )
         .toolbar {
@@ -122,7 +118,7 @@ struct RealityModelView: View {
                         Task {
                             while isPlaying {
                                 modelAnimation += 0.005
-                                object.orientation = simd_quatf(angle: Float(modelAnimation), axis: SIMD3<Float>(0, 1, 0))
+                                model.orientation = simd_quatf(angle: Float(modelAnimation), axis: SIMD3<Float>(0, 1, 0))
                                 await Task.sleep(16_000_000)
                             }
                         }

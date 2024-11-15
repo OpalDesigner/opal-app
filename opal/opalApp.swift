@@ -156,6 +156,15 @@ struct opalApp: App {
             }
             .windowStyle(.volumetric)
             .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
+            
+            WindowGroup(id: "SolarSystemRealityView") {
+                RealityModelView(
+                    modelName: "Planets",
+                    initialPosition: SIMD3<Float>(0, 0, -1),
+                    initialScale: 0.25)
+            }
+            .windowStyle(.volumetric)
+            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
         }
         
         //3D MODEL SETS - IMMERSIVE VIEWS
