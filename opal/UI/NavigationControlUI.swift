@@ -18,7 +18,7 @@ struct NavigationControlUI: View {
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
-    // Add state to track if automation is running
+    // Add state to track if walkthrough is running
     @State private var isAutomating = false
     
     func moveForward(_ meters: Float) async {
@@ -41,7 +41,7 @@ struct NavigationControlUI: View {
         }
         print("Moving Forward")
         print("Camera Position: \(round(modelControlData.cameraPosition))")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°\n")
+        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
     }
 
     func moveBackward(_ meters: Float) async {
@@ -65,7 +65,7 @@ struct NavigationControlUI: View {
         }
         print("Moving Backward")
         print("Camera Position: \(round(modelControlData.cameraPosition))")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°\n")
+        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
     }
     
     func moveLeft(_ meters: Float) async {
@@ -88,7 +88,7 @@ struct NavigationControlUI: View {
         }
         print("Moving Left")
         print("Camera Position: \(round(modelControlData.cameraPosition))")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°\n")
+        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
     }
 
     func moveRight(_ meters: Float) async {
@@ -111,7 +111,7 @@ struct NavigationControlUI: View {
         }
         print("Moving Right")
         print("Camera Position: \(round(modelControlData.cameraPosition))")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°\n")
+        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
     }
     
     func turnLeft(degrees: Float) async {
@@ -129,7 +129,7 @@ struct NavigationControlUI: View {
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Turning Left")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°\n")
+        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
     }
     
     func turnRight(degrees: Float) async {
@@ -149,7 +149,7 @@ struct NavigationControlUI: View {
         }
         
         print("Turn Right")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°\n")
+        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
     }
     
     // Helper function to move up a specific distance
@@ -172,7 +172,7 @@ struct NavigationControlUI: View {
         }
     }
     
-    // Function to perform automated movement
+    // Function to perform automated movement. Will inherit this from the pre-determined waypoints for each model
     func customMovement() async {
         isAutomating = true
         await moveForward(4)
@@ -181,17 +181,11 @@ struct NavigationControlUI: View {
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         await turnLeft(degrees: 45)
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
+        await moveForward(1)
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
+        await turnLeft(degrees: 45)
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
+        await turnLeft(degrees: 45)
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         await moveForward(6)
         try? await Task.sleep(nanoseconds: 1_000_000_000)
@@ -199,27 +193,20 @@ struct NavigationControlUI: View {
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         await turnLeft(degrees: 45)
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await moveForward(1)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
         await moveForward(2)
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
+        await turnLeft(degrees: 45)
         try? await Task.sleep(nanoseconds: 1_000_000_000)
-        await turnRight(degrees: 45)
+        await turnLeft(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await moveForward(4)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnLeft(degrees: 45)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        await turnLeft(degrees: 45)
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         await moveForward(1)
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
         isAutomating = false
     }
             
@@ -258,8 +245,8 @@ struct NavigationControlUI: View {
                 }
                 .disabled(isAutomating)
                 
-                //Animate movement
                 /*
+                //Animate movement
                 Button {
                     Task {
                         await customMovement()

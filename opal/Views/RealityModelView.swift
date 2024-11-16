@@ -36,9 +36,18 @@ struct RealityModelView: View {
             guard let rootEntity = try? await Entity(named: modelName, in: realityKitContentBundle)
             else {fatalError("Unable to load scene model: \(modelName)")}
             content.add(rootEntity)
+            
+            print("\n\(modelName) Debug Information:")
+            print("Initial Position:     \(initialPosition)")
+            print("Initial Scale:        \(initialScale)")
+            print("Root entity children: \(rootEntity.children.map { $0.name })")
+            print("Root Position:        \(rootEntity.transform.translation)")
+            print("Root Scale:           \(rootEntity.transform.scale)")
+            
+            // Set initial transform
             model = rootEntity
-            model.position = initialPosition
-            model.scale = SIMD3<Float>(repeating: initialScale)
+            model.transform.translation = initialPosition
+            model.transform.scale = SIMD3<Float>(repeating: initialScale)
             currentScale = initialScale
             
             // Obtain model geometric center and pivot point World Coordinates
@@ -66,17 +75,18 @@ struct RealityModelView: View {
             // Debug statements
             /*
             #if DEBUG
-              let centerSphere = ModelEntity(mesh: .generateSphere(radius: 0.01))
+              let centerSphere = ModelEntity(mesh: .generateSphere(radius: 0.02))
               centerSphere.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
               centerSphere.position = modelPivot
               content.add(centerSphere)
             #endif
+             
              */
-            print("\n\(modelName) Debug Information:")
-            print("Position: \(model.position)")
-            print("Scale:    \(model.scale)")
-            print("Center:   \(modelCenter)")
-            print("Pivot:    \(modelPivot)")
+            print("\nAfter translating geometric center to pivot point:")
+            print("Model Positon:       \(model.transform.translation)")
+            print("Model Scale:         \(model.transform.scale)")
+            print("Model Center:        \(modelCenter)")
+            print("Model Pivot:         \(modelPivot)")
         }
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
         .animation(.easeInOut(duration: 1), value: modelRotation)
@@ -117,9 +127,8 @@ struct RealityModelView: View {
                     if isPlaying {
                         Task {
                             while isPlaying {
-                                modelAnimation += 0.005
-                                model.orientation = simd_quatf(angle: Float(modelAnimation), axis: SIMD3<Float>(0, 1, 0))
-                                await Task.sleep(16_000_000)
+                                modelRotation += 0.15
+                                try? await Task.sleep(nanoseconds: 16_000_000)
                             }
                         }
                     }

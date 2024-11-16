@@ -137,36 +137,6 @@ struct opalApp: App {
             .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
         }
         
-        //3D MODEL ROBOTS - WINDOW VIEW
-        Group{
-            WindowGroup(id: "MechDroneRealityView") {
-                RealityModelView(
-                    modelName: "Mech_Drone",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.01)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "BusterDroneRealityView") {
-                RealityModelView(
-                    modelName: "Buster_Drone",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.002)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "SolarSystemRealityView") {
-                RealityModelView(
-                    modelName: "Planets",
-                    initialPosition: SIMD3<Float>(0, 0, -1),
-                    initialScale: 0.25)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
-        }
-        
         //3D MODEL SETS - IMMERSIVE VIEWS
         Group {
             ImmersiveSpace(id: "CoffeeShopImmersiveView") {
@@ -250,6 +220,49 @@ struct opalApp: App {
             }
             .immersionStyle(selection: .constant(.full), in: .full)
         }
+        
+        //Drone
+        Group{
+            WindowGroup(id: "MechDroneRealityView") {
+                RealityModelView(
+                    modelName: "Mech_Drone",
+                    initialPosition: SIMD3<Float>(0, 0, 0),
+                    initialScale: 0.01)
+            }
+            .windowStyle(.volumetric)
+            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
+            
+            WindowGroup(id: "BusterDroneRealityView") {
+                RealityModelView(
+                    modelName: "Buster_Drone",
+                    initialPosition: SIMD3<Float>(0, 0, 0),
+                    initialScale: 0.002)
+            }
+            .windowStyle(.volumetric)
+            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
+        }
+        
+        //Solar System
+        Group{
+            WindowGroup(id: "SolarSystemRealityView") {
+                RealityModelView(
+                    modelName: "Planets",
+                    initialPosition: SIMD3<Float>(0, 0, 0),
+                    initialScale: 0.25)
+            }
+            .windowStyle(.volumetric)
+            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
+            
+            ImmersiveSpace(id: "SolarSystemImmersiveView") {
+                ImmersiveModelView(
+                    modelControlData: modelControlData,
+                    modelName: "Planets",
+                    initialPosition: SIMD3<Float>(0, 0, 0),
+                    initialScale: 1)
+            }
+            .immersionStyle(selection: .constant(.full), in: .full)
+        }
+        
     }
 }
 
