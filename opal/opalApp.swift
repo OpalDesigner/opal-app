@@ -9,8 +9,8 @@ import SwiftUI
 
 @main
 struct opalApp: App {
-    // Access Shared data in NavigationControlUI.swift
-    @StateObject var modelControlData = ModelControlData()
+    // Access shared data in NavigationControlUI.swift
+    @StateObject var navigationData = NavigationData()
         
     var body: some Scene {
         //MAIN SCENE
@@ -38,7 +38,7 @@ struct opalApp: App {
         
         //NAVIGATION CONTROL
         WindowGroup(id: "NavigationControl") {
-            NavigationControl(modelControlData: modelControlData)
+            NavigationControl(navigationData: navigationData)
         }
         .defaultWindowPlacement{content, context in
             return WindowPlacement(.utilityPanel)
@@ -65,8 +65,18 @@ struct opalApp: App {
                     initialScale: 0.001)
             }
             //.volumeWorldAlignment(.gravityAligned)
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "HouseInteriorRealityView") {
                 RealityModelView(
@@ -74,8 +84,18 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.001)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "BudapestHotelRealityView") {
                 RealityModelView(
@@ -83,8 +103,18 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.0015)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "SpaceStationRealityView") {
                 RealityModelView(
@@ -92,8 +122,18 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.001)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "ClassroomRealityView") {
                 RealityModelView(
@@ -101,8 +141,18 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.001)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "BedroomRealityView") {
                 RealityModelView(
@@ -110,8 +160,18 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.001)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "PotionsStoreRealityView") {
                 RealityModelView(
@@ -119,8 +179,18 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.001)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "ConvenienceStoreRealityView") {
                 RealityModelView(
@@ -128,8 +198,18 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.001)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "OldHotelRealityView") {
                 RealityModelView(
@@ -137,15 +217,25 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.001)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
         }
         
         //3D MODEL SETS - IMMERSIVE VIEWS
         Group {
             ImmersiveSpace(id: "CoffeeShopImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "Coffee_Shop",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.01) //this gets the model to human scale
@@ -154,7 +244,7 @@ struct opalApp: App {
             
             ImmersiveSpace(id: "HouseInteriorImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "House_Interior",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.03) //this gets the model to human scale
@@ -163,7 +253,7 @@ struct opalApp: App {
             
             ImmersiveSpace(id: "BudapestHotelImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "Budapest_Hotel",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.1) //this gets the model to human scale
@@ -172,7 +262,7 @@ struct opalApp: App {
             
             ImmersiveSpace(id: "SpaceStationImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "SpaceStation_Hall",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.02) //this gets the model to human scale
@@ -181,7 +271,7 @@ struct opalApp: App {
             
             ImmersiveSpace(id: "ClassroomImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "Old_Classroom",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.015) //this gets the model to human scale
@@ -190,7 +280,7 @@ struct opalApp: App {
             
             ImmersiveSpace(id: "BedroomImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "Bedroom",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.012) //this gets the model to human scale
@@ -199,7 +289,7 @@ struct opalApp: App {
             
             ImmersiveSpace(id: "PotionsStoreImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "Potions_Store",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.025) //this gets the model to human scale
@@ -208,7 +298,7 @@ struct opalApp: App {
             
             ImmersiveSpace(id: "ConvenienceStoreImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "Convenience_Store",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.01) //this gets the model to human scale
@@ -217,7 +307,7 @@ struct opalApp: App {
             
             ImmersiveSpace(id: "OldHotelImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "Old_Hotel",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.035)
@@ -233,8 +323,18 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.01)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "BusterDroneRealityView") {
                 RealityModelView(
@@ -242,8 +342,18 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.002)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
         }
         
         //Solar System
@@ -254,12 +364,22 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.25)
             }
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
             .windowStyle(.volumetric)
-            .defaultSize(width: 1, height: 1, depth: 1, in: .meters)
+            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             ImmersiveSpace(id: "SolarSystemImmersiveView") {
                 ImmersiveModelView(
-                    modelControlData: modelControlData,
+                    navigationData: navigationData,
                     modelName: "Planets",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 1)

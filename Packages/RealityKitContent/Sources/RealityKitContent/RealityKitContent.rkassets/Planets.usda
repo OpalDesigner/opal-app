@@ -10,21 +10,24 @@
 
 def Xform "Planets"
 {
-    reorder nameChildren = ["Sun", "Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Capsule"]
+    reorder nameChildren = ["Sun", "Mercury", "Venus", "Earth", "Moon", "Mars", "Jupiter", "Saturn", "Sun_Timeline", "Mercury_Timeline", "Venus_Timeline", "Earth_Timeline", "Moon_Timeline", "Mars_Timeline", "Jupiter_Timeline", "Saturn_Timeline"]
     quatf xformOp:orient = (1, 0, 0, 0)
     float3 xformOp:scale = (1, 1, 1)
-    float3 xformOp:translate = (0, 0, 0)
+    float3 xformOp:translate = (0, 1.5, -1)
     uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
     def "Mars" (
         active = true
+        customData = {
+            float3 rotationEulerHint = (0, 0, -0.4398229)
+        }
         references = @Mars.usdz@
     )
     {
         reorder nameChildren = ["geom", "Collider", "InputTarget"]
-        quatf xformOp:orient = (1, 0, 0, 0)
+        quatf xformOp:orient = (0.9759168, 0, 0, -0.21814322)
         float3 xformOp:scale = (0.5, 0.5, 0.5)
-        float3 xformOp:translate = (0.35, 0, 0)
+        float3 xformOp:translate = (1.5, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "Collider"
@@ -54,12 +57,15 @@ def Xform "Planets"
 
     def "Venus" (
         active = true
+        customData = {
+            float3 rotationEulerHint = (0, 0, -3.0944688)
+        }
         references = @Venus.usdz@
     )
     {
-        quatf xformOp:orient = (1, 0, 0, 0)
+        quatf xformOp:orient = (-0.02355973, 0, 0, 0.9997224)
         float3 xformOp:scale = (0.9, 0.9, 0.9)
-        float3 xformOp:translate = (-0.35, 0, 0)
+        float3 xformOp:translate = (0.75, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "Collider"
@@ -89,12 +95,15 @@ def Xform "Planets"
 
     def "Jupiter" (
         active = true
+        customData = {
+            float3 rotationEulerHint = (0, 0, -0.054105207)
+        }
         references = @Jupiter.usdz@
     )
     {
-        quatf xformOp:orient = (1, 0, 0, 0)
+        quatf xformOp:orient = (0.9996341, 0, 0, -0.027049305)
         float3 xformOp:scale = (2, 2, 2)
-        float3 xformOp:translate = (0.8, 0, 0)
+        float3 xformOp:translate = (1.9, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "Collider"
@@ -129,7 +138,7 @@ def Xform "Planets"
     {
         quatf xformOp:orient = (1, 0, 0, 0)
         float3 xformOp:scale = (4, 4, 4)
-        float3 xformOp:translate = (-1.2, 0, 0)
+        float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "Collider"
@@ -165,7 +174,7 @@ def Xform "Planets"
         reorder nameChildren = ["geom", "Collider", "InputTarget"]
         quatf xformOp:orient = (1, 0, 0, 0)
         float3 xformOp:scale = (0.333, 0.333, 0.333)
-        float3 xformOp:translate = (-0.7, 0, 0)
+        float3 xformOp:translate = (0.5, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "Collider"
@@ -211,12 +220,16 @@ def Xform "Planets"
 
     def "Earth" (
         active = true
+        customData = {
+            float3 rotationEulerHint = (0, 0, -0.408407)
+        }
         references = @Earth.usdz@
     )
     {
-        quatf xformOp:orient = (1, 0, 0, 0)
+        reorder nameChildren = ["geom", "Collider", "InputTarget"]
+        quatf xformOp:orient = (0.97922283, 0, 0, -0.20278728)
         float3 xformOp:scale = (1, 1, 1)
-        float3 xformOp:translate = (0, 0, 0)
+        float3 xformOp:translate = (1.2, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "Collider"
@@ -266,11 +279,15 @@ def Xform "Planets"
 
     def "Saturn" (
         active = true
+        customData = {
+            float3 rotationEulerHint = (0, 0, -0.4660029)
+        }
         references = @Saturn.usdz@
     )
     {
+        quatf xformOp:orient = (0.97297776, 0, 0, -0.2308989)
         float3 xformOp:scale = (2, 2, 2)
-        float3 xformOp:translate = (1.75, 0, 0)
+        float3 xformOp:translate = (2.7, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "Collider"
@@ -315,6 +332,575 @@ def Xform "Planets"
                     }
                 }
             }
+        }
+    }
+
+    def "Moon" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, 0, -0.08726646)
+        }
+        references = @Moon.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.99904823, 0, 0, -0.043619387)
+        float3 xformOp:scale = (0.25, 0.25, 0.25)
+        float3 xformOp:translate = (1, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def RealityKitTimeline "Moon_Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2"]
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 600
+                uniform token info:id = "95EFE877-7B6E-4C63-B227-465119D7A574"
+                token orbitDirection = "counterClockwise"
+                rel pivotEntity = </Planets/Earth>
+                float revolutions = 25
+                double startTime = 0
+                rel target = </Planets/Moon>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 600
+                uniform token info:id = "BE7C5F1D-9A3D-4B39-8F10-E84578AD72D7"
+                float revolutions = 25
+                token spinDirection = "counterclockwise"
+                double startTime = 0
+                rel target = </Planets/Moon>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+    }
+
+    def RealityKitComponent "RCP_BehaviorsContainer"
+    {
+        rel behaviors = [
+            </Planets/OnAddedToScene>,
+            </Planets/OnAddedToScene2>,
+            </Planets/OnAddedToScene3>,
+            </Planets/OnAddedToScene4>,
+            </Planets/OnAddedToScene5>,
+            </Planets/OnAddedToScene6>,
+            </Planets/OnAddedToScene7>,
+            </Planets/OnAddedToScene8>,
+        ]
+        uniform token info:id = "RCP.BehaviorsContainer"
+    }
+
+    def Preliminary_Behavior "OnAddedToScene"
+    {
+        rel actions = </Planets/OnAddedToScene/Action>
+        uniform bool exclusive
+        rel triggers = </Planets/OnAddedToScene/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Planets>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Planets>
+            rel animationLibraryKey = </Planets/Sun_Timeline>
+            rel animationLibraryKeyOverrideKey = </Planets/OnAddedToScene/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def RealityKitTimeline "Mars_Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2"]
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 600
+                uniform token info:id = "164C038E-061B-4A5E-AA52-4B501717E089"
+                token orbitDirection = "counterClockwise"
+                rel pivotEntity = </Planets/Sun>
+                float revolutions = 10
+                double startTime = 0
+                rel target = </Planets/Mars>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 600
+                uniform token info:id = "6D9856A6-F731-4260-A6B3-09747910376F"
+                float revolutions = 25
+                token spinDirection = "counterclockwise"
+                double startTime = 0
+                rel target = </Planets/Mars>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+    }
+
+    def Preliminary_Behavior "OnAddedToScene2"
+    {
+        rel actions = </Planets/OnAddedToScene2/Action>
+        uniform bool exclusive
+        rel triggers = </Planets/OnAddedToScene2/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Planets>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Planets>
+            rel animationLibraryKey = </Planets/Mercury_Timeline>
+            rel animationLibraryKeyOverrideKey = </Planets/OnAddedToScene2/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def RealityKitTimeline "Earth_Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2", "Track3"]
+        float2 ui:nodegraph:node:pos = (20, 20)
+        int ui:nodegraph:node:stackingOrder = 1
+
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 600
+                uniform token info:id = "164C038E-061B-4A5E-AA52-4B501717E089"
+                token orbitDirection = "counterClockwise"
+                rel pivotEntity = </Planets/Sun>
+                float revolutions = 12
+                double startTime = 0
+                rel target = </Planets/Earth>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 600
+                uniform token info:id = "6D9856A6-F731-4260-A6B3-09747910376F"
+                float revolutions = 25
+                token spinDirection = "counterclockwise"
+                double startTime = 0
+                rel target = </Planets/Earth>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+    }
+
+    def Preliminary_Behavior "OnAddedToScene3"
+    {
+        rel actions = </Planets/OnAddedToScene3/Action>
+        uniform bool exclusive
+        rel triggers = </Planets/OnAddedToScene3/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Planets>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Planets>
+            rel animationLibraryKey = </Planets/Venus_Timeline>
+            rel animationLibraryKeyOverrideKey = </Planets/OnAddedToScene3/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def RealityKitTimeline "Venus_Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2"]
+        float2 ui:nodegraph:node:pos = (40, 40)
+        int ui:nodegraph:node:stackingOrder = 2
+
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 600
+                uniform token info:id = "164C038E-061B-4A5E-AA52-4B501717E089"
+                token orbitDirection = "counterClockwise"
+                rel pivotEntity = </Planets/Sun>
+                float revolutions = 13
+                double startTime = 0
+                rel target = </Planets/Venus>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 600
+                uniform token info:id = "6D9856A6-F731-4260-A6B3-09747910376F"
+                float revolutions = 25
+                token spinDirection = "clockwise"
+                double startTime = 0
+                rel target = </Planets/Venus>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+    }
+
+    def RealityKitTimeline "Mercury_Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2"]
+        float2 ui:nodegraph:node:pos = (60, 60)
+        int ui:nodegraph:node:stackingOrder = 3
+
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 600
+                uniform token info:id = "164C038E-061B-4A5E-AA52-4B501717E089"
+                token orbitDirection = "counterClockwise"
+                rel pivotEntity = </Planets/Sun>
+                float revolutions = 20
+                double startTime = 0
+                rel target = </Planets/Mercury>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 600
+                uniform token info:id = "6D9856A6-F731-4260-A6B3-09747910376F"
+                float revolutions = 25
+                token spinDirection = "counterclockwise"
+                double startTime = 0
+                rel target = </Planets/Mercury>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+    }
+
+    def Preliminary_Behavior "OnAddedToScene4"
+    {
+        rel actions = </Planets/OnAddedToScene4/Action>
+        uniform bool exclusive
+        rel triggers = </Planets/OnAddedToScene4/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Planets>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Planets>
+            rel animationLibraryKey = </Planets/Earth_Timeline>
+            rel animationLibraryKeyOverrideKey = </Planets/OnAddedToScene4/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def Preliminary_Behavior "OnAddedToScene5"
+    {
+        rel actions = </Planets/OnAddedToScene5/Action>
+        uniform bool exclusive
+        rel triggers = </Planets/OnAddedToScene5/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Planets>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Planets>
+            rel animationLibraryKey = </Planets/Moon_Timeline>
+            rel animationLibraryKeyOverrideKey = </Planets/OnAddedToScene5/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def RealityKitTimeline "Jupiter_Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2"]
+        float2 ui:nodegraph:node:pos = (20, 20)
+        int ui:nodegraph:node:stackingOrder = 1
+
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 600
+                uniform token info:id = "164C038E-061B-4A5E-AA52-4B501717E089"
+                token orbitDirection = "counterClockwise"
+                rel pivotEntity = </Planets/Sun>
+                float revolutions = 5
+                double startTime = 0
+                rel target = </Planets/Jupiter>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 600
+                uniform token info:id = "6D9856A6-F731-4260-A6B3-09747910376F"
+                float revolutions = 25
+                token spinDirection = "counterclockwise"
+                double startTime = 0
+                rel target = </Planets/Jupiter>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+    }
+
+    def RealityKitTimeline "Saturn_Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2", "Track3", "Track4"]
+        float2 ui:nodegraph:node:pos = (40, 40)
+        int ui:nodegraph:node:stackingOrder = 2
+
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 600
+                uniform token info:id = "164C038E-061B-4A5E-AA52-4B501717E089"
+                token orbitDirection = "counterClockwise"
+                rel pivotEntity = </Planets/Sun>
+                float revolutions = 4
+                double startTime = 0
+                rel target = </Planets/Saturn>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 600
+                uniform token info:id = "6D9856A6-F731-4260-A6B3-09747910376F"
+                float revolutions = 25
+                token spinDirection = "counterclockwise"
+                double startTime = 0
+                rel target = </Planets/Saturn>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track3"
+        {
+            reorder nameChildren = ["Transform_By", "Transform_By2"]
+            def RealityKitAction "Transform_By"
+            {
+                string actionKind = "moveBy"
+                int blendLayer = 300
+                double duration = 1
+                uniform token info:id = "59CE23D8-1F73-4802-A557-8EDA7C82EAC8"
+                quatf rotation = (0.9659258, 0, 0, -0.25881904)
+                double startTime = 600
+                rel target = </Planets/Saturn>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track4"
+        {
+            def RealityKitAction "Transform_By2"
+            {
+                string actionKind = "moveBy"
+                int blendLayer = 300
+                double duration = 1
+                uniform token info:id = "02FD6075-3B9B-4BA8-ADF0-616660F40B94"
+                quatf rotation = (0.9659258, 0, 0, -0.25881904)
+                double startTime = 600
+                rel target = </Planets/Saturn>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+    }
+
+    def Preliminary_Behavior "OnAddedToScene6"
+    {
+        rel actions = </Planets/OnAddedToScene6/Action>
+        uniform bool exclusive
+        rel triggers = </Planets/OnAddedToScene6/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Planets>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Planets>
+            rel animationLibraryKey = </Planets/Mars_Timeline>
+            rel animationLibraryKeyOverrideKey = </Planets/OnAddedToScene6/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def Preliminary_Behavior "OnAddedToScene7"
+    {
+        rel actions = </Planets/OnAddedToScene7/Action>
+        uniform bool exclusive
+        rel triggers = </Planets/OnAddedToScene7/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Planets>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Planets>
+            rel animationLibraryKey = </Planets/Jupiter_Timeline>
+            rel animationLibraryKeyOverrideKey = </Planets/OnAddedToScene7/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def RealityKitTimeline "Sun_Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2"]
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 600
+                uniform token info:id = "B4B69A95-B618-457B-9952-313976CC3028"
+                float revolutions = 25
+                token spinDirection = "counterclockwise"
+                double startTime = 0
+                rel target = </Planets/Sun>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+    }
+
+    def Preliminary_Behavior "OnAddedToScene8"
+    {
+        rel actions = </Planets/OnAddedToScene8/Action>
+        uniform bool exclusive
+        rel triggers = </Planets/OnAddedToScene8/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Planets>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Planets>
+            rel animationLibraryKey = </Planets/Saturn_Timeline>
+            rel animationLibraryKeyOverrideKey = </Planets/OnAddedToScene8/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
         }
     }
 }

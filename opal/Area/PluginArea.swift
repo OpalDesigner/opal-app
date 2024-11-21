@@ -10,7 +10,7 @@ import SwiftUI
 struct PluginArea: View {
     var body: some View {
         NavigationStack {
-            Text("Pick your tool to import from")
+            Text("Choose your tool to import from")
                 .font(.largeTitle)
                 .padding(20)
                 .glassBackgroundEffect()
@@ -60,7 +60,7 @@ struct PluginArea: View {
                         .frame(width: 150, height: 150)
                     Text("Gaussian Splat")
                         .font(.system(size: 20, weight: .bold))
-                    Text("Import your Gaussian Splats (.ply) files")
+                    Text("Import your Gaussian Splats (.ply) files to preview realistic 3D scenes")
                         .font(.system(size: 14))
                     Button{
                         

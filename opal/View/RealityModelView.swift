@@ -20,7 +20,6 @@ struct RealityModelView: View {
 
     // State variables
     @State private var model = Entity()
-    @State private var animationController: PlanetAnimationController?
 
     // Add state for tracking the model properties
     @State private var modelCenter: SIMD3<Float> = .zero
@@ -29,7 +28,6 @@ struct RealityModelView: View {
     @State private var currentScale: Float = 1.0
     @State private var modelAnimation: Float = 0.0
     @State private var isPlaying = false
-    @State private var isAnimating = false
 
     var body: some View {
         Spacer()
@@ -102,11 +100,6 @@ struct RealityModelView: View {
                 let anim = model.availableAnimations[0]
                 model.playAnimation(anim.repeat())
             }
-            
-            //"Planets" has custom animation (once baked into Reality Composer, this script may not be needed)
-            if modelName == "Planets" {
-                animationController = PlanetAnimationController(model: rootEntity)
-            }
         }
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
         .animation(.easeInOut(duration: 1), value: modelRotation)
@@ -154,18 +147,6 @@ struct RealityModelView: View {
                     }
                 } label: {
                     Label(isPlaying ? "Pause" : "Play", systemImage: isPlaying ? "pause.circle" : "play.circle")
-                }
-            }
-            ToolbarItem(placement: .bottomOrnament) {
-                if modelName == "Planets" {
-                    Button {
-                        isAnimating.toggle()
-                        if isAnimating {
-                            animationController?.startAnimation()
-                        }
-                    } label: {
-                        Label("", systemImage: "sparkles")
-                    }
                 }
             }
         }

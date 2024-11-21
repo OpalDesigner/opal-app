@@ -8,10 +8,14 @@
 import SwiftUI
 import RealityKit
 
-//This code creates the UI that lets you navigate through the Immersive 3D set
+class NavigationData: ObservableObject {
+    @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
+    @Published var cameraRotation: Float = 0
+}
+
 struct NavigationControl: View {
     // Access shared data
-    @ObservedObject var modelControlData: ModelControlData
+    @ObservedObject var navigationData: NavigationData
     
     // Environment Variables
     @Environment(\.openWindow) private var openWindow
@@ -27,8 +31,8 @@ struct NavigationControl: View {
         
         // Rotate the base vector by the camera's rotation
         let baseVector = SIMD3<Float>(0, 0, 1)
-        let c = cos(modelControlData.cameraRotation)
-        let s = sin(modelControlData.cameraRotation)
+        let c = cos(navigationData.cameraRotation)
+        let s = sin(navigationData.cameraRotation)
         let rotatedVector = SIMD3<Float>(
             baseVector.x * c - baseVector.z * s,
             baseVector.y,
@@ -36,12 +40,12 @@ struct NavigationControl: View {
         )
         
         for _ in 0..<steps {
-            modelControlData.cameraPosition += rotatedVector * stepSize
+            navigationData.cameraPosition += rotatedVector * stepSize
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Moving Forward")
-        print("Camera Position: \(round(modelControlData.cameraPosition))")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
+        print("Camera Position: \(round(navigationData.cameraPosition))")
+        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
     }
 
     func moveBackward(_ meters: Float) async {
@@ -50,8 +54,8 @@ struct NavigationControl: View {
         
         // Rotate the base vector by the camera's rotation
         let baseVector = SIMD3<Float>(0, 0, 1)
-        let c = cos(modelControlData.cameraRotation)
-        let s = sin(modelControlData.cameraRotation)
+        let c = cos(navigationData.cameraRotation)
+        let s = sin(navigationData.cameraRotation)
         let rotatedVector = SIMD3<Float>(
              baseVector.x * c - baseVector.z * s,
              baseVector.y,
@@ -60,12 +64,12 @@ struct NavigationControl: View {
         
         for _ in 0..<steps {
             //modelControlData.cameraPosition -= cameraVector * stepSize
-            modelControlData.cameraPosition -= rotatedVector * stepSize
+            navigationData.cameraPosition -= rotatedVector * stepSize
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Moving Backward")
-        print("Camera Position: \(round(modelControlData.cameraPosition))")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
+        print("Camera Position: \(round(navigationData.cameraPosition))")
+        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
     }
     
     func moveLeft(_ meters: Float) async {
@@ -74,8 +78,8 @@ struct NavigationControl: View {
         let baseVector = SIMD3<Float>(1, 0, 0)
         
         // Rotate the base vector by the camera's rotation
-        let c = cos(modelControlData.cameraRotation)
-        let s = sin(modelControlData.cameraRotation)
+        let c = cos(navigationData.cameraRotation)
+        let s = sin(navigationData.cameraRotation)
         let rotatedVector = SIMD3<Float>(
             baseVector.x * c - baseVector.z * s,
             baseVector.y,
@@ -83,12 +87,12 @@ struct NavigationControl: View {
         )
         
         for _ in 0..<steps {
-            modelControlData.cameraPosition += rotatedVector * stepSize
+            navigationData.cameraPosition += rotatedVector * stepSize
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Moving Left")
-        print("Camera Position: \(round(modelControlData.cameraPosition))")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
+        print("Camera Position: \(round(navigationData.cameraPosition))")
+        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
     }
 
     func moveRight(_ meters: Float) async {
@@ -97,8 +101,8 @@ struct NavigationControl: View {
         let baseVector = SIMD3<Float>(1, 0, 0)
         
         // Rotate the base vector by the camera's rotation
-        let c = cos(modelControlData.cameraRotation)
-        let s = sin(modelControlData.cameraRotation)
+        let c = cos(navigationData.cameraRotation)
+        let s = sin(navigationData.cameraRotation)
         let rotatedVector = SIMD3<Float>(
             baseVector.x * c - baseVector.z * s,
             baseVector.y,
@@ -106,18 +110,18 @@ struct NavigationControl: View {
         )
         
         for _ in 0..<steps {
-            modelControlData.cameraPosition -= rotatedVector * stepSize
+            navigationData.cameraPosition -= rotatedVector * stepSize
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Moving Right")
-        print("Camera Position: \(round(modelControlData.cameraPosition))")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
+        print("Camera Position: \(round(navigationData.cameraPosition))")
+        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
     }
     
     func turnLeft(degrees: Float) async {
         let stepSize: Float = degrees * .pi / 180 // 45 degrees at a time
         let steps = Int(degrees / 45)
-        var newRotation = modelControlData.cameraRotation - stepSize
+        var newRotation = navigationData.cameraRotation - stepSize
         
         // Normalize between 0 and 2π
         newRotation = newRotation.truncatingRemainder(dividingBy: 2 * .pi)
@@ -125,17 +129,17 @@ struct NavigationControl: View {
             newRotation += 2 * .pi
         }
         for _ in 0..<steps {
-            modelControlData.cameraRotation = newRotation
+            navigationData.cameraRotation = newRotation
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         print("Turning Left")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
+        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
     }
     
     func turnRight(degrees: Float) async {
         let stepSize: Float = degrees * .pi / 180 // 45 degrees at a time
         let steps = Int(degrees / 45)
-        var newRotation = modelControlData.cameraRotation + stepSize
+        var newRotation = navigationData.cameraRotation + stepSize
         
         // Normalize between 0 and 2π
         newRotation = newRotation.truncatingRemainder(dividingBy: 2 * .pi)
@@ -144,12 +148,12 @@ struct NavigationControl: View {
         }
         
         for _ in 0..<steps {
-            modelControlData.cameraRotation = newRotation
+            navigationData.cameraRotation = newRotation
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
         
         print("Turn Right")
-        print("Camera Rotation: \(round(modelControlData.cameraRotation * 180 / .pi))°")
+        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
     }
     
     // Helper function to move up a specific distance
@@ -157,7 +161,7 @@ struct NavigationControl: View {
         let stepSize: Float = 0.05 // Move in smaller increments for smoothness
         let steps = Int(meters / stepSize)
         for _ in 0..<steps {
-            modelControlData.cameraPosition.y -= stepSize
+            navigationData.cameraPosition.y -= stepSize
             try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
         }
     }
@@ -167,7 +171,7 @@ struct NavigationControl: View {
         let stepSize: Float = 0.05 // Move in smaller increments for smoothness
         let steps = Int(meters / stepSize)
         for _ in 0..<steps {
-            modelControlData.cameraPosition.y += stepSize
+            navigationData.cameraPosition.y += stepSize
             try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
         }
     }
@@ -239,7 +243,7 @@ struct NavigationControl: View {
                 .disabled(isAutomating)
                 
                 Button {
-                    modelControlData.cameraPosition = SIMD3<Float>(0, 0, 0)
+                    navigationData.cameraPosition = SIMD3<Float>(0, 0, 0)
                 } label: {
                     Label("", systemImage: "location")
                 }
@@ -346,11 +350,11 @@ struct NavigationControl: View {
             }
         }
         .onAppear{
-            //Dismiss the Main Menu when we enter Immersive View
             dismissWindow(id: "Menu")
+            navigationData.cameraPosition = SIMD3<Float>(0, 0, 0)
+            navigationData.cameraRotation = 0
         }
         .onDisappear{
-            //Dismiss current Immersive Space and Open the Main Menu
             openWindow(id: "Menu")
             Task {
                 await dismissImmersiveSpace()
@@ -358,11 +362,10 @@ struct NavigationControl: View {
         }
         .padding()
         .glassBackgroundEffect()
-        .shadow(radius: 5) // More pronounced shadow
     }
 }
 
 #Preview {
-    NavigationControl(modelControlData: ModelControlData())
+    NavigationControl(navigationData: NavigationData())
 }
 

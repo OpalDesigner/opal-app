@@ -5,10 +5,10 @@
 //  Created by Vik Parth on 10/23/24.
 //
 
+import SwiftUI
 import RealityKit
 import RealityKitContent
 import ARKit
-import SwiftUI
 
 //This code is not yet complete. This is to allow you to place objects on real world surfaces using ARkit and SceneReconstruction (detect planes, surfaces)
 

@@ -9,15 +9,9 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
-//This code creates the full Immersive view with a moveable camera
-class ModelControlData: ObservableObject {
-    @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
-    @Published var cameraRotation: Float = 0
-}
-
 struct ImmersiveModelView: View {
     // Access shared data in NavigationControlUI.swift
-    @ObservedObject var modelControlData: ModelControlData
+    @ObservedObject var navigationData: NavigationData
     
     // Model properties
     let id = UUID()
@@ -77,8 +71,8 @@ struct ImmersiveModelView: View {
     }
     
     private func updateCameraTransform(_ camera: Entity) {
-        let c = cos(modelControlData.cameraRotation)
-        let s = sin(modelControlData.cameraRotation)
+        let c = cos(navigationData.cameraRotation)
+        let s = sin(navigationData.cameraRotation)
         
         // Set camera to only rotate around it's y-axis
         let rotationMatrix = float4x4(columns: (
@@ -89,7 +83,7 @@ struct ImmersiveModelView: View {
         ))
         
         // Set camera translation matrix
-        let pos = modelControlData.cameraPosition
+        let pos = navigationData.cameraPosition
         let translationMatrix = float4x4(columns: (
             SIMD4<Float>(1, 0, 0, 0),
             SIMD4<Float>(0, 1, 0, 0),
@@ -109,7 +103,7 @@ struct ImmersiveModelView: View {
 //Test Sample Preview on Xcode Preview Window
 #Preview {
     ImmersiveModelView(
-        modelControlData: ModelControlData(),
+        navigationData: NavigationData(),
         modelName: "Planets",
         initialPosition: SIMD3<Float>(0, 0, 0),
         initialScale: 1

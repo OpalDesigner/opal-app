@@ -67,57 +67,50 @@ struct ModelItemView: View {
 
     var body: some View {
         VStack() {
-            Image(model.imageName)
-                .resizable()
-                .scaledToFill()
-                .frame(width: 275, height: 200)
-                .clipped()
-                // Use an overlay to place buttons over the image
-                .overlay(alignment: .top) {
-                    VStack {
-                        HStack {
-                            //Isometric View Button
-                            Button(action: {
-                                isWindowOpen.toggle()
-                                if isWindowOpen {
-                                    openWindow(id: model.windowID)
-                                } else {
-                                    dismissWindow(id: model.windowID)
-                                }
-                            }) {
-                                Label("", systemImage: "cube.fill")
-                            }
-                            .padding()
-
-                            //Immersive View Button
-                            Button(action: {
-                                isImmersiveOpen.toggle()
-                                if(model.immersiveID != ""){
-                                    //When Immersive View is open, also allow for Navigation View
-                                    Task {
-                                        if isImmersiveOpen {
-                                            await openImmersiveSpace(id: model.immersiveID)
-                                            openWindow(id: "NavigationControl")
-                                        } else {
-                                            await dismissImmersiveSpace()
-                                            dismissWindow(id: "NavigationControl")
-                                        }
-                                    }
-                                }
-                            }) {
-                                Label("1:1", systemImage: "")
-                            }
-                            .padding()
+            Button {
+                if model.immersiveID != "" {
+                    isImmersiveOpen.toggle()
+                    Task {
+                        if isImmersiveOpen {
+                            await openImmersiveSpace(id: model.immersiveID)
+                            openWindow(id: "NavigationControl")
+                        } else {
+                            await dismissImmersiveSpace()
+                            dismissWindow(id: "NavigationControl")
                         }
-                        .padding(.top, 130) // Adjust spacing from the top
                     }
                 }
+            } label: {
+                Image(model.imageName)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 275, height: 200)
+                    .clipped()
+                    .hoverEffect(.highlight)
+            }
+        
+            // Use an overlay to place button over the image
+            .overlay(alignment: .bottomTrailing) {
+                Button {
+                    isWindowOpen.toggle()
+                    if isWindowOpen {
+                        openWindow(id: model.windowID)
+                    } else {
+                        dismissWindow(id: model.windowID)
+                    }
+                } label: {
+                    Label("", systemImage: "cube.fill")
+                }
+                .padding()
+            }
         }
         .padding()
+        
         .background(
             RoundedRectangle(cornerRadius: 25)
                 .fill(.thinMaterial)
         )
+         
     }
 }
 
