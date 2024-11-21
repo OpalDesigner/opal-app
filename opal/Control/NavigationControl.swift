@@ -9,7 +9,7 @@ import SwiftUI
 import RealityKit
 
 //This code creates the UI that lets you navigate through the Immersive 3D set
-struct NavigationControlUI: View {
+struct NavigationControl: View {
     // Access shared data
     @ObservedObject var modelControlData: ModelControlData
     
@@ -232,7 +232,7 @@ struct NavigationControlUI: View {
             // Move controls
             HStack {
                 Button {
-                    dismissWindow(id: "NavigationControlUI")
+                    dismissWindow(id: "NavigationControl")
                 } label: {
                     Label("", systemImage: "house.fill")
                 }
@@ -363,6 +363,6 @@ struct NavigationControlUI: View {
 }
 
 #Preview {
-    NavigationControlUI(modelControlData: ModelControlData())
+    NavigationControl(modelControlData: ModelControlData())
 }
 

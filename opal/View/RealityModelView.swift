@@ -20,6 +20,7 @@ struct RealityModelView: View {
 
     // State variables
     @State private var model = Entity()
+    @State private var animationController: PlanetAnimationController?
 
     // Add state for tracking the model properties
     @State private var modelCenter: SIMD3<Float> = .zero
@@ -28,6 +29,7 @@ struct RealityModelView: View {
     @State private var currentScale: Float = 1.0
     @State private var modelAnimation: Float = 0.0
     @State private var isPlaying = false
+    @State private var isAnimating = false
 
     var body: some View {
         Spacer()
@@ -50,16 +52,45 @@ struct RealityModelView: View {
             model.transform.scale = SIMD3<Float>(repeating: initialScale)
             currentScale = initialScale
             
+            print("\nFinal Model Position and Scale:")
+            print("Model Positon:       \(model.transform.translation)")
+            print("Model Scale:         \(model.transform.scale)")
+            
             // Obtain model geometric center and pivot point World Coordinates
             let bounds = model.visualBounds(relativeTo: rootEntity)
             let localCenter = (bounds.min + bounds.max) * 0.5
             modelCenter = model.convert(position: localCenter, to: nil)
             modelPivot = model.convert(position: .zero, to: nil)
+       
+            print("\nBefore translating geometric center to pivot point:")
+            print("Model Center:        \(modelCenter)")
+            print("Model Pivot:         \(modelPivot)")
+            
+            /*
+            #if DEBUG
+                let centerSphere = ModelEntity(mesh: .generateSphere(radius: 0.02))
+                centerSphere.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
+                centerSphere.position = modelPivot
+                content.add(centerSphere)
+            #endif
+             */
             
             // Translate geometric center to pivot point using transform
-            var transform = model.transform
-            transform.translation = modelPivot - modelCenter
-            model.transform = transform
+            if(modelCenter != modelPivot){
+                var transform = model.transform
+                transform.translation = modelPivot - modelCenter
+                model.transform = transform
+                
+                // Recalculate both center and pivot after transform
+                let newBounds = model.visualBounds(relativeTo: rootEntity)
+                let newLocalCenter = (newBounds.min + newBounds.max) * 0.5
+                modelCenter = model.convert(position: newLocalCenter, to: nil)
+                modelPivot = model.convert(position: .zero, to: nil)
+            }
+            
+            print("\nAfter translating geometric center to pivot point:")
+            print("Model Center:        \(modelCenter)")
+            print("Model Pivot:         \(modelPivot)")
             
             // Add Physics to the 3D model
             model.components.set(InputTargetComponent(allowedInputTypes: .indirect))
@@ -72,21 +103,10 @@ struct RealityModelView: View {
                 model.playAnimation(anim.repeat())
             }
             
-            // Debug statements
-            /*
-            #if DEBUG
-              let centerSphere = ModelEntity(mesh: .generateSphere(radius: 0.02))
-              centerSphere.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
-              centerSphere.position = modelPivot
-              content.add(centerSphere)
-            #endif
-             
-             */
-            print("\nAfter translating geometric center to pivot point:")
-            print("Model Positon:       \(model.transform.translation)")
-            print("Model Scale:         \(model.transform.scale)")
-            print("Model Center:        \(modelCenter)")
-            print("Model Pivot:         \(modelPivot)")
+            //"Planets" has custom animation (once baked into Reality Composer, this script may not be needed)
+            if modelName == "Planets" {
+                animationController = PlanetAnimationController(model: rootEntity)
+            }
         }
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
         .animation(.easeInOut(duration: 1), value: modelRotation)
@@ -134,6 +154,18 @@ struct RealityModelView: View {
                     }
                 } label: {
                     Label(isPlaying ? "Pause" : "Play", systemImage: isPlaying ? "pause.circle" : "play.circle")
+                }
+            }
+            ToolbarItem(placement: .bottomOrnament) {
+                if modelName == "Planets" {
+                    Button {
+                        isAnimating.toggle()
+                        if isAnimating {
+                            animationController?.startAnimation()
+                        }
+                    } label: {
+                        Label("", systemImage: "sparkles")
+                    }
                 }
             }
         }

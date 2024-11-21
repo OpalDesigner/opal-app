@@ -18,18 +18,18 @@ struct ModelInfo: Identifiable {
 // Setup Grid View
 struct ModelArea: View {
     let models = [
-        ModelInfo(imageName: "coffee-shop", windowID: "CoffeeShopRealityView", immersiveID: "CoffeeShopImmersiveView"),
-        ModelInfo(imageName: "house-interior", windowID: "HouseInteriorRealityView", immersiveID: "HouseInteriorImmersiveView"),
-        ModelInfo(imageName: "budapest-hotel", windowID: "BudapestHotelRealityView", immersiveID: "BudapestHotelImmersiveView"),
-        ModelInfo(imageName: "space-corridor", windowID: "SpaceStationRealityView", immersiveID: "SpaceStationImmersiveView"),
-        ModelInfo(imageName: "classroom", windowID: "ClassroomRealityView", immersiveID: "ClassroomImmersiveView"),
-        ModelInfo(imageName: "bedroom", windowID: "BedroomRealityView", immersiveID: "BedroomImmersiveView"),
-        ModelInfo(imageName: "potions-store", windowID: "PotionsStoreRealityView", immersiveID: "PotionsStoreImmersiveView"),
-        ModelInfo(imageName: "convenience-store", windowID: "ConvenienceStoreRealityView", immersiveID: "ConvenienceStoreImmersiveView"),
-        ModelInfo(imageName: "old-hotel", windowID: "OldHotelRealityView", immersiveID: "OldHotelImmersiveView"),
-        ModelInfo(imageName: "mech-drone", windowID: "MechDroneRealityView", immersiveID: ""),
-        ModelInfo(imageName: "buster-drone", windowID: "BusterDroneRealityView", immersiveID: ""),
-        ModelInfo(imageName: "solar-system", windowID: "SolarSystemRealityView", immersiveID: "SolarSystemImmersiveView")
+        ModelInfo(imageName: "coffee-shop",       windowID: "CoffeeShopRealityView",      immersiveID: "CoffeeShopImmersiveView"       ),
+        ModelInfo(imageName: "house-interior",    windowID: "HouseInteriorRealityView",   immersiveID: "HouseInteriorImmersiveView"    ),
+        ModelInfo(imageName: "budapest-hotel",    windowID: "BudapestHotelRealityView",   immersiveID: "BudapestHotelImmersiveView"    ),
+        ModelInfo(imageName: "space-corridor",    windowID: "SpaceStationRealityView",    immersiveID: "SpaceStationImmersiveView"     ),
+        ModelInfo(imageName: "classroom",         windowID: "ClassroomRealityView",       immersiveID: "ClassroomImmersiveView"        ),
+        ModelInfo(imageName: "bedroom",           windowID: "BedroomRealityView",         immersiveID: "BedroomImmersiveView"          ),
+        ModelInfo(imageName: "potions-store",     windowID: "PotionsStoreRealityView",    immersiveID: "PotionsStoreImmersiveView"     ),
+        ModelInfo(imageName: "convenience-store", windowID: "ConvenienceStoreRealityView",immersiveID: "ConvenienceStoreImmersiveView" ),
+        ModelInfo(imageName: "old-hotel",         windowID: "OldHotelRealityView",        immersiveID: "OldHotelImmersiveView"         ),
+        ModelInfo(imageName: "mech-drone",        windowID: "MechDroneRealityView",       immersiveID: ""                              ),
+        ModelInfo(imageName: "buster-drone",      windowID: "BusterDroneRealityView",     immersiveID: ""                              ),
+        ModelInfo(imageName: "solar-system",      windowID: "SolarSystemRealityView",     immersiveID: "SolarSystemImmersiveView"      )
     ]
 
     var body: some View {
@@ -76,7 +76,7 @@ struct ModelItemView: View {
                 .overlay(alignment: .top) {
                     VStack {
                         HStack {
-                            //Window View Button
+                            //Isometric View Button
                             Button(action: {
                                 isWindowOpen.toggle()
                                 if isWindowOpen {
@@ -97,10 +97,10 @@ struct ModelItemView: View {
                                     Task {
                                         if isImmersiveOpen {
                                             await openImmersiveSpace(id: model.immersiveID)
-                                            openWindow(id: "NavigationControlUI")
+                                            openWindow(id: "NavigationControl")
                                         } else {
                                             await dismissImmersiveSpace()
-                                            dismissWindow(id: "NavigationControlUI")
+                                            dismissWindow(id: "NavigationControl")
                                         }
                                     }
                                 }

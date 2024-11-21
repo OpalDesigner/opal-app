@@ -57,6 +57,18 @@ struct ImmersiveModelView: View {
             print("Model Scale:          \(model.transform.scale)")
             print("Camera Position:      \(cameraEntity.position)")
             
+            //Add particle effects
+            /*
+            let entity = Entity()
+            entity.name = "SnowEmitter"
+            entity.position = .init(x: 0, y: 2, z: 0)
+            entity.setScale(.init(x: 20, y: 20, z: 20), relativeTo: nil)
+            content.add(entity)
+            var emitter = ParticleEmitterComponent.Presets.snow
+            emitter.mainEmitter.birthRate = 3000
+            entity.components.set(emitter)
+             */
+            
         } update: { content in
             if let cameraEntity = content.entities.first {
                 updateCameraTransform(cameraEntity)

@@ -37,10 +37,10 @@ struct opalApp: App {
         .defaultSize(CGSize(width: 1000, height: 880))
         
         //NAVIGATION CONTROL VIEW
-        WindowGroup(id: "NavigationControlUI") {
-            NavigationControlUI(modelControlData: modelControlData)
+        WindowGroup(id: "NavigationControl") {
+            NavigationControl(modelControlData: modelControlData)
         }
-         .defaultSize(CGSize(width: 300, height: 350))
+        .defaultSize(CGSize(width: 300, height: 350))
         
         //BUBBLE ANIMATION VIEW
         ImmersiveSpace(id: "BubbleView") {
