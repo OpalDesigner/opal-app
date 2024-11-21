@@ -1,4 +1,16 @@
 {
+  "00BCEBD0-4513-48C5-B668-02AAA4A296FA" : {
+    "objectMetadataList" : [
+      [
+        "00BCEBD0-4513-48C5-B668-02AAA4A296FA",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
   "0A9B4653-B11E-4D6A-850E-C6FCB621626C" : {
     "objectMetadataList" : [
       [
@@ -11,10 +23,73 @@
       }
     ]
   },
-  "00BCEBD0-4513-48C5-B668-02AAA4A296FA" : {
+  "26E67ACE-72C2-4078-9F5F-B09DB85B07FE" : {
     "objectMetadataList" : [
       [
-        "00BCEBD0-4513-48C5-B668-02AAA4A296FA",
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "SkySphere"
+      ],
+      {
+        "disallowsFraming" : true,
+        "isExpanded" : false,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "SkyDome"
+      ],
+      {
+        "disallowsFraming" : true,
+        "isExpanded" : false,
+        "isLocked" : false
+      }
+    ]
+  },
+  "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16" : {
+    "objectMetadataList" : [
+      [
+        "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
+        "Root",
+        "Cube"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
+        "Root",
+        "Cube",
+        "DefaultMaterial"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "395DE38C-B57D-4A99-A4F1-F4270FA9B5E3" : {
+    "objectMetadataList" : [
+      [
+        "395DE38C-B57D-4A99-A4F1-F4270FA9B5E3",
         "Root"
       ],
       {
@@ -47,61 +122,6 @@
       }
     ]
   },
-  "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F" : {
-    "objectMetadataList" : [
-      [
-        "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      }
-    ]
-  },
-  "26E67ACE-72C2-4078-9F5F-B09DB85B07FE" : {
-    "objectMetadataList" : [
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      }
-    ]
-  },
-  "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16" : {
-    "objectMetadataList" : [
-      [
-        "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
-        "Root",
-        "Cube",
-        "DefaultMaterial"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
-        "Root",
-        "Cube"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      }
-    ]
-  },
   "65F6F990-A780-4474-B78B-572E0E4E273D" : {
     "objectMetadataList" : [
       [
@@ -114,22 +134,10 @@
       }
     ]
   },
-  "82E83C91-DF7F-4EA5-B2BF-9718E308D87A" : {
+  "66168B71-AB05-424E-8B6C-D33D6E61B08F" : {
     "objectMetadataList" : [
       [
-        "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      }
-    ]
-  },
-  "395DE38C-B57D-4A99-A4F1-F4270FA9B5E3" : {
-    "objectMetadataList" : [
-      [
-        "395DE38C-B57D-4A99-A4F1-F4270FA9B5E3",
+        "66168B71-AB05-424E-8B6C-D33D6E61B08F",
         "Root"
       ],
       {
@@ -150,10 +158,22 @@
       }
     ]
   },
-  "66168B71-AB05-424E-8B6C-D33D6E61B08F" : {
+  "82E83C91-DF7F-4EA5-B2BF-9718E308D87A" : {
     "objectMetadataList" : [
       [
-        "66168B71-AB05-424E-8B6C-D33D6E61B08F",
+        "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      }
+    ]
+  },
+  "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F" : {
+    "objectMetadataList" : [
+      [
+        "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F",
         "Root"
       ],
       {
@@ -190,8 +210,7 @@
     "objectMetadataList" : [
       [
         "AF09ED6F-1707-48FD-8720-65B998362C09",
-        "Root",
-        "Sphere_Right"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -199,7 +218,8 @@
       },
       [
         "AF09ED6F-1707-48FD-8720-65B998362C09",
-        "Root"
+        "Root",
+        "Sphere_Right"
       ],
       {
         "isExpanded" : true,
@@ -220,7 +240,8 @@
     "objectMetadataList" : [
       [
         "CB766F92-EE55-4A63-9401-E7B8C009764D",
-        "Root"
+        "Root",
+        "GridMaterial"
       ],
       {
         "isExpanded" : true,
@@ -228,8 +249,7 @@
       },
       [
         "CB766F92-EE55-4A63-9401-E7B8C009764D",
-        "Root",
-        "GridMaterial"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -246,9 +266,7 @@
     "objectMetadataList" : [
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root",
-        "GridMaterial",
-        "GridMaterial"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -256,7 +274,9 @@
       },
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root"
+        "Root",
+        "GridMaterial",
+        "GridMaterial"
       ],
       {
         "isExpanded" : true,

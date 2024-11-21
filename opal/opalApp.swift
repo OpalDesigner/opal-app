@@ -36,22 +36,25 @@ struct opalApp: App {
         }
         .defaultSize(CGSize(width: 1000, height: 880))
         
-        //NAVIGATION CONTROL VIEW
+        //NAVIGATION CONTROL
         WindowGroup(id: "NavigationControl") {
             NavigationControl(modelControlData: modelControlData)
         }
+        .defaultWindowPlacement{content, context in
+            return WindowPlacement(.utilityPanel)
+        }
         .defaultSize(CGSize(width: 300, height: 350))
         
-        //BUBBLE ANIMATION VIEW
+        //HAND INTERACTION
+        ImmersiveSpace(id: "HandInteractionView"){
+            HandInteractionView()
+        }
+        
+        //BUBBLE ANIMATION 
         ImmersiveSpace(id: "BubbleView") {
             BubbleView()
         }
         .immersionStyle(selection: .constant(.full), in: .full)
-        
-        //HAND INTERACTION VIEW
-        ImmersiveSpace(id: "HandInteractionView"){
-            HandInteractionView()
-        }
         
         //3D MODEL SETS - WINDOW VIEWS
         Group {
@@ -61,6 +64,7 @@ struct opalApp: App {
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.001)
             }
+            //.volumeWorldAlignment(.gravityAligned)
             .windowStyle(.volumetric)
             .defaultSize(width: 2, height: 1, depth: 1, in: .meters)
             
