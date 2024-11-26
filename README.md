@@ -1,4 +1,4 @@
-# Vision OS app by Opal Designer
+# Opal
 
 About:
 
