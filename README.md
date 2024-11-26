@@ -1,14 +1,15 @@
-# Opal App
-Vision OS app by OpalAI 
+# Opal
+Vision OS app by Opal Designer 
+Website: https://www.opaldesigner.com/
+Contributors: Vik Parth, Kris Layng, Ashley Lee, Rodrigo Vierira
 
-Opal AI is a spatial design visualization tool for set and film production. Scenic Designers, Cinematographers, and Film Directors can use this to easily view, navigate and share fly-throughs of their sets from initial sketch to final design. 
+About:
+Opal Designer enables set designers, cinematographers, and production studios to visualize, design, and navigate 3D spaces.
 
 Workflow:
-- Step 1: Open 3D model in Unreal Engine or Blender
-    - model syncs in real-time with the spatial app (Vision Pro)
-    - spatial designer adds a light object in the Unreal App, and the light is updated synchronously in the spatial app
-- Step 2: Add Waypoints to the 3D model to enable flythroughs
-- Step 3: Flythough. Start a subsequence of actions where you click on specific points of the model and can export a fly through video of a virtual camera going through the model
+- Step 1: Import 3D model from Unreal Engine or Blender. Model syncs with Opal.
+- Step 2: Place Waypoints to the 3D model
+- Step 3: Run Camera Flythough. 
 - Step 4: Export flythrough. Film Director and Producer will use this to better understand the set
 
 ![opal-home](https://github.com/user-attachments/assets/182e77d6-2226-4a08-a9b6-29ec7aaef82d)
