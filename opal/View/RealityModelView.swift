@@ -22,6 +22,7 @@ struct RealityModelView: View {
 
     // State variables
     @State private var model = Entity()
+    @State private var modelChildEntity: Entity?
     @State private var modelCenter: SIMD3<Float> = .zero
     @State private var modelPivot: SIMD3<Float> = .zero
     @State private var modelRotation: Double = 0.0
@@ -40,7 +41,7 @@ struct RealityModelView: View {
             guard let rootEntity = try? await Entity(named: modelName, in: realityKitContentBundle)
             else {fatalError("Unable to load scene model: \(modelName)")}
             content.add(rootEntity)
-            
+                        
             print("\n\(modelName) Debug Information:")
             print("Initial Position:     \(initialPosition)")
             print("Initial Scale:        \(initialScale)")
@@ -104,18 +105,24 @@ struct RealityModelView: View {
                 model.playAnimation(anim.repeat())
             }
             
+            // Find and store model's child entity specifically
+            if let modelChild = model.findEntity(named: modelName) {
+                modelChildEntity = modelChild
+            }
+            
             // Check if Model has a virtual camera
             hasCameraEntity = model.findEntity(named: "Camera") != nil
+            
         }
         .onReceive(notificationPublisher) { output in
-            guard let entity = output.userInfo?["RealityKit.NotificationTrigger.SourceEntity"] as? Entity,
-                  let notificationName = output.userInfo?["RealityKit.NotificationTrigger.Identifier"] as? String
+            guard let notificationName = output.userInfo?["RealityKit.NotificationTrigger.Identifier"] as? String
             else {return}
             
             switch notificationName {
                 case "cameraFlythroughComplete":
                     print("\n\(modelName) Camera Animation Finished")
                     isAnimating.toggle()
+                    modelChildEntity?.components.set(OpacityComponent(opacity: 1.0))
                 default:
                     return
             }
@@ -185,6 +192,9 @@ struct RealityModelView: View {
                                 ]
                             )
                             print("\n\(modelName) Camera Animation Started")
+                            
+                            // Adjust opacity of scene to see the Camera better
+                            modelChildEntity?.components.set(OpacityComponent(opacity: 0.65))
                         }
                     } label: {
                         Label("",systemImage: isAnimating ? "video.fill" : "video")

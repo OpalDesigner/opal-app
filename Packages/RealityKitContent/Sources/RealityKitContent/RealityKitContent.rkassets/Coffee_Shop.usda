@@ -21,6 +21,12 @@ def Xform "Root"
     {
         float3 xformOp:scale = (1, 1, 1)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "HierarchicalFade"
+        {
+            uniform token info:id = "RealityKit.HierarchicalFade"
+            float opacity = 1
+        }
     }
 
     def "Camera" (
@@ -35,16 +41,11 @@ def Xform "Root"
         float3 xformOp:scale = (300, 300, 300)
         float3 xformOp:translate = (0, 100, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-        def RealityKitComponent "HierarchicalFade"
-        {
-            uniform token info:id = "RealityKit.HierarchicalFade"
-        }
     }
 
     def RealityKitTimeline "Timeline"
     {
-        reorder nameChildren = ["Track2", "Track"]
+        reorder nameChildren = ["Track2", "Track", "Track3"]
         def RealityKitTrack "Track2"
         {
             reorder nameChildren = ["Move_Forward", "Hide", "Disable_Entity", "Show", "Move_Forward_1", "Spin", "Spin2", "Spin3", "Move_Forward_3", "Move_Higher", "Spin4", "Move_Forward_4", "Spin5", "Move_Forward_5", "Spin6", "Move_Forward_6", "Move_Forward_2"]
