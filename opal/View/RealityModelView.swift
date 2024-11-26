@@ -8,31 +8,35 @@
 import SwiftUI
 import RealityKit
 import RealityKitContent
-import AVFoundation
 
 //This code creates the a small tabletop view of your set
 struct RealityModelView: View {
-    // Model properties
+    // Function parameters
     let id = UUID()
     let modelName: String
     let initialPosition: SIMD3<Float>
     let initialScale: Float
+    
+    // Environment variables
+    @Environment(\.realityKitScene) var scene
 
     // State variables
     @State private var model = Entity()
-
-    // Add state for tracking the model properties
     @State private var modelCenter: SIMD3<Float> = .zero
     @State private var modelPivot: SIMD3<Float> = .zero
     @State private var modelRotation: Double = 0.0
     @State private var currentScale: Float = 1.0
-    @State private var modelAnimation: Float = 0.0
-    @State private var isPlaying = false
+    @State private var isRotating = false
+    @State private var isAnimating = false
+    @State private var hasCameraEntity: Bool = false
+    
+    // Notifications setup
+    private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
 
     var body: some View {
         Spacer()
         RealityView { content in
-            //Load your 3D model
+            // Load 3D model
             guard let rootEntity = try? await Entity(named: modelName, in: realityKitContentBundle)
             else {fatalError("Unable to load scene model: \(modelName)")}
             content.add(rootEntity)
@@ -40,7 +44,6 @@ struct RealityModelView: View {
             print("\n\(modelName) Debug Information:")
             print("Initial Position:     \(initialPosition)")
             print("Initial Scale:        \(initialScale)")
-            print("Root entity children: \(rootEntity.children.map { $0.name })")
             print("Root Position:        \(rootEntity.transform.translation)")
             print("Root Scale:           \(rootEntity.transform.scale)")
             
@@ -50,7 +53,7 @@ struct RealityModelView: View {
             model.transform.scale = SIMD3<Float>(repeating: initialScale)
             currentScale = initialScale
             
-            print("\nFinal Model Position and Scale:")
+            print("\n\(modelName) Final Position and Scale:")
             print("Model Positon:       \(model.transform.translation)")
             print("Model Scale:         \(model.transform.scale)")
             
@@ -60,17 +63,17 @@ struct RealityModelView: View {
             modelCenter = model.convert(position: localCenter, to: nil)
             modelPivot = model.convert(position: .zero, to: nil)
        
-            print("\nBefore translating geometric center to pivot point:")
+            print("\n\(modelName) Before translating geometric center to pivot point:")
             print("Model Center:        \(modelCenter)")
             print("Model Pivot:         \(modelPivot)")
             
             /*
-            #if DEBUG
-                let centerSphere = ModelEntity(mesh: .generateSphere(radius: 0.02))
-                centerSphere.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
-                centerSphere.position = modelPivot
-                content.add(centerSphere)
-            #endif
+            // Debug for placing a sphere at modelPivot location
+            let bubble = model.findEntity(named: "Bubble")!
+            let centerSphere = ModelEntity(mesh: .generateSphere(radius: 0.02))
+            centerSphere.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
+            centerSphere.position = modelPivot
+            content.add(centerSphere)
              */
             
             // Translate geometric center to pivot point using transform
@@ -86,7 +89,7 @@ struct RealityModelView: View {
                 modelPivot = model.convert(position: .zero, to: nil)
             }
             
-            print("\nAfter translating geometric center to pivot point:")
+            print("\n\(modelName) After translating geometric center to pivot point:")
             print("Model Center:        \(modelCenter)")
             print("Model Pivot:         \(modelPivot)")
             
@@ -100,9 +103,25 @@ struct RealityModelView: View {
                 let anim = model.availableAnimations[0]
                 model.playAnimation(anim.repeat())
             }
+            
+            // Check if Model has a virtual camera
+            hasCameraEntity = model.findEntity(named: "Camera") != nil
+        }
+        .onReceive(notificationPublisher) { output in
+            guard let entity = output.userInfo?["RealityKit.NotificationTrigger.SourceEntity"] as? Entity,
+                  let notificationName = output.userInfo?["RealityKit.NotificationTrigger.Identifier"] as? String
+            else {return}
+            
+            switch notificationName {
+                case "cameraFlythroughComplete":
+                    print("\n\(modelName) Camera Animation Finished")
+                    isAnimating.toggle()
+                default:
+                    return
+            }
         }
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
-        .animation(.easeInOut(duration: 1), value: modelRotation)
+            .animation(.easeInOut(duration: 1), value: modelRotation)
         .gesture(
             DragGesture()
                 .onEnded { value in
@@ -120,7 +139,7 @@ struct RealityModelView: View {
                     let clampedScale = max(minScale, min(newScale, maxScale))
                     model.scale = SIMD3<Float>(repeating: clampedScale)
                     
-                    // Print debug information
+                    // Print scale percentage
                     let scalePercentage = Int((clampedScale / initialScale) * 100)
                     print("\(modelName) Scale: \(scalePercentage)%")
                 }
@@ -134,19 +153,44 @@ struct RealityModelView: View {
                 }
         )
         .toolbar {
+            // Toolbar button for Auto-Rotating the model
             ToolbarItem(placement: .bottomOrnament) {
                 Button {
-                    isPlaying.toggle()
-                    if isPlaying {
+                    isRotating.toggle()
+                    if isRotating {
                         Task {
-                            while isPlaying {
+                            while isRotating {
                                 modelRotation += 0.15
                                 try? await Task.sleep(nanoseconds: 16_000_000)
                             }
                         }
                     }
                 } label: {
-                    Label(isPlaying ? "Pause" : "Play", systemImage: isPlaying ? "pause.circle" : "play.circle")
+                    Label("", systemImage: isRotating ? "arrow.clockwise.circle.fill" : "arrow.clockwise.circle")
+                        .foregroundColor(isRotating ? .green : .primary)
+                }
+            }
+            // Toolbar button for Camera Flythrough
+            if(hasCameraEntity){
+                ToolbarItem(placement: .bottomOrnament){
+                    Button {
+                        isAnimating.toggle()
+                        if isAnimating, let currentScene = scene {
+                            NotificationCenter.default.post(
+                                name: NSNotification.Name("RealityKit.NotificationTrigger"),
+                                object: nil,
+                                userInfo: [
+                                    "RealityKit.NotificationTrigger.Scene": currentScene,
+                                    "RealityKit.NotificationTrigger.Identifier": "startCameraFlythrough"
+                                ]
+                            )
+                            print("\n\(modelName) Camera Animation Started")
+                        }
+                    } label: {
+                        Label("",systemImage: isAnimating ? "video.fill" : "video")
+                            .foregroundColor(isAnimating ? .red : .primary)
+                    }
+                    .disabled(isAnimating)
                 }
             }
         }

@@ -1,7 +1,7 @@
 #usda 1.0
 (
     customLayerData = {
-        string creator = "Reality Composer Pro Version 1.0 (409.100.15)"
+        string creator = "Reality Composer Pro Version 2.0 (448.0.16.0.3)"
     }
     defaultPrim = "Root"
     metersPerUnit = 1
@@ -10,422 +10,379 @@
 
 def Xform "Root"
 {
+    reorder nameChildren = ["Coffee_Shop", "Camera", "Timeline", "RCP_BehaviorsContainer", "OnAddedToScene"]
+    float3 xformOp:translate = (0, 0, 0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
     def "Coffee_Shop" (
         active = true
         references = @Coffee_Shop.usdz@
     )
     {
-        quatf xformOp:orient = (1, 0, 0, 0)
         float3 xformOp:scale = (1, 1, 1)
-        float3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "Camera" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, -1.5707963, 0)
+        }
+        references = @Camera.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.70710677, 0, -0.70710677, 0)
+        float3 xformOp:scale = (300, 300, 300)
+        float3 xformOp:translate = (0, 100, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
-        def RealityKitComponent "Collider"
+        def RealityKitComponent "HierarchicalFade"
         {
-            uint group = 1
-            uniform token info:id = "RealityKit.Collider"
-            uint mask = 4294967295
-            token type = "Default"
+            uniform token info:id = "RealityKit.HierarchicalFade"
+        }
+    }
 
-            def RealityKitStruct "Shape"
+    def RealityKitTimeline "Timeline"
+    {
+        reorder nameChildren = ["Track2", "Track"]
+        def RealityKitTrack "Track2"
+        {
+            reorder nameChildren = ["Move_Forward", "Hide", "Disable_Entity", "Show", "Move_Forward_1", "Spin", "Spin2", "Spin3", "Move_Forward_3", "Move_Higher", "Spin4", "Move_Forward_4", "Spin5", "Move_Forward_5", "Spin6", "Move_Forward_6", "Move_Forward_2"]
+            def RealityKitAction "Move_Forward_2"
             {
-                float3 extent = (1082.9385, 299.99985, 563.55945)
-                token shapeType = "Box"
+                string actionKind = "moveTo"
+                int blendLayer = 300
+                double duration = 3
+                uniform token info:id = "59FF0188-CDA2-44DA-8C55-51EB1BBD23DE"
+                float3 position = (-200, 150, 150)
+                quatf rotation = (0.70710677, 0, -0.70710677, 0)
+                float3 scale = (200, 200, 200)
+                double startTime = 7
+                rel target = </Root/Camera>
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
 
-                def RealityKitStruct "pose"
+                def RealityKitStruct "transformMode"
                 {
-                    float3 position = (-138.8953, 149.99986, 3.8313446)
+                    rel referenceEntity = </Root>
+                    token type = "parent"
+                }
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Move_Forward_1"
+            {
+                string actionKind = "moveTo"
+                int blendLayer = 300
+                double duration = 2
+                uniform token info:id = "5A60610D-A340-46AF-BD99-4BD271AD50AA"
+                float3 position = (-500, 150, 150)
+                quatf rotation = (0.70710677, 0, -0.70710677, 0)
+                float3 scale = (200, 200, 200)
+                double startTime = 4
+                rel target = </Root/Camera>
+                float2 ui:nodegraph:node:pos = (40, 40)
+                int ui:nodegraph:node:stackingOrder = 2
+
+                def RealityKitStruct "transformMode"
+                {
+                    rel referenceEntity = </Root>
+                    token type = "parent"
+                }
+
+                def RealityKitStruct "timingFunction"
+                {
+                    token type = "default"
+                }
+            }
+
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 1
+                uniform token info:id = "E130547F-B2D9-47D0-BE02-64D0CF73BA96"
+                float revolutions = 0.25
+                token spinDirection = "counterclockwise"
+                double startTime = 3
+                rel target = </Root/Camera>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Spin2"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 1
+                uniform token info:id = "0935B614-F5CE-4DF1-949A-9A66EB4390B7"
+                float revolutions = 0.25
+                token spinDirection = "counterclockwise"
+                double startTime = 6
+                rel target = </Root/Camera>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Spin3"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 1.0000000000999996
+                uniform token info:id = "B35217EE-6E04-4C91-AB25-AA89EFA45000"
+                float revolutions = 0.25
+                token spinDirection = "counterclockwise"
+                double startTime = 10
+                rel target = </Root/Camera>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Move_Forward_3"
+            {
+                string actionKind = "moveTo"
+                int blendLayer = 300
+                double duration = 2
+                uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
+                float3 position = (-200, 150, -100)
+                quatf rotation = (0.70710677, 0, -0.70710677, 0)
+                float3 scale = (200, 200, 200)
+                double startTime = 11
+                rel target = </Root/Camera>
+
+                def RealityKitStruct "transformMode"
+                {
+                    rel referenceEntity = </Root>
+                    token type = "parent"
+                }
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Move_Higher"
+            {
+                string actionKind = "moveTo"
+                int blendLayer = 300
+                double duration = 2
+                uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
+                float3 position = (-200, 200, -100)
+                quatf rotation = (0.70710677, 0, -0.70710677, 0)
+                float3 scale = (200, 200, 200)
+                double startTime = 13.000000000100002
+                rel target = </Root/Camera>
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+
+                def RealityKitStruct "transformMode"
+                {
+                    rel referenceEntity = </Root>
+                    token type = "parent"
+                }
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Spin4"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 1
+                uniform token info:id = "D11E5BD3-2460-4626-B3C3-354190D87C5F"
+                float revolutions = 0.25
+                double startTime = 15
+                rel target = </Root/Camera>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Move_Forward_4"
+            {
+                string actionKind = "moveTo"
+                int blendLayer = 300
+                double duration = 3
+                uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
+                float3 position = (250, 200, -100)
+                quatf rotation = (0.70710677, 0, -0.70710677, 0)
+                float3 scale = (200, 200, 200)
+                double startTime = 16
+                rel target = </Root/Camera>
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+
+                def RealityKitStruct "transformMode"
+                {
+                    rel referenceEntity = </Root>
+                    token type = "parent"
+                }
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Spin5"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 1
+                uniform token info:id = "A71CA2D9-CE51-4233-A0D8-CAC7A17044FE"
+                float revolutions = 0.25
+                double startTime = 19
+                rel target = </Root/Camera>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Move_Forward_5"
+            {
+                string actionKind = "moveTo"
+                int blendLayer = 300
+                double duration = 3
+                uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
+                float3 position = (250, 200, 150)
+                quatf rotation = (0.70710677, 0, -0.70710677, 0)
+                float3 scale = (200, 200, 200)
+                double startTime = 20
+                rel target = </Root/Camera>
+                float2 ui:nodegraph:node:pos = (40, 40)
+                int ui:nodegraph:node:stackingOrder = 2
+
+                def RealityKitStruct "transformMode"
+                {
+                    rel referenceEntity = </Root>
+                    token type = "parent"
+                }
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Spin6"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 1
+                uniform token info:id = "0AA95321-2ED9-4EF2-8A93-F39CA68358EB"
+                float revolutions = 0.25
+                double startTime = 23.0000000001
+                rel target = </Root/Camera>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Move_Forward_6"
+            {
+                string actionKind = "moveTo"
+                int blendLayer = 300
+                double duration = 2
+                uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
+                float3 position = (0, 200, 150)
+                quatf rotation = (0.70710677, 0, -0.70710677, 0)
+                float3 scale = (200, 200, 200)
+                double startTime = 24.000000000199996
+                rel target = </Root/Camera>
+                float2 ui:nodegraph:node:pos = (60, 60)
+                int ui:nodegraph:node:stackingOrder = 3
+
+                def RealityKitStruct "transformMode"
+                {
+                    rel referenceEntity = </Root>
+                    token type = "parent"
+                }
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+
+            def RealityKitAction "Move_Forward"
+            {
+                string actionKind = "moveTo"
+                int blendLayer = 300
+                double duration = 3
+                uniform token info:id = "5A60610D-A340-46AF-BD99-4BD271AD50AA"
+                float3 position = (-500, 150, 0)
+                quatf rotation = (0.70710677, 0, -0.70710677, 0)
+                float3 scale = (200, 200, 200)
+                double startTime = 0
+                rel target = </Root/Camera>
+
+                def RealityKitStruct "transformMode"
+                {
+                    rel referenceEntity = </Root>
+                    token type = "parent"
+                }
+
+                def RealityKitStruct "timingFunction"
+                {
+                    token type = "default"
                 }
             }
         }
 
-        def RealityKitComponent "InputTarget"
+        def RealityKitTrack "Track"
         {
-            uniform token info:id = "RealityKit.InputTarget"
-        }
-
-        def RealityKitComponent "VFXEmitter"
-        {
-            uniform token info:id = "RealityKit.VFXEmitter"
-
-            def RealityKitStruct "currentState"
+            reorder nameChildren = ["Notification", "Disable_Entity"]
+            def RealityKitAction "Notification"
             {
-                token birthDirection = "Constant"
-                token birthLocation = "Volume"
-                float3 emissionDirection = (0, 1, 0)
-                double emissionDuration = 0.21
-                double emissionDurationVariation = 0
-                token emitterShape = "Box"
-                double idleDuration = 0
-                double idleDurationVariation = 0
-                bool isLocal = 0
-                bool isSpawningEnabled = 1
-                bool loops = 1
-                float particleSpeed = -5
-                float particleSpeedVariation = 5
-                float3 shapeSize = (0.1, 1, 0.1)
-                bool spawnInheritParentColor = 0
-                token spawnOccasion = "OnBirth"
-                float spawnSpreadFactor = 0.2
-                float spawnSpreadFactorVariation = 0
-                float spawnVelocityFactor = 0.4
-                double warmupDuration = 0
-
-                def RealityKitStruct "mainEmitter"
-                {
-                    float3 acceleration = (0, 0, 0)
-                    float3 billboardAxis = (0, -1, 0)
-                    token billboardMode = "Billboard"
-                    float birthRate = 3000
-                    float birthRateVariation = 1000
-                    token blendMode = "Additive"
-                    float colorEvolutionPower = 1
-                    float dampingFactor = 0
-                    float4 endColorA = (0.0013309671, 0.03458923, 1, 1)
-                    float4 endColorB = (0.11386989, 0.0064959256, 0.10626237, 1)
-                    bool isLightingEnabled = 0
-                    float noiseAnimationSpeed = 0
-                    float noiseScale = 1
-                    float noiseStrength = 4
-                    token opacityOverLife = "Constant"
-                    float particleAngle = 0
-                    float particleAngleVariation = 0
-                    float particleAngularVelocity = 0
-                    float particleAngularVelocityVariation = 0
-                    asset particleImage = @ParticleEmitterPresetTextures/rain.png@
-                    double particleLifeSpan = 0.04
-                    double particleLifeSpanVariation = 0.002
-                    float particleMass = 1
-                    float particleMassVariation = 0
-                    float particleSize = 0.001
-                    float particleSizeVariation = 0.0005
-                    float3 radialGravityCenter = (1, 1, 0)
-                    float radialGravityStrength = 0
-                    float sizeMultiplierAtEndOfLifespan = 1
-                    float sizeMultiplierAtEndOfLifespanPower = 1
-                    token sortOrder = "IncreasingDepth"
-                    float spreadingAngle = 0.02
-                    float4 startColorA = (1, 1, 1, 0.19)
-                    float4 startColorB = (1, 1, 1, 0.14)
-                    float stretchFactor = 3
-                    bool useEndColor = 0
-                    bool useEndColorRange = 0
-                    bool useStartColorRange = 1
-                    float3 vortexDirection = (0, 1, 0)
-                    float vortexStrength = 0
-                }
-
-                def RealityKitStruct "spawnedEmitter"
-                {
-                    float3 acceleration = (0, -3, 0)
-                    token billboardMode = "Billboard"
-                    float birthRate = 300
-                    float birthRateVariation = 0
-                    token blendMode = "Additive"
-                    float colorEvolutionPower = 1
-                    float dampingFactor = 0
-                    float4 endColorA = (0.0013309671, 0.03458923, 1, 1)
-                    float4 endColorB = (0.11386989, 0.0064959256, 0.10626237, 1)
-                    bool isLightingEnabled = 0
-                    float noiseAnimationSpeed = 0
-                    float noiseScale = 0
-                    float noiseStrength = 0
-                    token opacityOverLife = "Constant"
-                    float particleAngle = 0
-                    float particleAngleVariation = 0
-                    float particleAngularVelocity = 0
-                    float particleAngularVelocityVariation = 0
-                    double particleLifeSpan = 0.06
-                    double particleLifeSpanVariation = 0.004
-                    float particleMass = 1
-                    float particleMassVariation = 0
-                    float particleSize = 0.0012
-                    float particleSizeVariation = 0
-                    float3 radialGravityCenter = (0, -3, -3)
-                    float radialGravityStrength = 0
-                    float sizeMultiplierAtEndOfLifespan = 1
-                    float sizeMultiplierAtEndOfLifespanPower = 1
-                    token sortOrder = "IncreasingID"
-                    float spreadingAngle = 1.2
-                    float4 startColorA = (1, 1, 1, 0.42)
-                    float4 startColorB = (1, 1, 1, 1)
-                    float stretchFactor = 0.3
-                    bool useEndColor = 0
-                    bool useEndColorRange = 0
-                    bool useStartColorRange = 0
-                    float3 vortexDirection = (0, 1, 0)
-                    float vortexStrength = 0
-                }
+                string actionKind = "notification"
+                double duration = 0
+                uniform token info:id = "DB42A933-5050-4938-A31C-4F41523103F7"
+                string notificationName = "cameraFlythroughComplete"
+                double startTime = 26
+                rel target = </Root/Camera>
             }
         }
+    }
 
-        over "Meshes"
+    def RealityKitComponent "RCP_BehaviorsContainer"
+    {
+        rel behaviors = </Root/OnNotification>
+        uniform token info:id = "RCP.BehaviorsContainer"
+    }
+
+    def Preliminary_Behavior "OnNotification"
+    {
+        rel actions = </Root/OnNotification/Action>
+        uniform bool exclusive
+        rel triggers = </Root/OnNotification/Trigger>
+
+        def Preliminary_Trigger "Trigger"
         {
-            over "Sketchfab_model"
-            {
-                over "_6fd31da1d78425ebce4dcada2b787d9_fbx"
-                {
-                    over "RootNode"
-                    {
-                        over "Bottle"
-                        {
-                            over "Bottle_Bottle_0"
-                            {
-                                over "Bottle_Bottle_0"
-                                {
-                                }
-                            }
-                        }
+            rel affectedObjects = </Root>
+            string identifier = "startCameraFlythrough"
+            token info:id = "Notification"
+        }
 
-                        over "Cardboard___Pictures"
-                        {
-                            over "Cardboard___Pictures_Cardboard___Pictures_0"
-                            {
-                                over "Cardboard___Pictures_Cardboard___Pictures_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Carpet___Door"
-                        {
-                            over "Carpet___Door_Carpet___Door_0"
-                            {
-                                over "Carpet___Door_Carpet___Door_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Coffee_LED"
-                        {
-                            over "Coffee_LED_Coffee_LED_0"
-                            {
-                                over "Coffee_LED_Coffee_LED_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Coffee_Machine___Microwave"
-                        {
-                            over "Coffee_Machine___Microwave_Coffee_Machine___Microwave_0"
-                            {
-                                over "Coffee_Machine___Microwave_Coffee_Machine___Microwave_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Counter___Garden_Bed"
-                        {
-                            over "Counter___Garden_Bed_Counter___Garden_Bed_0"
-                            {
-                                over "Counter___Garden_Bed_Counter___Garden_Bed_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Curtain"
-                        {
-                            over "Curtain_Curtains_0"
-                            {
-                                over "Curtain_Curtains_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Floor___Roof"
-                        {
-                            over "Floor___Roof_Floor___Roof_0"
-                            {
-                                over "Floor___Roof_Floor___Roof_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Freezer"
-                        {
-                            over "Freezer_Freezer_0"
-                            {
-                                over "Freezer_Freezer_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Kitchen_Counter"
-                        {
-                            over "Kitchen_Counter_Kitchen_Counter_0"
-                            {
-                                over "Kitchen_Counter_Kitchen_Counter_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Plant_A"
-                        {
-                            over "Plant_A_Plant_A_0"
-                            {
-                                over "Plant_A_Plant_A_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Plant_B"
-                        {
-                            over "Plant_B_Plant_B_0"
-                            {
-                                over "Plant_B_Plant_B_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Porcelain"
-                        {
-                            over "Porcelain_Porcelain_0"
-                            {
-                                over "Porcelain_Porcelain_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Roof_Lamp"
-                        {
-                            over "Roof_Lamp_Roof_Lamp_0"
-                            {
-                                over "Roof_Lamp_Roof_Lamp_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Spotlight___Wall_Lamp"
-                        {
-                            over "Spotlight___Wall_Lamp_Spotlight___Wall_Lamp_0"
-                            {
-                                over "Spotlight___Wall_Lamp_Spotlight___Wall_Lamp_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Stool"
-                        {
-                            over "Stool_Stool_0"
-                            {
-                                over "Stool_Stool_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Table_A"
-                        {
-                            over "Table_A_Table_A_0"
-                            {
-                                over "Table_A_Table_A_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Table_B"
-                        {
-                            over "Table_B_Table_B_0"
-                            {
-                                over "Table_B_Table_B_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Table_C"
-                        {
-                            over "Table_C_Table_C_0"
-                            {
-                                over "Table_C_Table_C_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Table_D"
-                        {
-                            over "Table_D_Table_D_0"
-                            {
-                                over "Table_D_Table_D_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Wall_A"
-                        {
-                            over "Wall_A_Wall_A_0"
-                            {
-                                over "Wall_A_Wall_A_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Wall_B"
-                        {
-                            over "Wall_B_Wall_B_0"
-                            {
-                                over "Wall_B_Wall_B_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Wall_Closet"
-                        {
-                            over "Wall_Closet_Wakk_Closet_0"
-                            {
-                                over "Wall_Closet_Wakk_Closet_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Windows"
-                        {
-                            over "Windows_Windows_0"
-                            {
-                                over "Windows_Windows_0"
-                                {
-                                }
-                            }
-                        }
-
-                        over "Glass"
-                        {
-                            over "Glass_Glass__No_Transparent__0"
-                            {
-                                over "Glass_Glass__No_Transparent__0"
-                                {
-                                }
-                            }
-
-                            over "Glass_Glass__Transparent__0"
-                            {
-                                over "Glass_Glass__Transparent__0"
-                                {
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Root>
+            rel animationLibraryKey = </Root/Timeline>
+            rel animationLibraryKeyOverrideKey = </Root/OnNotification/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
         }
     }
 }
