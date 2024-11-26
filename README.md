@@ -1,9 +1,12 @@
 # Opal
-Vision OS app by Opal Designer 
+Vision OS app by Opal Designer
+
 Website: https://www.opaldesigner.com/
+
 Contributors: Vik Parth, Kris Layng, Ashley Lee, Rodrigo Vierira
 
 About:
+
 Opal Designer enables set designers, cinematographers, and production studios to visualize, design, and navigate 3D spaces.
 
 Workflow:
