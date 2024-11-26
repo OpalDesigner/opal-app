@@ -1,9 +1,13 @@
 # Opal
 Vision OS app by Opal Designer
 
-Website: https://www.opaldesigner.com/
+Website: 
 
-Contributors: Vik Parth, Kris Layng, Ashley Lee, Rodrigo Vierira
+https://www.opaldesigner.com/
+
+Contributors: 
+
+Vik Parth, Kris Layng, Ashley Lee, Rodrigo Vierira
 
 About:
 
