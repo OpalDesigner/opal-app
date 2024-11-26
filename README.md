@@ -1,5 +1,8 @@
-# Opal
-Vision OS app by Opal Designer
+# Vision OS app by Opal Designer
+
+About:
+
+Opal Designer enables set designers, cinematographers, and production studios to visualize, design, and navigate 3D spaces.
 
 Website: 
 
@@ -8,10 +11,6 @@ https://www.opaldesigner.com/
 Contributors: 
 
 Vik Parth, Kris Layng, Ashley Lee, Rodrigo Vierira
-
-About:
-
-Opal Designer enables set designers, cinematographers, and production studios to visualize, design, and navigate 3D spaces.
 
 Workflow:
 - Step 1: Import 3D model from Unreal Engine or Blender. Model syncs with Opal.
