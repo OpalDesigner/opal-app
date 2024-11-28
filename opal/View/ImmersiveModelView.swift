@@ -41,6 +41,22 @@ struct ImmersiveModelView: View {
             model.transform.translation = initialPosition
             model.transform.scale = SIMD3<Float>(repeating: initialScale)
             
+            /*
+            // Lighting: RealityKit can carry up to 6 lights
+            // Spotlight Component: https://developer.apple.com/documentation/realitykit/spotlightcomponent
+            // Pointlight Component: https://developer.apple.com/documentation/realitykit/pointlight
+            // DirectionalLight Component: https://developer.apple.com/documentation/realitykit/directionallightcomponent
+            let testSphere = ModelEntity(mesh: .generateSphere(radius: 0.05), materials: [SimpleMaterial(color: .white, isMetallic: false)])
+            content.add(testSphere)
+            testSphere.position = SIMD3<Float>(0, 1.5, -0.5)
+            let pointLight = PointLight()
+            pointLight.light.color = .red
+            pointLight.light.intensity = 1000
+            pointLight.light.attenuationRadius = 10
+            content.add(pointLight)
+            pointLight.position = SIMD3<Float>(0, 1.5, -0.5)
+             */
+            
             // Create a camera entity
             let cameraEntity = Entity()
             updateCameraTransform(cameraEntity)
@@ -50,18 +66,6 @@ struct ImmersiveModelView: View {
             print("Model Position:       \(model.transform.translation)")
             print("Model Scale:          \(model.transform.scale)")
             print("Camera Position:      \(cameraEntity.position)")
-            
-            //Add particle effects
-            /*
-            let entity = Entity()
-            entity.name = "SnowEmitter"
-            entity.position = .init(x: 0, y: 2, z: 0)
-            entity.setScale(.init(x: 20, y: 20, z: 20), relativeTo: nil)
-            content.add(entity)
-            var emitter = ParticleEmitterComponent.Presets.snow
-            emitter.mainEmitter.birthRate = 3000
-            entity.components.set(emitter)
-             */
             
         } update: { content in
             if let cameraEntity = content.entities.first {

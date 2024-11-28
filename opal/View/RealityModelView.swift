@@ -23,12 +23,14 @@ struct RealityModelView: View {
     // State variables
     @State private var model = Entity()
     @State private var modelChildEntity: Entity?
+    @State private var weatherEntity = Entity()
     @State private var modelCenter: SIMD3<Float> = .zero
     @State private var modelPivot: SIMD3<Float> = .zero
     @State private var modelRotation: Double = 0.0
     @State private var currentScale: Float = 1.0
     @State private var isRotating = false
     @State private var isAnimating = false
+    @State private var isWeatherChange = false
     @State private var hasCameraEntity: Bool = false
     
     // Notifications setup
@@ -94,7 +96,7 @@ struct RealityModelView: View {
             print("Model Center:        \(modelCenter)")
             print("Model Pivot:         \(modelPivot)")
             
-            // Add Physics to the 3D model
+            // Allow the Model to be Interactable using gestures
             model.components.set(InputTargetComponent(allowedInputTypes: .indirect))
             model.generateCollisionShapes(recursive: true)
             model.components.set(GroundingShadowComponent(castsShadow: true))
@@ -104,6 +106,12 @@ struct RealityModelView: View {
                 let anim = model.availableAnimations[0]
                 model.playAnimation(anim.repeat())
             }
+            
+            // Add Weather Entity
+            weatherEntity = Entity()
+            weatherEntity.position = SIMD3<Float>(modelCenter.x, modelCenter.y + 0.3, modelCenter.z)
+            weatherEntity.setScale(.init(x: 4, y: 4, z: 4), relativeTo: nil)
+            content.add(weatherEntity)
             
             // Find and store model's child entity specifically
             if let modelChild = model.findEntity(named: modelName) {
@@ -177,6 +185,27 @@ struct RealityModelView: View {
                         .foregroundColor(isRotating ? .green : .primary)
                 }
             }
+            
+            // Toolbar button for changing the Weather
+            // (.snow, .fireworks, .rain, .sparks, .impact, .magic)
+            ToolbarItem(placement: .bottomOrnament) {
+                Button {
+                    isWeatherChange.toggle()
+                    if(isWeatherChange){
+                        var emitter = ParticleEmitterComponent.Presets.snow
+                        emitter.mainEmitter.birthRate = 100
+                        weatherEntity.components.set(emitter)
+                    } else {
+                        var emitter = ParticleEmitterComponent.Presets.snow
+                        emitter.mainEmitter.birthRate = 0
+                        weatherEntity.components.set(emitter)
+                    }
+                } label: {
+                    Label("", systemImage: isWeatherChange ? "cloud.snow.fill" : "cloud.snow")
+                        .foregroundColor(isWeatherChange ? .green : .primary)
+                }
+            }
+            
             // Toolbar button for Camera Flythrough
             if(hasCameraEntity){
                 ToolbarItem(placement: .bottomOrnament){
