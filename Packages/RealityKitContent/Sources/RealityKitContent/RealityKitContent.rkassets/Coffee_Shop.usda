@@ -19,13 +19,33 @@ def Xform "Root"
         references = @Coffee_Shop.usdz@
     )
     {
-        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:scale = (0.01, 0.01, 0.01)
+        float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "HierarchicalFade"
         {
             uniform token info:id = "RealityKit.HierarchicalFade"
             float opacity = 1
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (1082.9385, 299.99985, 563.55945)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (-138.8953, 149.99986, 3.8313446)
+                }
+            }
         }
     }
 
@@ -38,8 +58,8 @@ def Xform "Root"
     )
     {
         quatf xformOp:orient = (0.70710677, 0, -0.70710677, 0)
-        float3 xformOp:scale = (300, 300, 300)
-        float3 xformOp:translate = (0, 100, 0)
+        float3 xformOp:scale = (2, 2, 2)
+        float3 xformOp:translate = (4.4703484e-8, 1.6, -2.7939677e-8)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 
@@ -55,9 +75,9 @@ def Xform "Root"
                 int blendLayer = 300
                 double duration = 3
                 uniform token info:id = "59FF0188-CDA2-44DA-8C55-51EB1BBD23DE"
-                float3 position = (-200, 150, 150)
+                float3 position = (-3, 1.6, 1.5)
                 quatf rotation = (0.70710677, 0, -0.70710677, 0)
-                float3 scale = (200, 200, 200)
+                float3 scale = (2, 2, 2)
                 double startTime = 7
                 rel target = </Root/Camera>
                 float2 ui:nodegraph:node:pos = (20, 20)
@@ -80,9 +100,9 @@ def Xform "Root"
                 int blendLayer = 300
                 double duration = 2
                 uniform token info:id = "5A60610D-A340-46AF-BD99-4BD271AD50AA"
-                float3 position = (-500, 150, 150)
+                float3 position = (-5.5, 1.6, 1.6)
                 quatf rotation = (0.70710677, 0, -0.70710677, 0)
-                float3 scale = (200, 200, 200)
+                float3 scale = (2, 2, 2)
                 double startTime = 4
                 rel target = </Root/Camera>
                 float2 ui:nodegraph:node:pos = (40, 40)
@@ -154,9 +174,9 @@ def Xform "Root"
                 int blendLayer = 300
                 double duration = 2
                 uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
-                float3 position = (-200, 150, -100)
+                float3 position = (-2, 1.6, -1)
                 quatf rotation = (0.70710677, 0, -0.70710677, 0)
-                float3 scale = (200, 200, 200)
+                float3 scale = (2, 2, 2)
                 double startTime = 11
                 rel target = </Root/Camera>
 
@@ -177,9 +197,9 @@ def Xform "Root"
                 int blendLayer = 300
                 double duration = 2
                 uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
-                float3 position = (-200, 200, -100)
+                float3 position = (-2, 1.8, -1)
                 quatf rotation = (0.70710677, 0, -0.70710677, 0)
-                float3 scale = (200, 200, 200)
+                float3 scale = (2, 2, 2)
                 double startTime = 13.000000000100002
                 rel target = </Root/Camera>
                 float2 ui:nodegraph:node:pos = (20, 20)
@@ -217,9 +237,9 @@ def Xform "Root"
                 int blendLayer = 300
                 double duration = 3
                 uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
-                float3 position = (250, 200, -100)
+                float3 position = (2.5, 1.8, -1)
                 quatf rotation = (0.70710677, 0, -0.70710677, 0)
-                float3 scale = (200, 200, 200)
+                float3 scale = (2, 2, 2)
                 double startTime = 16
                 rel target = </Root/Camera>
                 float2 ui:nodegraph:node:pos = (20, 20)
@@ -257,9 +277,9 @@ def Xform "Root"
                 int blendLayer = 300
                 double duration = 3
                 uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
-                float3 position = (250, 200, 150)
+                float3 position = (2.5, 1.8, 1.5)
                 quatf rotation = (0.70710677, 0, -0.70710677, 0)
-                float3 scale = (200, 200, 200)
+                float3 scale = (2, 2, 2)
                 double startTime = 20
                 rel target = </Root/Camera>
                 float2 ui:nodegraph:node:pos = (40, 40)
@@ -297,9 +317,9 @@ def Xform "Root"
                 int blendLayer = 300
                 double duration = 2
                 uniform token info:id = "9F2839D0-1C8C-4764-9FEA-730221D5C88C"
-                float3 position = (0, 200, 150)
+                float3 position = (0, 1.8, 1.5)
                 quatf rotation = (0.70710677, 0, -0.70710677, 0)
-                float3 scale = (200, 200, 200)
+                float3 scale = (2, 2, 2)
                 double startTime = 24.000000000199996
                 rel target = </Root/Camera>
                 float2 ui:nodegraph:node:pos = (60, 60)
@@ -322,9 +342,9 @@ def Xform "Root"
                 int blendLayer = 300
                 double duration = 3
                 uniform token info:id = "5A60610D-A340-46AF-BD99-4BD271AD50AA"
-                float3 position = (-500, 150, 0)
+                float3 position = (-5.5, 1.6, 0)
                 quatf rotation = (0.70710677, 0, -0.70710677, 0)
-                float3 scale = (200, 200, 200)
+                float3 scale = (2, 2, 2)
                 double startTime = 0
                 rel target = </Root/Camera>
 
@@ -384,6 +404,32 @@ def Xform "Root"
             int loops = 0
             int performCount = 1
             token type = "serial"
+        }
+    }
+
+    def "Blue_Robot" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, 3.1415927, 0)
+        }
+        prepend references = @Blue_Robot.usdz@
+    )
+    {
+        quatf xformOp:orient = (-4.371139e-8, 0, 1, 0)
+        float3 xformOp:scale = (0.00085, 0.00085, 0.00085)
+        float3 xformOp:translate = (-2.5, 0, 1.6)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            uniform token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitClipDefinition "Clip_default_subtree_animation"
+            {
+                uniform string[] clipNames = []
+                uniform string sourceAnimationName = "default subtree animation"
+                uniform double[] startTimes = []
+            }
         }
     }
 }

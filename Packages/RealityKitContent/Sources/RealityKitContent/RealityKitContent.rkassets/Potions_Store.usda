@@ -15,9 +15,28 @@ def Xform "Root"
         prepend references = @Potions_Store.usdz@
     )
     {
-        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:scale = (0.025, 0.025, 0.025)
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (338.71072, 299.99994, 290.32257)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (8.064026, 117.741936, -145.16125)
+                }
+            }
+        }
     }
 }
 

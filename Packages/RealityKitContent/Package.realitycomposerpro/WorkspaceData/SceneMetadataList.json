@@ -40,26 +40,17 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Moon_1",
-        "Track"
+        "SkyDome"
       ],
       {
-        "isExpanded" : true,
+        "disallowsFraming" : true,
+        "isExpanded" : false,
         "isLocked" : false
       },
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Venus_Timeline"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Jupiter_Timeline"
+        "Saturn_Timeline"
       ],
       {
         "isExpanded" : true,
@@ -78,36 +69,7 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Jupiter_Timeline",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Saturn_Timeline"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Mars_Timeline",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "SkyDome"
+        "SkySphere"
       ],
       {
         "disallowsFraming" : true,
@@ -118,24 +80,6 @@
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
         "Mercury_Timeline",
-        "Track2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Venus_Timeline",
         "Track"
       ],
       {
@@ -145,7 +89,25 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Earth_Timeline",
+        "Jupiter_Timeline"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Sun_Timeline"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Saturn_Timeline",
         "Track2"
       ],
       {
@@ -165,6 +127,55 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
+        "Mars_Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Moon_1",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Mars_Timeline"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Moon_Timeline",
+        "Track2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Mercury_Timeline",
+        "Track2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
         "Saturn_Timeline",
         "Track"
       ],
@@ -175,7 +186,7 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Earth_Timeline",
+        "Venus_Timeline",
         "Track"
       ],
       {
@@ -195,7 +206,17 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Jupiter_Timeline",
+        "Earth_Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Earth_Timeline",
         "Track2"
       ],
       {
@@ -205,7 +226,8 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Mercury_Timeline"
+        "Timeline",
+        "Track"
       ],
       {
         "isExpanded" : true,
@@ -214,17 +236,25 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "SkySphere"
+        "Earth_Timeline"
       ],
       {
-        "disallowsFraming" : true,
-        "isExpanded" : false,
+        "isExpanded" : true,
         "isLocked" : false
       },
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Mars_Timeline"
+        "Jupiter_Timeline",
+        "Track2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets"
       ],
       {
         "isExpanded" : true,
@@ -243,8 +273,25 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Mercury_Timeline",
-        "Track"
+        "Moon_Timeline"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Mercury_Timeline"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Venus_Timeline"
       ],
       {
         "isExpanded" : true,
@@ -273,55 +320,8 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Earth_Timeline"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Timeline",
+        "Jupiter_Timeline",
         "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Moon_Timeline"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Moon_Timeline",
-        "Track2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Saturn_Timeline",
-        "Track2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Sun_Timeline"
       ],
       {
         "isExpanded" : true,
@@ -333,7 +333,8 @@
     "objectMetadataList" : [
       [
         "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
-        "Root"
+        "Root",
+        "Cube"
       ],
       {
         "isExpanded" : true,
@@ -351,8 +352,7 @@
       },
       [
         "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
-        "Root",
-        "Cube"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -514,7 +514,8 @@
     "objectMetadataList" : [
       [
         "CB766F92-EE55-4A63-9401-E7B8C009764D",
-        "Root"
+        "Root",
+        "GridMaterial"
       ],
       {
         "isExpanded" : true,
@@ -522,8 +523,7 @@
       },
       [
         "CB766F92-EE55-4A63-9401-E7B8C009764D",
-        "Root",
-        "GridMaterial"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -540,9 +540,7 @@
     "objectMetadataList" : [
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root",
-        "GridMaterial",
-        "GridMaterial"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -550,7 +548,9 @@
       },
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root"
+        "Root",
+        "GridMaterial",
+        "GridMaterial"
       ],
       {
         "isExpanded" : true,
@@ -560,6 +560,34 @@
   },
   "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08" : {
     "objectMetadataList" : [
+      [
+        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
+        "Root",
+        "CameraFlythrough",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
+        "Root",
+        "Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
       [
         "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
         "Root",
@@ -572,35 +600,7 @@
       [
         "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
         "Root",
-        "Timeline",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
-        "Root",
         "CameraFlythrough",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
-        "Root",
-        "Timeline",
         "Track2"
       ],
       {
@@ -610,7 +610,7 @@
       [
         "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
         "Root",
-        "CameraFlythrough",
+        "Timeline",
         "Track2"
       ],
       {

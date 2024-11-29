@@ -10,36 +10,59 @@ import RealityKit
 import RealityKitContent
 
 struct ImmersiveModelView: View {
-    // Access shared data in NavigationControlUI.swift
+    // Function parameters
     @ObservedObject var navigationData: NavigationData
-    
-    // Model properties
-    let id = UUID()
     let modelName: String
-    let initialPosition: SIMD3<Float>
-    let initialScale: Float
-    
-    // State variables
-    @State private var model = Entity()
     
     var body: some View {
         RealityView{ content in
-            guard let rootEntity = try? await Entity(named: modelName, in: realityKitContentBundle)
+            guard let model = try? await Entity(named: modelName, in: realityKitContentBundle)
             else { fatalError("Unable to load scene model: \(modelName)") }
-            content.add(rootEntity)
-            
+            content.add(model)
+
             print("\n\(modelName) Debug Information:")
-            print("Initial Position:     \(initialPosition)")
-            print("Initial Scale:        \(initialScale)")
-            print("Root entity children: \(rootEntity.children.map { $0.name })")
-            print("Root Position:        \(rootEntity.position)")
-            print("Root Scale:           \(rootEntity.scale)")
+            for child in model.children {
+                print("Child:           \(child.name)")
+                print("Position:        \(child.position),       Scale: \(child.scale)")
+                
+                // Print grandchildren if any
+                for grandchild in child.children {
+                    print("Grandchild:  \(grandchild.name)")
+                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
+                }
+            }
             
-            // Find child entity
-            guard let model = rootEntity.findEntity(named: modelName)
-            else {fatalError("Unable to find entity in scene model: \(modelName)")}
-            model.transform.translation = initialPosition
-            model.transform.scale = SIMD3<Float>(repeating: initialScale)
+            // Create a Perspective Camera to navigate Immersive View
+            let perspectiveCamera = Entity()
+            let boxSize: SIMD3<Float> = [0.2, 1.5, 0.2]
+            let collisionShape = ShapeResource.generateBox(size: boxSize)
+            let debugMesh = ModelComponent(mesh: .generateBox(size: boxSize), materials: [UnlitMaterial(color: .red)])
+            perspectiveCamera.components[CollisionComponent.self] = CollisionComponent(
+                shapes: [collisionShape],
+                mode: .default,
+                filter: CollisionFilter(group: .default, mask: .all)
+            )
+            perspectiveCamera.components.set(debugMesh)
+            perspectiveCamera.position = SIMD3<Float>(0, 1, 0)
+            content.add(perspectiveCamera)
+            updateCameraTransform(perspectiveCamera)
+            print("\nPerspective Camera Position:      \(perspectiveCamera.position)")
+            
+            // Listen for Collisions between Perspective Camera and Model Boundaries
+            let collisionSubscription = content.subscribe(to: CollisionEvents.Began.self) { event in
+                if (event.entityA == perspectiveCamera && event.entityB == model.children.first?.children.first) ||
+                   (event.entityA == model.children.first?.children.first  && event.entityB == perspectiveCamera) {
+                    print("Collision began between perspective camera and model")
+                } else {
+                    print("No Collision detected")
+                }
+            }
+            
+            // Add Animation to the 3D model
+            if(model.availableAnimations.count > 0){
+                let anim = model.availableAnimations[0]
+                model.playAnimation(anim.repeat())
+            }
             
             /*
             // Lighting: RealityKit can carry up to 6 lights
@@ -57,19 +80,9 @@ struct ImmersiveModelView: View {
             pointLight.position = SIMD3<Float>(0, 1.5, -0.5)
              */
             
-            // Create a camera entity
-            let cameraEntity = Entity()
-            updateCameraTransform(cameraEntity)
-            content.add(cameraEntity)
-            cameraEntity.position = SIMD3<Float>(0, 0, 0)
-            
-            print("Model Position:       \(model.transform.translation)")
-            print("Model Scale:          \(model.transform.scale)")
-            print("Camera Position:      \(cameraEntity.position)")
-            
         } update: { content in
-            if let cameraEntity = content.entities.first {
-                updateCameraTransform(cameraEntity)
+            if let perspectiveCamera = content.entities.first {
+                updateCameraTransform(perspectiveCamera)
             }
         }
     }
@@ -108,8 +121,6 @@ struct ImmersiveModelView: View {
 #Preview {
     ImmersiveModelView(
         navigationData: NavigationData(),
-        modelName: "Planets",
-        initialPosition: SIMD3<Float>(0, 0, 0),
-        initialScale: 1
+        modelName: "Planets"
     )
 }

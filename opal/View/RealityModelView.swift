@@ -12,7 +12,6 @@ import RealityKitContent
 //This code creates the a small tabletop view of your set
 struct RealityModelView: View {
     // Function parameters
-    let id = UUID()
     let modelName: String
     let initialPosition: SIMD3<Float>
     let initialScale: Float
@@ -40,18 +39,18 @@ struct RealityModelView: View {
         Spacer()
         RealityView { content in
             // Load 3D model
-            guard let rootEntity = try? await Entity(named: modelName, in: realityKitContentBundle)
+            guard let modelEntity = try? await Entity(named: modelName, in: realityKitContentBundle)
             else {fatalError("Unable to load scene model: \(modelName)")}
-            content.add(rootEntity)
+            content.add(modelEntity)
                         
             print("\n\(modelName) Debug Information:")
             print("Initial Position:     \(initialPosition)")
             print("Initial Scale:        \(initialScale)")
-            print("Root Position:        \(rootEntity.transform.translation)")
-            print("Root Scale:           \(rootEntity.transform.scale)")
+            print("Root Position:        \(modelEntity.transform.translation)")
+            print("Root Scale:           \(modelEntity.transform.scale)")
             
             // Set initial transform
-            model = rootEntity
+            model = modelEntity
             model.transform.translation = initialPosition
             model.transform.scale = SIMD3<Float>(repeating: initialScale)
             currentScale = initialScale
@@ -61,7 +60,7 @@ struct RealityModelView: View {
             print("Model Scale:         \(model.transform.scale)")
             
             // Obtain model geometric center and pivot point World Coordinates
-            let bounds = model.visualBounds(relativeTo: rootEntity)
+            let bounds = model.visualBounds(relativeTo: modelEntity)
             let localCenter = (bounds.min + bounds.max) * 0.5
             modelCenter = model.convert(position: localCenter, to: nil)
             modelPivot = model.convert(position: .zero, to: nil)
@@ -86,7 +85,7 @@ struct RealityModelView: View {
                 model.transform = transform
                 
                 // Recalculate both center and pivot after transform
-                let newBounds = model.visualBounds(relativeTo: rootEntity)
+                let newBounds = model.visualBounds(relativeTo: modelEntity)
                 let newLocalCenter = (newBounds.min + newBounds.max) * 0.5
                 modelCenter = model.convert(position: newLocalCenter, to: nil)
                 modelPivot = model.convert(position: .zero, to: nil)
@@ -136,7 +135,7 @@ struct RealityModelView: View {
             }
         }
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
-            .animation(.easeInOut(duration: 1), value: modelRotation)
+        .animation(.easeInOut(duration: 0.5), value: modelRotation)
         .gesture(
             DragGesture()
                 .onEnded { value in

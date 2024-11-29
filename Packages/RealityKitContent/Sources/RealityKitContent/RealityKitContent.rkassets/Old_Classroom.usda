@@ -15,14 +15,9 @@ def Xform "Root"
         prepend references = @Old_Classroom.usdz@
     )
     {
-        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:scale = (0.015, 0.015, 0.015)
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-        def RealityKitComponent "InputTarget"
-        {
-            uniform token info:id = "RealityKit.InputTarget"
-        }
 
         over "Materials"
         {
@@ -138,6 +133,31 @@ def Xform "Root"
             {
                 token outputs:mtlx:surface
                 token outputs:realitykit:vertex
+            }
+
+            over "Wall_Left"
+            {
+                token outputs:mtlx:surface
+                token outputs:realitykit:vertex
+            }
+        }
+
+        def RealityKitComponent "Collider"
+        {
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (645.0208, 299.99988, 1011.04175)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (-77.52713, 137.77472, 54.44069)
+                }
             }
         }
     }

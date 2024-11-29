@@ -15,13 +15,27 @@ def Xform "Root"
         prepend references = @Budapest_Hotel.usdz@
     )
     {
-        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:scale = (0.1, 0.1, 0.1)
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
-        def RealityKitComponent "InputTarget"
+        def RealityKitComponent "Collider"
         {
-            uniform token info:id = "RealityKit.InputTarget"
+            uint group = 1
+            uniform token info:id = "RealityKit.Collider"
+            uint mask = 4294967295
+            token type = "Default"
+
+            def RealityKitStruct "Shape"
+            {
+                float3 extent = (339.7447, 299.9999, 623.06274)
+                token shapeType = "Box"
+
+                def RealityKitStruct "pose"
+                {
+                    float3 position = (0, 143.60048, -2.0419312)
+                }
+            }
         }
     }
 }

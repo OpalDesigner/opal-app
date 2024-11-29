@@ -56,13 +56,13 @@ struct opalApp: App {
         }
         .immersionStyle(selection: .constant(.full), in: .full)
         
-        //3D MODEL SETS - WINDOW VIEWS
+        //3D MODEL SETS - TABLETOP VIEWS
         Group {
             WindowGroup(id: "CoffeeShopRealityView") {
                 RealityModelView(
                     modelName: "Coffee_Shop",
                     initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.001)
+                    initialScale: 0.1)
             }
             //.volumeWorldAlignment(.gravityAligned)
             .defaultWindowPlacement{content, context in
@@ -82,7 +82,7 @@ struct opalApp: App {
                 RealityModelView(
                     modelName: "House_Interior",
                     initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.001)
+                    initialScale: 0.03)
             }
             .defaultWindowPlacement{content, context in
                 let size = content.sizeThatFits(.unspecified)
@@ -101,7 +101,7 @@ struct opalApp: App {
                 RealityModelView(
                     modelName: "Budapest_Hotel",
                     initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.0015)
+                    initialScale: 0.015)
             }
             .defaultWindowPlacement{content, context in
                 let size = content.sizeThatFits(.unspecified)
@@ -120,7 +120,7 @@ struct opalApp: App {
                 RealityModelView(
                     modelName: "SpaceStation_Hall",
                     initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.001)
+                    initialScale: 0.05)
             }
             .defaultWindowPlacement{content, context in
                 let size = content.sizeThatFits(.unspecified)
@@ -139,7 +139,7 @@ struct opalApp: App {
                 RealityModelView(
                     modelName: "Old_Classroom",
                     initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.001)
+                    initialScale: 0.0667)
             }
             .defaultWindowPlacement{content, context in
                 let size = content.sizeThatFits(.unspecified)
@@ -158,7 +158,7 @@ struct opalApp: App {
                 RealityModelView(
                     modelName: "Bedroom",
                     initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.001)
+                    initialScale: 0.0833)
             }
             .defaultWindowPlacement{content, context in
                 let size = content.sizeThatFits(.unspecified)
@@ -177,7 +177,7 @@ struct opalApp: App {
                 RealityModelView(
                     modelName: "Potions_Store",
                     initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.001)
+                    initialScale: 0.04)
             }
             .defaultWindowPlacement{content, context in
                 let size = content.sizeThatFits(.unspecified)
@@ -196,7 +196,7 @@ struct opalApp: App {
                 RealityModelView(
                     modelName: "Convenience_Store",
                     initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.001)
+                    initialScale: 0.1)
             }
             .defaultWindowPlacement{content, context in
                 let size = content.sizeThatFits(.unspecified)
@@ -215,7 +215,7 @@ struct opalApp: App {
                 RealityModelView(
                     modelName: "Old_Hotel",
                     initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.001)
+                    initialScale: 0.0286)
             }
             .defaultWindowPlacement{content, context in
                 let size = content.sizeThatFits(.unspecified)
@@ -236,81 +236,72 @@ struct opalApp: App {
             ImmersiveSpace(id: "CoffeeShopImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "Coffee_Shop",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.01) //this gets the model to human scale
+                    modelName: "Coffee_Shop"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
             
             ImmersiveSpace(id: "HouseInteriorImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "House_Interior",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.03) //this gets the model to human scale
+                    modelName: "House_Interior"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
             
             ImmersiveSpace(id: "BudapestHotelImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "Budapest_Hotel",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.1) //this gets the model to human scale
+                    modelName: "Budapest_Hotel"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
             
             ImmersiveSpace(id: "SpaceStationImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "SpaceStation_Hall",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.02) //this gets the model to human scale
+                    modelName: "SpaceStation_Hall"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
             
             ImmersiveSpace(id: "ClassroomImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "Old_Classroom",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.015) //this gets the model to human scale
+                    modelName: "Old_Classroom"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
             
             ImmersiveSpace(id: "BedroomImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "Bedroom",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.012) //this gets the model to human scale
+                    modelName: "Bedroom"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
             
             ImmersiveSpace(id: "PotionsStoreImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "Potions_Store",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.025) //this gets the model to human scale
+                    modelName: "Potions_Store"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
             
             ImmersiveSpace(id: "ConvenienceStoreImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "Convenience_Store",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.01) //this gets the model to human scale
+                    modelName: "Convenience_Store"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
             
             ImmersiveSpace(id: "OldHotelImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "Old_Hotel",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.035)
+                    modelName: "Old_Hotel"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
         }
@@ -380,9 +371,8 @@ struct opalApp: App {
             ImmersiveSpace(id: "SolarSystemImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: "Planets",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 1)
+                    modelName: "Planets"
+                )
             }
             .immersionStyle(selection: .constant(.full), in: .full)
         }
