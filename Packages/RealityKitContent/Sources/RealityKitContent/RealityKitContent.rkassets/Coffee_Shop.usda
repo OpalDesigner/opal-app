@@ -52,20 +52,26 @@ def Xform "Root"
     def "Camera" (
         active = true
         customData = {
-            float3 rotationEulerHint = (0, -1.5707963, 0)
+            float3 rotationEulerHint = (0, -3.1415918, 0)
         }
         references = @Camera.usdz@
     )
     {
-        quatf xformOp:orient = (0.70710677, 0, -0.70710677, 0)
+        quatf xformOp:orient = (4.371139e-8, 0, 1, 0)
         float3 xformOp:scale = (2, 2, 2)
         float3 xformOp:translate = (4.4703484e-8, 1.6, -2.7939677e-8)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "HierarchicalFade"
+        {
+            uniform token info:id = "RealityKit.HierarchicalFade"
+            float opacity = 0
+        }
     }
 
     def RealityKitTimeline "Timeline"
     {
-        reorder nameChildren = ["Track2", "Track", "Track3"]
+        reorder nameChildren = ["Track2", "Track"]
         def RealityKitTrack "Track2"
         {
             reorder nameChildren = ["Move_Forward", "Hide", "Disable_Entity", "Show", "Move_Forward_1", "Spin", "Spin2", "Spin3", "Move_Forward_3", "Move_Higher", "Spin4", "Move_Forward_4", "Spin5", "Move_Forward_5", "Spin6", "Move_Forward_6", "Move_Forward_2"]
@@ -372,6 +378,20 @@ def Xform "Root"
                 string notificationName = "cameraFlythroughComplete"
                 double startTime = 26
                 rel target = </Root/Camera>
+            }
+
+            def RealityKitAction "Show"
+            {
+                string actionKind = "show"
+                int blendLayer = 300
+                double duration = 0.25
+                uniform token info:id = "DEC6F5E2-7CE3-4650-BB40-2F51270DC6B5"
+                double startTime = 0
+                rel target = </Root/Camera>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
             }
         }
     }

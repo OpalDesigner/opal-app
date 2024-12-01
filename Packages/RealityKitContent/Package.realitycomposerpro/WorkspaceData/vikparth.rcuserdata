@@ -1,5 +1,5 @@
 {
-  "advancedEditorSelectedIdentifier" : "ProjectBrowser",
+  "advancedEditorSelectedIdentifier" : "BehaviorsPluginID",
   "openSceneRelativePaths" : [
     "Coffee_Shop.usda",
     "Budapest_Hotel.usda",
@@ -2300,6 +2300,28 @@
     ],
     "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08" : [
       {
+        "date" : 754711220.208336,
+        "title" : "Untitled",
+        "transform" : [
+          -0.8416001,
+          -3.0539823e-08,
+          -0.5401011,
+          0,
+          -0.15273751,
+          0.95918065,
+          0.23799971,
+          0,
+          0.5180544,
+          0.2827943,
+          -0.80724657,
+          0,
+          1.2672707,
+          2.6485655,
+          -2.4802175,
+          1
+        ]
+      },
+      {
         "date" : 754551652.569535,
         "title" : "Untitled",
         "transform" : [
@@ -2494,28 +2516,6 @@
           0.0046492815,
           1.8261867,
           -0.090733856,
-          1
-        ]
-      },
-      {
-        "date" : 754550934.755638,
-        "title" : "Untitled",
-        "transform" : [
-          -0.5122475,
-          -2.4617037e-08,
-          -0.8588378,
-          0,
-          -0.34891254,
-          0.9137569,
-          0.20810632,
-          0,
-          0.78476906,
-          0.4062613,
-          -0.46806982,
-          0,
-          1.6458645,
-          1.7812393,
-          -0.5241566,
           1
         ]
       }

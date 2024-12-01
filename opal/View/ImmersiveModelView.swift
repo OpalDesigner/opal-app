@@ -9,6 +9,13 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
+class NavigationData: ObservableObject {
+    @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
+    @Published var cameraRotation: Float = 0
+    @Published var cameraEntity = Entity()
+    @Published var isCameraVisible: Bool = false
+}
+
 struct ImmersiveModelView: View {
     // Function parameters
     @ObservedObject var navigationData: NavigationData
@@ -22,8 +29,8 @@ struct ImmersiveModelView: View {
 
             print("\n\(modelName) Debug Information:")
             for child in model.children {
-                print("Child:           \(child.name)")
-                print("Position:        \(child.position),       Scale: \(child.scale)")
+                print("Child:       \(child.name)")
+                print("Position:    \(child.position),       Scale: \(child.scale)")
                 
                 // Print grandchildren if any
                 for grandchild in child.children {
@@ -32,36 +39,35 @@ struct ImmersiveModelView: View {
                 }
             }
             
-            // Create a Perspective Camera to navigate Immersive View
-            let perspectiveCamera = Entity()
-            let boxSize: SIMD3<Float> = [0.2, 1.5, 0.2]
-            let collisionShape = ShapeResource.generateBox(size: boxSize)
-            let debugMesh = ModelComponent(mesh: .generateBox(size: boxSize), materials: [UnlitMaterial(color: .red)])
-            perspectiveCamera.components[CollisionComponent.self] = CollisionComponent(
-                shapes: [collisionShape],
+            // Load the Camera model from the Reality Content bundle
+            guard let camera = try? await Entity(named: "Camera", in: realityKitContentBundle)
+            else { fatalError("Unable to load Camera)") }
+            let boxSize = SIMD3<Float>(0.2, 0.5, 0.2)
+            //let debugMesh = ModelComponent(mesh: .generateBox(size: boxSize), materials: [UnlitMaterial(color: .red)])
+            camera.components[CollisionComponent.self] = CollisionComponent(
+                shapes: [.generateBox(size: boxSize)],
                 mode: .default,
-                filter: CollisionFilter(group: .default, mask: .all)
+                filter: .init(group: .default, mask: .all)
             )
-            perspectiveCamera.components.set(debugMesh)
-            perspectiveCamera.position = SIMD3<Float>(0, 1, 0)
-            content.add(perspectiveCamera)
-            updateCameraTransform(perspectiveCamera)
-            print("\nPerspective Camera Position:      \(perspectiveCamera.position)")
-            
-            // Listen for Collisions between Perspective Camera and Model Boundaries
-            let collisionSubscription = content.subscribe(to: CollisionEvents.Began.self) { event in
-                if (event.entityA == perspectiveCamera && event.entityB == model.children.first?.children.first) ||
-                   (event.entityA == model.children.first?.children.first  && event.entityB == perspectiveCamera) {
-                    print("Collision began between perspective camera and model")
-                } else {
-                    print("No Collision detected")
-                }
-            }
+            //camera.components.set(debugMesh)
+            camera.scale = SIMD3<Float>(repeating: 0.5)
+            camera.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(0, 1, 0))
+            camera.transform.translation = SIMD3<Float>(0.2, 1.35, -0.5)
+            navigationData.cameraEntity = camera
+            content.add(camera)
             
             // Add Animation to the 3D model
             if(model.availableAnimations.count > 0){
                 let anim = model.availableAnimations[0]
                 model.playAnimation(anim.repeat())
+            }
+            
+            // Collision Detection between Model Bound and the Camera
+            content.subscribe(to: CollisionEvents.Began.self) { event in
+                let modelBoundary = model.children.first?.children.first
+                let hasCollision = (event.entityA == camera && event.entityB == modelBoundary) ||
+                                  (event.entityA == modelBoundary && event.entityB == camera)
+                print(hasCollision ? "Collision began between perspective camera and model" : "No Collision detected")
             }
             
             /*
@@ -81,13 +87,19 @@ struct ImmersiveModelView: View {
              */
             
         } update: { content in
-            if let perspectiveCamera = content.entities.first {
-                updateCameraTransform(perspectiveCamera)
+            if let scene = content.entities.first {
+                updateCameraTransform(scene)
+            }
+            
+            if(navigationData.isCameraVisible) {
+                navigationData.cameraEntity.components.set(OpacityComponent(opacity: 1.0))
+            } else {
+                navigationData.cameraEntity.components.set(OpacityComponent(opacity: 0))
             }
         }
     }
     
-    private func updateCameraTransform(_ camera: Entity) {
+    private func updateCameraTransform(_ scene: Entity) {
         let c = cos(navigationData.cameraRotation)
         let s = sin(navigationData.cameraRotation)
         
@@ -112,9 +124,8 @@ struct ImmersiveModelView: View {
         let transform = rotationMatrix * translationMatrix
         
         // Apply the combined transform
-        camera.transform.matrix = transform
+        scene.transform.matrix = transform
     }
-    
 }
 
 //Test Sample Preview on Xcode Preview Window
