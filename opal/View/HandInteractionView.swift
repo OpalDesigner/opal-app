@@ -1,6 +1,5 @@
 //
-//  InteractionView.swift
-//  TestApp
+//  HandInteractionView.swift
 //
 //  Created by Vik Parth on 10/23/24.
 //

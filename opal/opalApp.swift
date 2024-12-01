@@ -16,19 +16,19 @@ struct opalApp: App {
         //MAIN SCENE
         WindowGroup(id: "Menu") {
             TabView{
-                ModelArea()
+                ModelMenu()
                     .tabItem{
                         Label("Home", systemImage: "house.fill")
                     }
-                PluginArea()
+                PluginMenu()
                     .tabItem{
                         Label("Import", systemImage: "square.and.arrow.down")
                     }
-                HomeArea()
+                HomeMenu()
                     .tabItem{
                         Label("About", systemImage: "building.2.fill")
                     }
-                TeamArea()
+                TeamMenu()
                     .tabItem{
                         Label("Team", systemImage: "person")
                     }
@@ -59,7 +59,7 @@ struct opalApp: App {
         //3D MODEL SETS - TABLETOP VIEWS
         Group {
             WindowGroup(id: "CoffeeShopRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Coffee_Shop",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.1)
@@ -79,7 +79,7 @@ struct opalApp: App {
             .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "HouseInteriorRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "House_Interior",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.03)
@@ -98,7 +98,7 @@ struct opalApp: App {
             .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "BudapestHotelRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Budapest_Hotel",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.015)
@@ -117,7 +117,7 @@ struct opalApp: App {
             .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "SpaceStationRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "SpaceStation_Hall",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.05)
@@ -136,7 +136,7 @@ struct opalApp: App {
             .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "ClassroomRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Old_Classroom",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.0667)
@@ -155,7 +155,7 @@ struct opalApp: App {
             .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "BedroomRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Bedroom",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.0833)
@@ -174,7 +174,7 @@ struct opalApp: App {
             .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "PotionsStoreRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Potions_Store",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.04)
@@ -193,7 +193,7 @@ struct opalApp: App {
             .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "ConvenienceStoreRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Convenience_Store",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.1)
@@ -212,7 +212,7 @@ struct opalApp: App {
             .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "OldHotelRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Old_Hotel",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.0286)
@@ -309,7 +309,7 @@ struct opalApp: App {
         //Drone
         Group{
             WindowGroup(id: "MechDroneRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Mech_Drone",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.01)
@@ -328,7 +328,7 @@ struct opalApp: App {
             .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
             
             WindowGroup(id: "BusterDroneRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Buster_Drone",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.002)
@@ -350,7 +350,7 @@ struct opalApp: App {
         //Solar System
         Group{
             WindowGroup(id: "SolarSystemRealityView") {
-                RealityModelView(
+                TabletopModelView(
                     modelName: "Planets",
                     initialPosition: SIMD3<Float>(0, 0, 0),
                     initialScale: 0.25)

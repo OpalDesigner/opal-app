@@ -1,13 +1,12 @@
 //
-//  CADPluginView.swift
-//  opal
+//  PluginMenu.swift
 //
 //  Created by Vik Parth on 10/24/24.
 //
 
 import SwiftUI
 
-struct PluginArea: View {
+struct PluginMenu: View {
     var body: some View {
         NavigationStack {
             Text("Choose your tool to import from")
@@ -80,5 +79,5 @@ struct PluginArea: View {
 }
 
 #Preview {
-    PluginArea()
+    PluginMenu()
 }

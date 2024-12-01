@@ -1,6 +1,5 @@
 //
-//  RealityView.swift
-//  TestApp
+//  TabletopModelView.swift
 //
 //  Created by Vik Parth on 10/18/24.
 //
@@ -10,7 +9,7 @@ import RealityKit
 import RealityKitContent
 
 //This code creates the a small tabletop view of your set
-struct RealityModelView: View {
+struct TabletopModelView: View {
     // Function parameters
     let modelName: String
     let initialPosition: SIMD3<Float>
@@ -238,7 +237,7 @@ struct RealityModelView: View {
 
 //Test Sample Preview on Xcode Preview Window
 #Preview {
-    RealityModelView(
+    TabletopModelView(
         modelName: "Coffee_Shop",
         initialPosition: SIMD3<Float>(0, 0, 0),
         initialScale: 0.001

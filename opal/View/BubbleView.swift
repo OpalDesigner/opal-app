@@ -1,6 +1,5 @@
 //
 //  BubbleView.swift
-//  TestApp
 //
 //  Created by Vik Parth on 10/15/24.
 //

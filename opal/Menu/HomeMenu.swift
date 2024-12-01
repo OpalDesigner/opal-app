@@ -1,6 +1,5 @@
 //
-//  HomeArea.swift
-//  TestApp
+//  HomeMenu.swift
 //
 //  Created by Vik Parth on 9/30/24.
 //
@@ -9,7 +8,7 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
-struct HomeArea: View {
+struct HomeMenu: View {
     @State private var modelRotation: Double = 0
 
     var body: some View {
@@ -53,5 +52,5 @@ struct HomeArea: View {
 }
 
 #Preview {
-    HomeArea()
+    HomeMenu()
 }

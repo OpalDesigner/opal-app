@@ -1,5 +1,5 @@
 //
-//  ModelArea.swift
+//  ModelMenu.swift
 //  TestApp
 //
 //  Created by Vik Parth on 9/27/24.
@@ -16,7 +16,7 @@ struct ModelInfo: Identifiable {
 }
 
 // Setup Grid View
-struct ModelArea: View {
+struct ModelMenu: View {
     let models = [
         ModelInfo(imageName: "coffee-shop",       windowID: "CoffeeShopRealityView",      immersiveID: "CoffeeShopImmersiveView"       ),
         ModelInfo(imageName: "house-interior",    windowID: "HouseInteriorRealityView",   immersiveID: "HouseInteriorImmersiveView"    ),
@@ -115,5 +115,5 @@ struct ModelItemView: View {
 }
 
 #Preview {
-    ModelArea()
+    ModelMenu()
 }

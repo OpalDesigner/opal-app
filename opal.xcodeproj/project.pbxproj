@@ -13,16 +13,16 @@
 		659AD4A82CCB0B2500F834E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4A72CCB0B2500F834E0 /* Assets.xcassets */; };
 		659AD4AB2CCB0B2500F834E0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4AA2CCB0B2500F834E0 /* Preview Assets.xcassets */; };
 		659AD4B62CCB0B2600F834E0 /* opalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4B52CCB0B2600F834E0 /* opalTests.swift */; };
-		659AD4C32CCB0D1D00F834E0 /* HomeArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4BF2CCB0D1D00F834E0 /* HomeArea.swift */; };
-		659AD4C42CCB0D1D00F834E0 /* ModelArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C02CCB0D1D00F834E0 /* ModelArea.swift */; };
-		659AD4C52CCB0D1D00F834E0 /* TeamArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C12CCB0D1D00F834E0 /* TeamArea.swift */; };
+		659AD4C32CCB0D1D00F834E0 /* HomeMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4BF2CCB0D1D00F834E0 /* HomeMenu.swift */; };
+		659AD4C42CCB0D1D00F834E0 /* ModelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C02CCB0D1D00F834E0 /* ModelMenu.swift */; };
+		659AD4C52CCB0D1D00F834E0 /* TeamMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C12CCB0D1D00F834E0 /* TeamMenu.swift */; };
 		659AD4CD2CCB0D3C00F834E0 /* BubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */; };
 		659AD4CE2CCB0D3C00F834E0 /* HandInteractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C92CCB0D3C00F834E0 /* HandInteractionView.swift */; };
 		659AD4CF2CCB0D3C00F834E0 /* ImmersiveModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */; };
-		659AD4D02CCB0D3C00F834E0 /* RealityModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4CB2CCB0D3C00F834E0 /* RealityModelView.swift */; };
+		659AD4D02CCB0D3C00F834E0 /* TabletopModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4CB2CCB0D3C00F834E0 /* TabletopModelView.swift */; };
 		659AD4D32CCB0D6B00F834E0 /* NavigationControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4D12CCB0D6B00F834E0 /* NavigationControl.swift */; };
 		659AD4D62CCB0D7600F834E0 /* HandTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4D42CCB0D7600F834E0 /* HandTrackingViewModel.swift */; };
-		65B7ABFB2CCB38F00068ED3D /* PluginArea.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B7ABFA2CCB38F00068ED3D /* PluginArea.swift */; };
+		65B7ABFB2CCB38F00068ED3D /* PluginMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */; };
 		65E3C0142CEF12650037A68C /* tv_retro.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 65E3C0132CEF12650037A68C /* tv_retro.usdz */; };
 /* End PBXBuildFile section */
 
@@ -46,16 +46,16 @@
 		659AD4AC2CCB0B2500F834E0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		659AD4B12CCB0B2600F834E0 /* opalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = opalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		659AD4B52CCB0B2600F834E0 /* opalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = opalTests.swift; sourceTree = "<group>"; };
-		659AD4BF2CCB0D1D00F834E0 /* HomeArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeArea.swift; sourceTree = "<group>"; };
-		659AD4C02CCB0D1D00F834E0 /* ModelArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelArea.swift; sourceTree = "<group>"; };
-		659AD4C12CCB0D1D00F834E0 /* TeamArea.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamArea.swift; sourceTree = "<group>"; };
+		659AD4BF2CCB0D1D00F834E0 /* HomeMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeMenu.swift; sourceTree = "<group>"; };
+		659AD4C02CCB0D1D00F834E0 /* ModelMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMenu.swift; sourceTree = "<group>"; };
+		659AD4C12CCB0D1D00F834E0 /* TeamMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamMenu.swift; sourceTree = "<group>"; };
 		659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleView.swift; sourceTree = "<group>"; };
 		659AD4C92CCB0D3C00F834E0 /* HandInteractionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandInteractionView.swift; sourceTree = "<group>"; };
 		659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImmersiveModelView.swift; sourceTree = "<group>"; };
-		659AD4CB2CCB0D3C00F834E0 /* RealityModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealityModelView.swift; sourceTree = "<group>"; };
+		659AD4CB2CCB0D3C00F834E0 /* TabletopModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabletopModelView.swift; sourceTree = "<group>"; };
 		659AD4D12CCB0D6B00F834E0 /* NavigationControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControl.swift; sourceTree = "<group>"; };
 		659AD4D42CCB0D7600F834E0 /* HandTrackingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandTrackingViewModel.swift; sourceTree = "<group>"; };
-		65B7ABFA2CCB38F00068ED3D /* PluginArea.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginArea.swift; sourceTree = "<group>"; };
+		65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginMenu.swift; sourceTree = "<group>"; };
 		65E3C0132CEF12650037A68C /* tv_retro.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = tv_retro.usdz; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -102,7 +102,7 @@
 			children = (
 				659AD49F2CCB0B2500F834E0 /* opalApp.swift */,
 				65E3C0132CEF12650037A68C /* tv_retro.usdz */,
-				659AD4C22CCB0D1D00F834E0 /* Area */,
+				659AD4C22CCB0D1D00F834E0 /* Menu */,
 				659AD4CC2CCB0D3C00F834E0 /* View */,
 				659AD4D22CCB0D6B00F834E0 /* Control */,
 				659AD4D52CCB0D7600F834E0 /* Hand Interaction */,
@@ -138,21 +138,21 @@
 			path = opalTests;
 			sourceTree = "<group>";
 		};
-		659AD4C22CCB0D1D00F834E0 /* Area */ = {
+		659AD4C22CCB0D1D00F834E0 /* Menu */ = {
 			isa = PBXGroup;
 			children = (
-				659AD4C02CCB0D1D00F834E0 /* ModelArea.swift */,
-				65B7ABFA2CCB38F00068ED3D /* PluginArea.swift */,
-				659AD4BF2CCB0D1D00F834E0 /* HomeArea.swift */,
-				659AD4C12CCB0D1D00F834E0 /* TeamArea.swift */,
+				659AD4C02CCB0D1D00F834E0 /* ModelMenu.swift */,
+				65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */,
+				659AD4BF2CCB0D1D00F834E0 /* HomeMenu.swift */,
+				659AD4C12CCB0D1D00F834E0 /* TeamMenu.swift */,
 			);
-			path = Area;
+			path = Menu;
 			sourceTree = "<group>";
 		};
 		659AD4CC2CCB0D3C00F834E0 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				659AD4CB2CCB0D3C00F834E0 /* RealityModelView.swift */,
+				659AD4CB2CCB0D3C00F834E0 /* TabletopModelView.swift */,
 				659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */,
 				659AD4C92CCB0D3C00F834E0 /* HandInteractionView.swift */,
 				659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */,
@@ -282,16 +282,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				659AD4CD2CCB0D3C00F834E0 /* BubbleView.swift in Sources */,
-				659AD4C42CCB0D1D00F834E0 /* ModelArea.swift in Sources */,
+				659AD4C42CCB0D1D00F834E0 /* ModelMenu.swift in Sources */,
 				659AD4D62CCB0D7600F834E0 /* HandTrackingViewModel.swift in Sources */,
 				659AD4CF2CCB0D3C00F834E0 /* ImmersiveModelView.swift in Sources */,
-				659AD4C52CCB0D1D00F834E0 /* TeamArea.swift in Sources */,
+				659AD4C52CCB0D1D00F834E0 /* TeamMenu.swift in Sources */,
 				659AD4A02CCB0B2500F834E0 /* opalApp.swift in Sources */,
 				659AD4D32CCB0D6B00F834E0 /* NavigationControl.swift in Sources */,
 				659AD4CE2CCB0D3C00F834E0 /* HandInteractionView.swift in Sources */,
-				659AD4C32CCB0D1D00F834E0 /* HomeArea.swift in Sources */,
-				659AD4D02CCB0D3C00F834E0 /* RealityModelView.swift in Sources */,
-				65B7ABFB2CCB38F00068ED3D /* PluginArea.swift in Sources */,
+				659AD4C32CCB0D1D00F834E0 /* HomeMenu.swift in Sources */,
+				659AD4D02CCB0D3C00F834E0 /* TabletopModelView.swift in Sources */,
+				65B7ABFB2CCB38F00068ED3D /* PluginMenu.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

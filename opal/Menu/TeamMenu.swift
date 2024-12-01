@@ -1,6 +1,5 @@
 //
-//  TeamArea.swift
-//  TestApp
+//  TeamMenu.swift
 //
 //  Created by Vik Parth on 9/27/24.
 //
@@ -38,7 +37,7 @@ enum Team : String, Identifiable, CaseIterable, Equatable
 }
  
 
-struct TeamArea: View {
+struct TeamMenu: View {
     var body: some View {
         //Spacer()
         VStack{
@@ -79,5 +78,5 @@ struct TeamArea: View {
 }
 
 #Preview {
-    TeamArea()
+    TeamMenu()
 }

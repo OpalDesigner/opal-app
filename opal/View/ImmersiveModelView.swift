@@ -1,6 +1,5 @@
 //
 //  ImmersiveModelView.swift
-//  TestApp
 //
 //  Created by Vik Parth on 10/18/24.
 //
