@@ -5,8 +5,11 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct PluginMenu: View {
+    @State private var isPickingFile = false
+    
     var body: some View {
         NavigationStack {
             Text("Choose your tool to import from")
@@ -14,6 +17,7 @@ struct PluginMenu: View {
                 .padding(20)
                 .glassBackgroundEffect()
             HStack{
+                // Unreal Engine
                 VStack(alignment: .leading) {
                     Image("unreal-logo")
                         .resizable()
@@ -28,11 +32,13 @@ struct PluginMenu: View {
                     }label: {
                         Label("Import", systemImage: "arrow.triangle.2.circlepath.circle")
                     }
+                    .disabled(true)
                 }
                 .frame(width: 250, height: 300)
                 .padding(20)
                 .glassBackgroundEffect()
                 
+                // Blender
                 VStack(alignment: .leading) {
                     Image("blender-icon")
                         .resizable()
@@ -47,11 +53,13 @@ struct PluginMenu: View {
                     }label: {
                         Label("Import", systemImage: "arrow.triangle.2.circlepath.circle")
                     }
+                    .disabled(true)
                 }
                 .frame(width: 250, height: 300)
                 .padding(20)
                 .glassBackgroundEffect()
                 
+                // Gaussian Splats
                 VStack(alignment: .leading) {
                     Image("gaussian-splat")
                         .resizable()
@@ -62,9 +70,21 @@ struct PluginMenu: View {
                     Text("Import your Gaussian Splats (.ply) files to preview realistic 3D scenes")
                         .font(.system(size: 14))
                     Button{
-                        
+                        isPickingFile = true
                     }label: {
                         Label("Import", systemImage: "arrow.triangle.2.circlepath.circle")
+                    }
+                    .disabled(isPickingFile)
+                    .fileImporter(isPresented: $isPickingFile, allowedContentTypes: [UTType(filenameExtension: "ply")!, UTType(filenameExtension: "splat")!]) { result in
+                        isPickingFile = false
+                        if let url = try? result.get() {
+                            _ = url.startAccessingSecurityScopedResource()
+                            Task {
+                                try await Task.sleep(for: .seconds(10))
+                                url.stopAccessingSecurityScopedResource()
+                            }
+                            //openWindow(value: ModelIdentifier.gaussianSplat(url))
+                        }
                     }
                 }
                 .frame(width: 250, height: 300)
