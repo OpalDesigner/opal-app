@@ -36,25 +36,48 @@ struct ModelArea: View {
         ModelInfo(imageName: "solar-system",      windowID: "SolarSystemRealityView",     immersiveID: "SolarSystemImmersiveView"      )
     ]
     
-    // Add function to fetch S3 files
+    // Add function to get local document directory
+    private func getDocumentsDirectory() -> URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+    
+    // Update fetchS3Files to download files
     private func fetchS3Files() async {
         do {
             let s3Client = try S3Client(region: "us-east-1")
             let input = ListObjectsV2Input(bucket: "opal-designer")
             let output = try await s3Client.listObjectsV2(input: input)
             
-            // Extract file names, filter for .usdz files, and update state
             if let contents = output.contents {
                 let fileNames = contents.compactMap { $0.key }
                     .filter { $0.lowercased().hasSuffix(".usdz") }
+                
+                // Download each file
+                for fileName in fileNames {
+                    let getObjectInput = GetObjectInput(
+                        bucket: "opal-designer",
+                        key: fileName
+                    )
+                    
+                    let getObjectOutput = try await s3Client.getObject(input: getObjectInput)
+                    if let body = getObjectOutput.body {
+                        if let data = try await body.readData() {
+                            // Create local file URL
+                            let localURL = getDocumentsDirectory().appendingPathComponent(fileName)
+                            
+                            // Write file to disk
+                            try data.write(to: localURL)
+                            print("Successfully saved file to:", localURL.path)
+                        }
+                    }
+                }
+                
                 DispatchQueue.main.async {
                     self.s3Files = fileNames
-                    // Print only .usdz files to console
-                    print("USDZ Files found:", fileNames)
                 }
             }
         } catch {
-            print("Error fetching S3 files:", error)
+            print("Error handling S3 files:", error)
         }
     }
 
