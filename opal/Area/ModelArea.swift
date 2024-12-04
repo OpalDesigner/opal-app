@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AWSS3
 
 // Struct to hold Model info
 struct ModelInfo: Identifiable {
@@ -17,6 +18,9 @@ struct ModelInfo: Identifiable {
 
 // Setup Grid View
 struct ModelArea: View {
+    // Add state for S3 files
+    @State private var s3Files: [String] = []
+    
     let models = [
         ModelInfo(imageName: "coffee-shop",       windowID: "CoffeeShopRealityView",      immersiveID: "CoffeeShopImmersiveView"       ),
         ModelInfo(imageName: "house-interior",    windowID: "HouseInteriorRealityView",   immersiveID: "HouseInteriorImmersiveView"    ),
@@ -31,6 +35,28 @@ struct ModelArea: View {
         ModelInfo(imageName: "buster-drone",      windowID: "BusterDroneRealityView",     immersiveID: ""                              ),
         ModelInfo(imageName: "solar-system",      windowID: "SolarSystemRealityView",     immersiveID: "SolarSystemImmersiveView"      )
     ]
+    
+    // Add function to fetch S3 files
+    private func fetchS3Files() async {
+        do {
+            let s3Client = try S3Client(region: "us-east-1")
+            let input = ListObjectsV2Input(bucket: "opal-designer")
+            let output = try await s3Client.listObjectsV2(input: input)
+            
+            // Extract file names, filter for .usdz files, and update state
+            if let contents = output.contents {
+                let fileNames = contents.compactMap { $0.key }
+                    .filter { $0.lowercased().hasSuffix(".usdz") }
+                DispatchQueue.main.async {
+                    self.s3Files = fileNames
+                    // Print only .usdz files to console
+                    print("USDZ Files found:", fileNames)
+                }
+            }
+        } catch {
+            print("Error fetching S3 files:", error)
+        }
+    }
 
     var body: some View {
         // Add ScrollView for scrollability
@@ -48,6 +74,10 @@ struct ModelArea: View {
         }
         .background {
             Image("interior-shot-03")
+        }
+        .task {
+            // Fetch S3 files when view appears
+            await fetchS3Files()
         }
     }
 }
