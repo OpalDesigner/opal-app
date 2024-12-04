@@ -34,12 +34,21 @@ struct RealityModelView: View {
     // Notifications setup
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
 
+    // Add this helper function
+    private func loadRootEntity() async throws -> Entity {
+        guard let rootEntity = try? await Entity(named: modelName, in: realityKitContentBundle) else {
+            throw NSError(domain: "RealityModelView", 
+                         code: 1, 
+                         userInfo: [NSLocalizedDescriptionKey: "Unable to load scene model: \(modelName)"])
+        }
+        return rootEntity
+    }
+    
     var body: some View {
         Spacer()
         RealityView { content in
-            // Load 3D model
-            guard let rootEntity = try? await Entity(named: modelName, in: realityKitContentBundle)
-            else {fatalError("Unable to load scene model: \(modelName)")}
+            // Replace existing loading code with helper function
+            let rootEntity = try await loadRootEntity()
             content.add(rootEntity)
                         
             print("\n\(modelName) Debug Information:")
