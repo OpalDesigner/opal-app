@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import AWSS3
 
 @main
 struct opalApp: App {
     // Access shared data in NavigationControlUI.swift
     @StateObject var navigationData = NavigationData()
-        
+    @State private var s3Files: [String] = []
+    
     var body: some Scene {
         //MAIN SCENE
         WindowGroup(id: "Menu") {
@@ -32,6 +34,9 @@ struct opalApp: App {
                     .tabItem{
                         Label("Team", systemImage: "person")
                     }
+            }
+            .task {
+                await fetchS3Files()
             }
         }
         .defaultSize(CGSize(width: 1000, height: 880))
@@ -58,6 +63,26 @@ struct opalApp: App {
         
         //3D MODEL SETS - WINDOW VIEWS
         Group {
+            WindowGroup(id: "SewageRealityView") {
+                RealityModelView(
+                    modelName: "Sewage",
+                    initialPosition: SIMD3<Float>(0, 0, 0),
+                    initialScale: 0.03)
+            }
+            //.volumeWorldAlignment(.gravityAligned)
+            .defaultWindowPlacement{content, context in
+                let size = content.sizeThatFits(.unspecified)
+                let mainWindow = context.windows.first { window in
+                    window.id == "Menu"
+                }
+                if let mainWindow{
+                    return WindowPlacement(.trailing(mainWindow), size: size)
+                }
+                return WindowPlacement(size: size)
+            }
+            .windowStyle(.volumetric)
+            .defaultSize(width: 2, height: 1, depth: 2, in: .meters)
+
             WindowGroup(id: "CoffeeShopRealityView") {
                 RealityModelView(
                     modelName: "Coffee_Shop",
@@ -388,7 +413,47 @@ struct opalApp: App {
         }
         
     }
+    
+    private func fetchS3Files() async {
+        do {
+            let s3Client = try S3Client(region: "us-east-1")
+            let input = ListObjectsV2Input(bucket: "opal-designer")
+            let output = try await s3Client.listObjectsV2(input: input)
+            
+            if let contents = output.contents {
+                let fileNames = contents.compactMap { $0.key }
+                    .filter { $0.lowercased().hasSuffix(".usdz") }
+                
+                // Download each file
+                for fileName in fileNames {
+                    let getObjectInput = GetObjectInput(
+                        bucket: "opal-designer",
+                        key: fileName
+                    )
+                    print("Downloading file: \(fileName)")
+                    let getObjectOutput = try await s3Client.getObject(input: getObjectInput)
+                    if let body = getObjectOutput.body {
+                        if let data = try await body.readData() {
+                            // Create local file URL
+                            let localURL = getDocumentsDirectory().appendingPathComponent(fileName)
+                            
+                            // Write file to disk
+                            try data.write(to: localURL)
+                            print("Successfully saved file to:", localURL.path)
+                        }
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    self.s3Files = fileNames
+                }
+            }
+        } catch {
+            print("Error handling S3 files:", error)
+        }
+    }
+    
+    private func getDocumentsDirectory() -> URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
 }
-
-
-

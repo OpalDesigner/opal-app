@@ -35,20 +35,37 @@ struct RealityModelView: View {
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
 
     // Add this helper function
-    private func loadRootEntity() async throws -> Entity {
-        guard let rootEntity = try? await Entity(named: modelName, in: realityKitContentBundle) else {
-            throw NSError(domain: "RealityModelView", 
-                         code: 1, 
-                         userInfo: [NSLocalizedDescriptionKey: "Unable to load scene model: \(modelName)"])
+    private func loadRootEntity() async -> Entity? {
+        // Try loading from the realityKitContentBundle first
+        do {
+            return try await Entity(named: modelName, in: realityKitContentBundle)
+        } catch {
+            // If that fails, try loading from the app's document directory
+            let fileManager = FileManager.default
+            if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+                let modelURL = documentsDirectory.appendingPathComponent("uploads/\(modelName).usdz")
+                if fileManager.fileExists(atPath: modelURL.path) {
+                    do {
+                        return try await Entity.load(contentsOf: modelURL)
+                    } catch {
+                        print("Error loading model from documents: \(error.localizedDescription)")
+                        return nil
+                    }
+                }
+            }
+            print("Error loading model from bundle: \(error.localizedDescription)")
+            return nil
         }
-        return rootEntity
     }
     
     var body: some View {
         Spacer()
         RealityView { content in
             // Replace existing loading code with helper function
-            let rootEntity = try await loadRootEntity()
+            guard let rootEntity = await loadRootEntity() else {
+                print("Failed to load model: \(modelName)")
+                return
+            }
             content.add(rootEntity)
                         
             print("\n\(modelName) Debug Information:")
