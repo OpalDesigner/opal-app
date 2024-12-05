@@ -14,6 +14,34 @@ struct opalApp: App {
     @StateObject var navigationData = NavigationData()
     @State private var s3Files: [String] = []
     
+    var realityViews: [String] = [
+        "Sewage",
+        "Coffee_Shop",
+        "House_Interior",
+        "Budapest_Hotel",
+        "SpaceStation_Hall",
+        "Old_Classroom",
+        "Bedroom",
+        "Potions_Store",
+        "Convenience_Store",
+        "Old_Hotel",
+        "Mech_Drone",
+        "Buster_Drone"
+    ]
+
+    var immersiveViews: [String] = [
+        "CoffeeShop",
+        "HouseInterior",
+        "BudapestHotel",
+        "SpaceStation",
+        "Classroom",
+        "Bedroom",
+        "PotionsStore",
+        "ConvenienceStore",
+        "OldHotel",
+        "Planets"
+    ]
+
     var body: some Scene {
         //MAIN SCENE
         WindowGroup(id: "Menu") {
