@@ -44,22 +44,18 @@ struct opalApp: App {
 
     private func createMainMenu() -> some View {
         TabView {
-            ModelArea()
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
-                }
-            PluginArea()
-                .tabItem {
-                    Label("Import", systemImage: "square.and.arrow.down")
-                }
-            HomeArea()
-                .tabItem {
-                    Label("About", systemImage: "building.2.fill")
-                }
-            TeamArea()
-                .tabItem {
-                    Label("Team", systemImage: "person")
-                }
+            ModelArea().tabItem {
+                Label("Home", systemImage: "house.fill")
+            }
+            PluginArea().tabItem {
+                Label("Import", systemImage: "square.and.arrow.down")
+            }
+            HomeArea().tabItem {
+                Label("About", systemImage: "building.2.fill")
+            }
+            TeamArea().tabItem {
+                Label("Team", systemImage: "person")
+            }
         }
         .task {
             await fetchS3Files()
@@ -67,13 +63,13 @@ struct opalApp: App {
     }
 
     var body: some Scene {
-        //MAIN SCENE
+        // MAIN SCENE
         WindowGroup(id: "Menu") {
             createMainMenu()
         }
         .defaultSize(CGSize(width: 1000, height: 880))
         
-        //NAVIGATION CONTROL
+        // NAVIGATION CONTROL
         WindowGroup(id: "NavigationControl") {
             NavigationControl(navigationData: navigationData)
         }
@@ -82,20 +78,24 @@ struct opalApp: App {
         }
         .defaultSize(CGSize(width: 300, height: 350))
         
-        //HAND INTERACTION
+        // HAND INTERACTION
         ImmersiveSpace(id: "HandInteractionView"){
             HandInteractionView()
         }
         
-        //BUBBLE ANIMATION 
+        // BUBBLE ANIMATION 
         ImmersiveSpace(id: "BubbleView") {
             BubbleView()
         }
         .immersionStyle(selection: .constant(.full), in: .full)
         
-        //3D MODEL SETS - WINDOW VIEWS
-        WindowGroup(id: "ModelRealityView") {
-            ModelRealityView()
+        // 3D MODEL SETS - WINDOW VIEWS
+        WindowGroup(id: "ModelRealityView", for: ModelInfo.self) { modelInfo in
+            if let modelInfo = modelInfo.wrappedValue {
+                ModelRealityView(modelInfo: modelInfo)
+            } else {
+                Text("No model information available")
+            }
         }
         .windowStyle(.volumetric)
         .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
@@ -110,14 +110,18 @@ struct opalApp: App {
             return WindowPlacement(size: size)
         }
         
-        //3D MODEL SETS - IMMERSIVE VIEWS
+        // 3D MODEL SETS - IMMERSIVE VIEWS
         Group {
-            ImmersiveSpace(id: "ModelImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "Old_Hotel",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.035)
+            ImmersiveSpace(id: "ModelImmersiveView", for: ModelInfo.self) { modelInfo in
+                if let modelInfo = modelInfo.wrappedValue {
+                    ImmersiveModelView(
+                        navigationData: navigationData,
+                        modelName: modelInfo.modelName,
+                        initialPosition: modelInfo.initialPosition,
+                        initialScale: modelInfo.immersiveScale)
+                } else {
+                    Text("No model information available")
+                }
             }
         }.immersionStyle(selection: .constant(.full), in: .full)
     }
@@ -163,5 +167,25 @@ struct opalApp: App {
     
     private func getDocumentsDirectory() -> URL {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+    }
+}
+
+struct ModelRealityView: View {
+    @State private var modelName: String
+    @State private var initialPosition: SIMD3<Float>
+    @State private var initialScale: Float
+
+    init(modelInfo: ModelInfo) {
+        _modelName = State(initialValue: modelInfo.modelName)
+        _initialPosition = State(initialValue: modelInfo.initialPosition)
+        _initialScale = State(initialValue: modelInfo.realityScale)
+    }
+
+    var body: some View {
+        RealityModelView(
+            modelName: modelName,
+            initialPosition: initialPosition,
+            initialScale: initialScale
+        )
     }
 }
