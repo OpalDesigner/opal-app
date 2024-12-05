@@ -42,30 +42,34 @@ struct opalApp: App {
         "Planets"
     ]
 
+    private func createMainMenu() -> some View {
+        TabView {
+            ModelArea()
+                .tabItem {
+                    Label("Home", systemImage: "house.fill")
+                }
+            PluginArea()
+                .tabItem {
+                    Label("Import", systemImage: "square.and.arrow.down")
+                }
+            HomeArea()
+                .tabItem {
+                    Label("About", systemImage: "building.2.fill")
+                }
+            TeamArea()
+                .tabItem {
+                    Label("Team", systemImage: "person")
+                }
+        }
+        .task {
+            await fetchS3Files()
+        }
+    }
+
     var body: some Scene {
         //MAIN SCENE
         WindowGroup(id: "Menu") {
-            TabView{
-                ModelArea()
-                    .tabItem{
-                        Label("Home", systemImage: "house.fill")
-                    }
-                PluginArea()
-                    .tabItem{
-                        Label("Import", systemImage: "square.and.arrow.down")
-                    }
-                HomeArea()
-                    .tabItem{
-                        Label("About", systemImage: "building.2.fill")
-                    }
-                TeamArea()
-                    .tabItem{
-                        Label("Team", systemImage: "person")
-                    }
-            }
-            .task {
-                await fetchS3Files()
-            }
+            createMainMenu()
         }
         .defaultSize(CGSize(width: 1000, height: 880))
         
