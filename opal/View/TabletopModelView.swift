@@ -62,11 +62,11 @@ struct TabletopModelView: View {
         Spacer()
         RealityView { content in
             // Replace existing loading code with helper function
-            guard let rootEntity = await loadRootEntity() else {
+            guard let modelEntity = await loadRootEntity() else {
                 print("Failed to load model: \(modelName)")
                 return
             }
-            content.add(rootEntity)
+            content.add(modelEntity)
                         
             print("\n\(modelName) Debug Information:")
             print("Initial Position:     \(initialPosition)")

@@ -22,6 +22,8 @@ struct ImmersiveModelView: View {
     // Function parameters
     @ObservedObject var navigationData: NavigationData
     let modelName: String
+    let initialPosition: SIMD3<Float>
+    let initialScale: Float
     
     var body: some View {
         RealityView{ content in
@@ -174,6 +176,8 @@ struct ImmersiveModelView: View {
 #Preview {
     ImmersiveModelView(
         navigationData: NavigationData(),
-        modelName: "Planets"
+        modelName: "Planets",
+        initialPosition: SIMD3<Float>(0, 0, 0),
+        initialScale: 1
     )
 }

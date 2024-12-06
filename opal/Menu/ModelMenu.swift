@@ -20,7 +20,7 @@ struct ModelInfo: Identifiable, Codable, Hashable {
 }
 
 // Setup Grid View
-struct ModelArea: View {
+struct ModelMenu: View {
     @State private var models: [ModelInfo] = []  // Convert from constant to state
     
     // Add timer for polling

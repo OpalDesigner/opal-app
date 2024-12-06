@@ -11,21 +11,22 @@ import AWSS3
 @main
 struct opalApp: App {
     // Access shared data in NavigationControlUI.swift
+    @State private var s3Files: [String] = []
     @StateObject var navigationData = NavigationData()
     @State private var fetchTimer: Timer?
     
     private func createMainMenu() -> some View {
         TabView {
-            ModelArea().tabItem {
+            ModelMenu().tabItem {
                 Label("Home", systemImage: "house.fill")
             }
-            PluginArea().tabItem {
+            ModelMenu().tabItem {
                 Label("Import", systemImage: "square.and.arrow.down")
             }
-            HomeArea().tabItem {
+            ModelMenu().tabItem {
                 Label("About", systemImage: "building.2.fill")
             }
-            TeamArea().tabItem {
+            ModelMenu().tabItem {
                 Label("Team", systemImage: "person")
             }
         }
@@ -167,7 +168,7 @@ struct ModelRealityView: View {
     }
 
     var body: some View {
-        RealityModelView(
+        TabletopModelView(
             modelName: modelName,
             initialPosition: initialPosition,
             initialScale: initialScale
