@@ -13,35 +13,8 @@ struct opalApp: App {
     // Access shared data in NavigationControlUI.swift
     @StateObject var navigationData = NavigationData()
     @State private var s3Files: [String] = []
+    @State private var fetchTimer: Timer?
     
-    var realityViews: [String] = [
-        "Sewage",
-        "Coffee_Shop",
-        "House_Interior",
-        "Budapest_Hotel",
-        "SpaceStation_Hall",
-        "Old_Classroom",
-        "Bedroom",
-        "Potions_Store",
-        "Convenience_Store",
-        "Old_Hotel",
-        "Mech_Drone",
-        "Buster_Drone"
-    ]
-
-    var immersiveViews: [String] = [
-        "CoffeeShop",
-        "HouseInterior",
-        "BudapestHotel",
-        "SpaceStation",
-        "Classroom",
-        "Bedroom",
-        "PotionsStore",
-        "ConvenienceStore",
-        "OldHotel",
-        "Planets"
-    ]
-
     private func createMainMenu() -> some View {
         TabView {
             ModelArea().tabItem {
@@ -58,7 +31,20 @@ struct opalApp: App {
             }
         }
         .task {
+            print("Fetching S3 files...")
             await fetchS3Files()
+            setupPeriodicFetch()
+        }
+    }
+
+    private func setupPeriodicFetch() {
+        fetchTimer?.invalidate()
+        
+        fetchTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
+            Task {
+                print("Fetching S3 files...")
+                await fetchS3Files()
+            }
         }
     }
 

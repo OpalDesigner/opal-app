@@ -47,6 +47,7 @@ struct ModelArea: View {
             updateModels()
         }
         .onReceive(timer) { _ in
+            print("Checking for new model files...")
             updateModels()
         }
     }
