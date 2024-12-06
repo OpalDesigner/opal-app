@@ -6,37 +6,55 @@
 //
 
 import SwiftUI
+import AWSS3
 
 @main
 struct opalApp: App {
     // Access shared data in NavigationControlUI.swift
     @StateObject var navigationData = NavigationData()
-        
-    var body: some Scene {
-        //MAIN SCENE
-        WindowGroup(id: "Menu") {
-            TabView{
-                ModelMenu()
-                    .tabItem{
-                        Label("Home", systemImage: "house.fill")
-                    }
-                PluginMenu()
-                    .tabItem{
-                        Label("Import", systemImage: "square.and.arrow.down")
-                    }
-                HomeMenu()
-                    .tabItem{
-                        Label("About", systemImage: "building.2.fill")
-                    }
-                TeamMenu()
-                    .tabItem{
-                        Label("Team", systemImage: "person")
-                    }
+    @State private var fetchTimer: Timer?
+    
+    private func createMainMenu() -> some View {
+        TabView {
+            ModelArea().tabItem {
+                Label("Home", systemImage: "house.fill")
             }
+            PluginArea().tabItem {
+                Label("Import", systemImage: "square.and.arrow.down")
+            }
+            HomeArea().tabItem {
+                Label("About", systemImage: "building.2.fill")
+            }
+            TeamArea().tabItem {
+                Label("Team", systemImage: "person")
+            }
+        }
+        .task {
+            print("Fetching S3 files...")
+            await fetchS3Files()
+            setupPeriodicFetch()
+        }
+    }
+
+    private func setupPeriodicFetch() {
+        fetchTimer?.invalidate()
+        
+        fetchTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
+            Task {
+                print("Fetching S3 files...")
+                await fetchS3Files()
+            }
+        }
+    }
+
+    var body: some Scene {
+        // MAIN SCENE
+        WindowGroup(id: "Menu") {
+            createMainMenu()
         }
         .defaultSize(CGSize(width: 1000, height: 880))
         
-        //NAVIGATION CONTROL
+        // NAVIGATION CONTROL
         WindowGroup(id: "NavigationControl") {
             NavigationControl(navigationData: navigationData)
         }
@@ -45,340 +63,114 @@ struct opalApp: App {
         }
         .defaultSize(CGSize(width: 300, height: 350))
         
-        //HAND INTERACTION
+        // HAND INTERACTION
         ImmersiveSpace(id: "HandInteractionView"){
             HandInteractionView()
         }
         
-        //BUBBLE ANIMATION 
+        // BUBBLE ANIMATION 
         ImmersiveSpace(id: "BubbleView") {
             BubbleView()
         }
         .immersionStyle(selection: .constant(.full), in: .full)
         
-        //3D MODEL SETS - TABLETOP VIEWS
+        // 3D MODEL SETS - WINDOW VIEWS
+        WindowGroup(id: "ModelRealityView", for: ModelInfo.self) { modelInfo in
+            if let modelInfo = modelInfo.wrappedValue {
+                ModelRealityView(modelInfo: modelInfo)
+            } else {
+                Text("No model information available")
+            }
+        }
+        .windowStyle(.volumetric)
+        .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
+        .defaultWindowPlacement{content, context in
+            let size = content.sizeThatFits(.unspecified)
+            let mainWindow = context.windows.first { window in
+                window.id == "Menu"
+            }
+            if let mainWindow{
+                return WindowPlacement(.trailing(mainWindow), size: size)
+            }
+            return WindowPlacement(size: size)
+        }
+        
+        // 3D MODEL SETS - IMMERSIVE VIEWS
         Group {
-            WindowGroup(id: "CoffeeShopRealityView") {
-                TabletopModelView(
-                    modelName: "Coffee_Shop",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.1)
-            }
-            //.volumeWorldAlignment(.gravityAligned)
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
+            ImmersiveSpace(id: "ModelImmersiveView", for: ModelInfo.self) { modelInfo in
+                if let modelInfo = modelInfo.wrappedValue {
+                    ImmersiveModelView(
+                        navigationData: navigationData,
+                        modelName: modelInfo.modelName,
+                        initialPosition: modelInfo.initialPosition,
+                        initialScale: modelInfo.immersiveScale)
+                } else {
+                    Text("No model information available")
                 }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
             }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
+        }.immersionStyle(selection: .constant(.full), in: .full)
+    }
+    
+    private func fetchS3Files() async {
+        do {
+            let s3Client = try S3Client(region: "us-east-1")
+            let input = ListObjectsV2Input(bucket: "opal-designer")
+            let output = try await s3Client.listObjectsV2(input: input)
             
-            WindowGroup(id: "HouseInteriorRealityView") {
-                TabletopModelView(
-                    modelName: "House_Interior",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.03)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
+            if let contents = output.contents {
+                let fileNames = contents.compactMap { $0.key }
+                    .filter { $0.lowercased().hasSuffix(".usdz") }
+                
+                // Download each file
+                for fileName in fileNames {
+                    let getObjectInput = GetObjectInput(
+                        bucket: "opal-designer",
+                        key: fileName
+                    )
+                    print("Downloading file: \(fileName)")
+                    let getObjectOutput = try await s3Client.getObject(input: getObjectInput)
+                    if let body = getObjectOutput.body {
+                        if let data = try await body.readData() {
+                            // Create local file URL
+                            let localURL = getDocumentsDirectory().appendingPathComponent(fileName)
+                            
+                            // Write file to disk
+                            try data.write(to: localURL)
+                            print("Successfully saved file to:", localURL.path)
+                        }
+                    }
                 }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
+                
+                DispatchQueue.main.async {
+                    self.s3Files = fileNames
                 }
-                return WindowPlacement(size: size)
             }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "BudapestHotelRealityView") {
-                TabletopModelView(
-                    modelName: "Budapest_Hotel",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.015)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "SpaceStationRealityView") {
-                TabletopModelView(
-                    modelName: "SpaceStation_Hall",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.05)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "ClassroomRealityView") {
-                TabletopModelView(
-                    modelName: "Old_Classroom",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.0667)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "BedroomRealityView") {
-                TabletopModelView(
-                    modelName: "Bedroom",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.0833)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "PotionsStoreRealityView") {
-                TabletopModelView(
-                    modelName: "Potions_Store",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.04)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "ConvenienceStoreRealityView") {
-                TabletopModelView(
-                    modelName: "Convenience_Store",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.1)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "OldHotelRealityView") {
-                TabletopModelView(
-                    modelName: "Old_Hotel",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.0286)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
+        } catch {
+            print("Error handling S3 files:", error)
         }
-        
-        //3D MODEL SETS - IMMERSIVE VIEWS
-        Group {
-            ImmersiveSpace(id: "CoffeeShopImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "Coffee_Shop"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-            
-            ImmersiveSpace(id: "HouseInteriorImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "House_Interior"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-            
-            ImmersiveSpace(id: "BudapestHotelImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "Budapest_Hotel"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-            
-            ImmersiveSpace(id: "SpaceStationImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "SpaceStation_Hall"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-            
-            ImmersiveSpace(id: "ClassroomImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "Old_Classroom"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-            
-            ImmersiveSpace(id: "BedroomImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "Bedroom"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-            
-            ImmersiveSpace(id: "PotionsStoreImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "Potions_Store"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-            
-            ImmersiveSpace(id: "ConvenienceStoreImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "Convenience_Store"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-            
-            ImmersiveSpace(id: "OldHotelImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "Old_Hotel"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-        }
-        
-        //Drone
-        Group{
-            WindowGroup(id: "MechDroneRealityView") {
-                TabletopModelView(
-                    modelName: "Mech_Drone",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.01)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-            
-            WindowGroup(id: "BusterDroneRealityView") {
-                TabletopModelView(
-                    modelName: "Buster_Drone",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.002)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-        }
-        
-        //Solar System
-        Group{
-            WindowGroup(id: "SolarSystemRealityView") {
-                TabletopModelView(
-                    modelName: "Planets",
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    initialScale: 0.25)
-            }
-            .defaultWindowPlacement{content, context in
-                let size = content.sizeThatFits(.unspecified)
-                let mainWindow = context.windows.first { window in
-                    window.id == "Menu"
-                }
-                if let mainWindow{
-                    return WindowPlacement(.trailing(mainWindow), size: size)
-                }
-                return WindowPlacement(size: size)
-            }
-            .windowStyle(.volumetric)
-            .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-            
-            ImmersiveSpace(id: "SolarSystemImmersiveView") {
-                ImmersiveModelView(
-                    navigationData: navigationData,
-                    modelName: "Planets"
-                )
-            }
-            .immersionStyle(selection: .constant(.full), in: .full)
-        }
-        
+    }
+    
+    private func getDocumentsDirectory() -> URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
 }
 
+struct ModelRealityView: View {
+    @State private var modelName: String
+    @State private var initialPosition: SIMD3<Float>
+    @State private var initialScale: Float
 
+    init(modelInfo: ModelInfo) {
+        _modelName = State(initialValue: modelInfo.modelName)
+        _initialPosition = State(initialValue: modelInfo.initialPosition)
+        _initialScale = State(initialValue: modelInfo.realityScale)
+    }
 
+    var body: some View {
+        RealityModelView(
+            modelName: modelName,
+            initialPosition: initialPosition,
+            initialScale: initialScale
+        )
+    }
+}

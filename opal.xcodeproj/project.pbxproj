@@ -24,6 +24,8 @@
 		659AD4D62CCB0D7600F834E0 /* HandTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4D42CCB0D7600F834E0 /* HandTrackingViewModel.swift */; };
 		65B7ABFB2CCB38F00068ED3D /* PluginMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */; };
 		65E3C0142CEF12650037A68C /* tv_retro.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 65E3C0132CEF12650037A68C /* tv_retro.usdz */; };
+		A58EA5282CFFB4C1009E4EB4 /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = A58EA5272CFFB4C1009E4EB4 /* AWSS3 */; };
+		A5C83D702CFFA45C00B2BF0C /* untitled.usdz in Resources */ = {isa = PBXBuildFile; fileRef = A5C83D6F2CFFA45B00B2BF0C /* untitled.usdz */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +59,7 @@
 		659AD4D42CCB0D7600F834E0 /* HandTrackingViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HandTrackingViewModel.swift; sourceTree = "<group>"; };
 		65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginMenu.swift; sourceTree = "<group>"; };
 		65E3C0132CEF12650037A68C /* tv_retro.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = tv_retro.usdz; sourceTree = "<group>"; };
+		A5C83D6F2CFFA45B00B2BF0C /* untitled.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = untitled.usdz; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +67,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A58EA5282CFFB4C1009E4EB4 /* AWSS3 in Frameworks */,
 				659AD49E2CCB0B2500F834E0 /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,6 +105,7 @@
 			isa = PBXGroup;
 			children = (
 				659AD49F2CCB0B2500F834E0 /* opalApp.swift */,
+				A5C83D6F2CFFA45B00B2BF0C /* untitled.usdz */,
 				65E3C0132CEF12650037A68C /* tv_retro.usdz */,
 				659AD4C22CCB0D1D00F834E0 /* Menu */,
 				659AD4CC2CCB0D3C00F834E0 /* View */,
@@ -194,6 +199,7 @@
 			name = opal;
 			packageProductDependencies = (
 				659AD49D2CCB0B2500F834E0 /* RealityKitContent */,
+				A58EA5272CFFB4C1009E4EB4 /* AWSS3 */,
 			);
 			productName = opal;
 			productReference = 659AD4982CCB0B2500F834E0 /* opal.app */;
@@ -245,6 +251,9 @@
 				Base,
 			);
 			mainGroup = 659AD48F2CCB0B2500F834E0;
+			packageReferences = (
+				A58EA5262CFFB412009E4EB4 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
+			);
 			productRefGroup = 659AD4992CCB0B2500F834E0 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -261,6 +270,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				659AD4A82CCB0B2500F834E0 /* Assets.xcassets in Resources */,
+				A5C83D702CFFA45C00B2BF0C /* untitled.usdz in Resources */,
 				659AD4AB2CCB0B2500F834E0 /* Preview Assets.xcassets in Resources */,
 				659AD4A62CCB0B2500F834E0 /* ImageBasedLighting.skybox in Resources */,
 				65E3C0142CEF12650037A68C /* tv_retro.usdz in Resources */,
@@ -508,7 +518,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/opal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/opal";
-				XROS_DEPLOYMENT_TARGET = 1.2;
+				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -529,7 +539,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,7";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/opal.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/opal";
-				XROS_DEPLOYMENT_TARGET = 1.2;
+				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -565,10 +575,26 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		A58EA5262CFFB412009E4EB4 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/awslabs/aws-sdk-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.53;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		659AD49D2CCB0B2500F834E0 /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RealityKitContent;
+		};
+		A58EA5272CFFB4C1009E4EB4 /* AWSS3 */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A58EA5262CFFB412009E4EB4 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSS3;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

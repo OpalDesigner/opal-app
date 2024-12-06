@@ -6,48 +6,95 @@
 //
 
 import SwiftUI
+import AWSS3
 
 // Struct to hold Model info
-struct ModelInfo: Identifiable {
+struct ModelInfo: Identifiable, Codable, Hashable {
     let id = UUID()
     let imageName: String
-    let windowID: String
-    let immersiveID: String
+    let modelName: String
+    let immersive: Bool
+    let initialPosition: SIMD3<Float>
+    let realityScale: Float
+    let immersiveScale: Float
 }
 
 // Setup Grid View
-struct ModelMenu: View {
-    let models = [
-        ModelInfo(imageName: "coffee-shop",       windowID: "CoffeeShopRealityView",      immersiveID: "CoffeeShopImmersiveView"       ),
-        ModelInfo(imageName: "house-interior",    windowID: "HouseInteriorRealityView",   immersiveID: "HouseInteriorImmersiveView"    ),
-        ModelInfo(imageName: "budapest-hotel",    windowID: "BudapestHotelRealityView",   immersiveID: "BudapestHotelImmersiveView"    ),
-        ModelInfo(imageName: "space-corridor",    windowID: "SpaceStationRealityView",    immersiveID: "SpaceStationImmersiveView"     ),
-        ModelInfo(imageName: "classroom",         windowID: "ClassroomRealityView",       immersiveID: "ClassroomImmersiveView"        ),
-        ModelInfo(imageName: "bedroom",           windowID: "BedroomRealityView",         immersiveID: "BedroomImmersiveView"          ),
-        ModelInfo(imageName: "potions-store",     windowID: "PotionsStoreRealityView",    immersiveID: "PotionsStoreImmersiveView"     ),
-        ModelInfo(imageName: "convenience-store", windowID: "ConvenienceStoreRealityView",immersiveID: "ConvenienceStoreImmersiveView" ),
-        ModelInfo(imageName: "old-hotel",         windowID: "OldHotelRealityView",        immersiveID: "OldHotelImmersiveView"         ),
-        ModelInfo(imageName: "mech-drone",        windowID: "MechDroneRealityView",       immersiveID: ""                              ),
-        ModelInfo(imageName: "buster-drone",      windowID: "BusterDroneRealityView",     immersiveID: ""                              ),
-        ModelInfo(imageName: "solar-system",      windowID: "SolarSystemRealityView",     immersiveID: "SolarSystemImmersiveView"      )
-    ]
-
+struct ModelArea: View {
+    @State private var models: [ModelInfo] = []  // Convert from constant to state
+    
+    // Add timer for polling
+    let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    
     var body: some View {
-        // Add ScrollView for scrollability
         ScrollView {
             LazyVGrid(columns: [
-                GridItem(.flexible()), // Each column takes up equal width
+                GridItem(.flexible()),
                 GridItem(.flexible()),
                 GridItem(.flexible())
             ], spacing: 20) {
-                ForEach(models, id: \.windowID) { model in
+                ForEach(models, id: \.id) { model in
                     ModelItemView(model: model)
                 }
             }
-            .padding(20) // Add padding around the grid
+            .padding(20)
         }
+        .id(models)
         .background {
             Image("interior-shot-03")
+        }
+        .onAppear {
+            updateModels()
+        }
+        .onReceive(timer) { _ in
+            print("Checking for new model files...")
+            updateModels()
+        }
+    }
+    
+    private func updateModels() {
+        let fileManager = FileManager.default
+        guard let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+        
+        // Create path to Documents/uploads
+        let uploadsPath = documentsPath.appendingPathComponent("uploads")
+        
+        do {
+            let files = try fileManager.contentsOfDirectory(at: uploadsPath, includingPropertiesForKeys: nil)
+            let usdzFiles = files.filter { $0.pathExtension.lowercased() == "usdz" }
+            
+            // Convert USDZ files to ModelInfo objects
+            let newModels = usdzFiles.map { url in
+                ModelInfo(
+                    imageName: "",  // Default empty image
+                    modelName: url.deletingPathExtension().lastPathComponent,
+                    immersive: false,  // Default to non-immersive
+                    initialPosition: SIMD3<Float>(0, 0, 0),
+                    realityScale: 0.03,  // Default scale
+                    immersiveScale: 0.1   // Default immersive scale
+                )
+            }
+            
+            // Combine default models with discovered models
+            let defaultModels = [
+                ModelInfo(imageName: "coffee-shop",       modelName: "Coffee_Shop",       immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.01),
+                ModelInfo(imageName: "house-interior",    modelName: "House_Interior",    immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.03),
+                ModelInfo(imageName: "budapest-hotel",    modelName: "Budapest_Hotel",    immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.0015, immersiveScale: 0.1),
+                ModelInfo(imageName: "space-corridor",    modelName: "SpaceStation_Hall", immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.02),
+                ModelInfo(imageName: "classroom",         modelName: "Old_Classroom",     immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.015),
+                ModelInfo(imageName: "bedroom",           modelName: "Bedroom",           immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.012),
+                ModelInfo(imageName: "potions-store",     modelName: "Potions_Store",     immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.025),
+                ModelInfo(imageName: "convenience-store", modelName: "Convenience_Store", immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.01),
+                ModelInfo(imageName: "old-hotel",         modelName: "Old_Hotel",         immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.035),
+                ModelInfo(imageName: "mech-drone",        modelName: "Mech_Drone",        immersive: false, initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.01,   immersiveScale: 0.1),
+                ModelInfo(imageName: "buster-drone",      modelName: "Buster_Drone",      immersive: false, initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.002,  immersiveScale: 0.1),
+                ModelInfo(imageName: "solar-system",      modelName: "Planets",           immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.25,   immersiveScale: 1)
+            ]
+            
+            // Update models array with both default and discovered models
+            models = newModels + defaultModels
+        } catch {
+            print("Error reading uploads directory: \(error)")
         }
     }
 }
@@ -68,11 +115,11 @@ struct ModelItemView: View {
     var body: some View {
         VStack() {
             Button {
-                if model.immersiveID != "" {
+                if model.immersive {
                     isImmersiveOpen.toggle()
                     Task {
                         if isImmersiveOpen {
-                            await openImmersiveSpace(id: model.immersiveID)
+                            await openImmersiveSpace(id: "ModelImmersiveView", value: model)
                             openWindow(id: "NavigationControl")
                         } else {
                             await dismissImmersiveSpace()
@@ -81,7 +128,7 @@ struct ModelItemView: View {
                     }
                 }
             } label: {
-                Image(model.imageName)
+                Image(model.imageName.isEmpty ? "ui" : model.imageName)
                     .resizable()
                     .scaledToFill()
                     .frame(width: 275, height: 200)
@@ -94,9 +141,9 @@ struct ModelItemView: View {
                 Button {
                     isWindowOpen.toggle()
                     if isWindowOpen {
-                        openWindow(id: model.windowID)
+                        openWindow(id: "ModelRealityView", value: model)
                     } else {
-                        dismissWindow(id: model.windowID)
+                        dismissWindow(id: "ModelRealityView")
                     }
                 } label: {
                     Label("", systemImage: "cube.fill")

@@ -34,13 +34,39 @@ struct TabletopModelView: View {
     // Notifications setup
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
 
+    // Add this helper function
+    private func loadRootEntity() async -> Entity? {
+        // Try loading from the realityKitContentBundle first
+        do {
+            return try await Entity(named: modelName, in: realityKitContentBundle)
+        } catch {
+            // If that fails, try loading from the app's document directory
+            let fileManager = FileManager.default
+            if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+                let modelURL = documentsDirectory.appendingPathComponent("uploads/\(modelName).usdz")
+                if fileManager.fileExists(atPath: modelURL.path) {
+                    do {
+                        return try await Entity.load(contentsOf: modelURL)
+                    } catch {
+                        print("Error loading model from documents: \(error.localizedDescription)")
+                        return nil
+                    }
+                }
+            }
+            print("Error loading model from bundle: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
     var body: some View {
         Spacer()
         RealityView { content in
-            // Load 3D model
-            guard let modelEntity = try? await Entity(named: modelName, in: realityKitContentBundle)
-            else {fatalError("Unable to load scene model: \(modelName)")}
-            content.add(modelEntity)
+            // Replace existing loading code with helper function
+            guard let rootEntity = await loadRootEntity() else {
+                print("Failed to load model: \(modelName)")
+                return
+            }
+            content.add(rootEntity)
                         
             print("\n\(modelName) Debug Information:")
             print("Initial Position:     \(initialPosition)")
