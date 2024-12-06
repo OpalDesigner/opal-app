@@ -194,6 +194,13 @@ struct NavigationControl: View {
                     Label("", systemImage: "camera.circle.fill")
                         .foregroundColor(navigationData.isCameraVisible ? .red : .primary)
                 }
+                
+                Button {
+                    navigationData.isSpotLightVisible.toggle()
+                } label: {
+                    Label("", systemImage: "light.beacon.max")
+                        .foregroundColor(navigationData.isSpotLightVisible ? .yellow : .primary)
+                }
             }
             
             HStack {

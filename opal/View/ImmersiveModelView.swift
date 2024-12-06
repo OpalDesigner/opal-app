@@ -12,7 +12,10 @@ class NavigationData: ObservableObject {
     @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
     @Published var cameraRotation: Float = 0
     @Published var cameraEntity = Entity()
+    @Published var spotlightEntity = Entity()
+    @Published var lightSource = ModelEntity()
     @Published var isCameraVisible: Bool = false
+    @Published var isSpotLightVisible: Bool = false
 }
 
 struct ImmersiveModelView: View {
@@ -38,30 +41,29 @@ struct ImmersiveModelView: View {
                 }
             }
             
-            // Load the Camera model from the Reality Content bundle
-            guard let camera = try? await Entity(named: "Camera", in: realityKitContentBundle)
-            else { fatalError("Unable to load Camera)") }
-            let boxSize = SIMD3<Float>(0.2, 0.5, 0.2)
-            //let debugMesh = ModelComponent(mesh: .generateBox(size: boxSize), materials: [UnlitMaterial(color: .red)])
-            camera.components[CollisionComponent.self] = CollisionComponent(
-                shapes: [.generateBox(size: boxSize)],
-                mode: .default,
-                filter: .init(group: .default, mask: .all)
-            )
-            //camera.components.set(debugMesh)
-            camera.scale = SIMD3<Float>(repeating: 0.5)
-            camera.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(0, 1, 0))
-            camera.transform.translation = SIMD3<Float>(0.2, 1.35, -0.5)
-            navigationData.cameraEntity = camera
-            content.add(camera)
-            
             // Add Animation to the 3D model
             if(model.availableAnimations.count > 0){
                 let anim = model.availableAnimations[0]
                 model.playAnimation(anim.repeat())
             }
             
-            // Collision Detection between Model Bound and the Camera
+            // Load DSLR Camera model USDZ
+            guard let camera = try? await Entity(named: "Camera", in: realityKitContentBundle)
+            else { fatalError("Unable to load Camera)") }
+            let boxSize = SIMD3<Float>(0.2, 0.5, 0.2)
+            //let debugMesh = ModelComponent(mesh: .generateBox(size: boxSize), materials: [UnlitMaterial(color: .red)])
+            //camera.components.set(debugMesh)
+            let collisionComponent = CollisionComponent(
+                shapes: [.generateBox(size: boxSize)],
+                mode: .default,
+                filter: .init(group: .default, mask: .all)
+            )
+            camera.components.set(collisionComponent)
+            camera.scale = SIMD3<Float>(repeating: 0.5)
+            camera.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(0, 1, 0))
+            camera.transform.translation = SIMD3<Float>(0.2, 1.35, -0.5)
+            navigationData.cameraEntity = camera
+            content.add(camera)
             content.subscribe(to: CollisionEvents.Began.self) { event in
                 let modelBoundary = model.children.first?.children.first
                 let hasCollision = (event.entityA == camera && event.entityB == modelBoundary) ||
@@ -69,31 +71,72 @@ struct ImmersiveModelView: View {
                 print(hasCollision ? "Collision began between perspective camera and model" : "No Collision detected")
             }
             
+            // Spotlight USDZ
+            guard let spotlight = try? await Entity(named: "StudioSpotlight", in: realityKitContentBundle)
+            else { fatalError("Unable to load Spotlight)") }
+            spotlight.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(0, 1, 0))
+            spotlight.transform.translation = SIMD3<Float>(-0.2, 0, -0.5)
+            navigationData.spotlightEntity = spotlight
+            content.add(spotlight)
+            
+            // Add SpotLight LightSource
+            let lightSourceEntity = ModelEntity()
+            let spotlightComponent = SpotLightComponent(
+                color: .green,
+                intensity: 100000,        // Default is 6740.94 lumens
+                innerAngleInDegrees: 45,  // Default is 45 degrees
+                outerAngleInDegrees: 60,  // Default is 60 degrees
+                attenuationRadius: 10     // Default is 10 meters
+            )
+            lightSourceEntity.components.set(spotlightComponent)
+            lightSourceEntity.transform.translation = SIMD3<Float>(-0.2, 1.40, -0.75)
+            navigationData.lightSource = lightSourceEntity
+            content.add(lightSourceEntity)
+                        
             /*
-            // Lighting: RealityKit can carry up to 6 lights
-            // Spotlight Component: https://developer.apple.com/documentation/realitykit/spotlightcomponent
-            // Pointlight Component: https://developer.apple.com/documentation/realitykit/pointlight
-            // DirectionalLight Component: https://developer.apple.com/documentation/realitykit/directionallightcomponent
-            let testSphere = ModelEntity(mesh: .generateSphere(radius: 0.05), materials: [SimpleMaterial(color: .white, isMetallic: false)])
-            content.add(testSphere)
-            testSphere.position = SIMD3<Float>(0, 1.5, -0.5)
-            let pointLight = PointLight()
-            pointLight.light.color = .red
-            pointLight.light.intensity = 1000
-            pointLight.light.attenuationRadius = 10
-            content.add(pointLight)
-            pointLight.position = SIMD3<Float>(0, 1.5, -0.5)
-             */
+            // Add PointLight
+            // Default intensity value is 26963.76 lumens.
+            // Default attenuation is 10 meters
+            let pointLightComponent = PointLightComponent(
+                color: .red,
+                intensity: 100000,
+                attenuationRadius: 1000
+             )
+            testSphere.components.set(pointLightComponent)
+            */
+
+            /*
+            // Add DirectionalLight:
+            // Default intensity (lumens per square meter = lux) is 2145 lux
+            let directionalLightComponent = DirectionalLightComponent(
+               color: .red,
+               intensity: 10000
+            )
+            let lightShadowComponent = DirectionalLightComponent.Shadow()
+            testSphere.components.set([directionalLightComponent, lightShadowComponent])
+            */
+            
             
         } update: { content in
+            // Update position, orientation in scene
             if let scene = content.entities.first {
                 updateCameraTransform(scene)
             }
             
-            if(navigationData.isCameraVisible) {
+            // Update DSLR Camera visibility
+            if navigationData.isCameraVisible {
                 navigationData.cameraEntity.components.set(OpacityComponent(opacity: 1.0))
             } else {
                 navigationData.cameraEntity.components.set(OpacityComponent(opacity: 0))
+            }
+
+            // Update Spotlight visibility and intensity
+            if navigationData.isSpotLightVisible {
+                navigationData.spotlightEntity.components.set(OpacityComponent(opacity: 1.0))
+                navigationData.lightSource.components[SpotLightComponent.self]?.intensity = 100000
+            } else {
+                navigationData.spotlightEntity.components.set(OpacityComponent(opacity: 0))
+                navigationData.lightSource.components[SpotLightComponent.self]?.intensity = 0
             }
         }
     }

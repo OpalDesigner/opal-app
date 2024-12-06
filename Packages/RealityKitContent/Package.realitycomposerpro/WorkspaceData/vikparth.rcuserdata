@@ -1,15 +1,7 @@
 {
-  "advancedEditorSelectedIdentifier" : "BehaviorsPluginID",
+  "advancedEditorSelectedIdentifier" : "ProjectBrowser",
   "openSceneRelativePaths" : [
-    "Coffee_Shop.usda",
-    "Budapest_Hotel.usda",
-    "Bedroom.usda",
-    "Convenience_Store.usda",
-    "House_Interior.usda",
-    "Old_Classroom.usda",
-    "Old_Hotel.usda",
-    "Potions_Store.usda",
-    "SpaceStation_Hall.usda"
+    "StudioSpotlight.usda"
   ],
   "recentIdentifiers" : {
     "00BCEBD0-4513-48C5-B668-02AAA4A296FA" : [
@@ -43,6 +35,9 @@
 
     ],
     "AAC2335F-782B-4BF7-B691-38B4788A7F8E" : [
+
+    ],
+    "D80F46DC-A43C-44B2-AAD4-C5D857663370" : [
 
     ],
     "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08" : [
@@ -2298,6 +2293,118 @@
         ]
       }
     ],
+    "D80F46DC-A43C-44B2-AAD4-C5D857663370" : [
+      {
+        "date" : 755122457.38594,
+        "title" : "Untitled",
+        "transform" : [
+          0.9214713,
+          2.0097895e-08,
+          0.3884465,
+          0,
+          0.274852,
+          0.70664585,
+          -0.652003,
+          0,
+          -0.27449408,
+          0.70756733,
+          0.6511539,
+          0,
+          -0.387327,
+          1.7559962,
+          1.2840132,
+          1
+        ]
+      },
+      {
+        "date" : 755122454.051922,
+        "title" : "Untitled",
+        "transform" : [
+          0.9247853,
+          1.2339701e-08,
+          0.38048923,
+          0,
+          0.22426187,
+          0.8078383,
+          -0.54507226,
+          0,
+          -0.30737373,
+          0.5894041,
+          0.74707717,
+          0,
+          -0.3723594,
+          1.2009475,
+          1.1980788,
+          1
+        ]
+      },
+      {
+        "date" : 755122422.901673,
+        "title" : "Untitled",
+        "transform" : [
+          0.32724106,
+          1.4695167e-08,
+          0.94494087,
+          0,
+          0.2665167,
+          0.95940095,
+          -0.092297025,
+          0,
+          -0.9065771,
+          0.2820459,
+          0.31395543,
+          0,
+          -2.1959593,
+          1.067007,
+          0.9381858,
+          1
+        ]
+      },
+      {
+        "date" : 755122407.614628,
+        "title" : "Untitled",
+        "transform" : [
+          0.32724106,
+          1.4695167e-08,
+          0.94494087,
+          0,
+          0.2665167,
+          0.95940095,
+          -0.092297025,
+          0,
+          -0.9065771,
+          0.2820459,
+          0.31395543,
+          0,
+          -2.3446805,
+          0.72945535,
+          0.8119827,
+          1
+        ]
+      },
+      {
+        "date" : 755122403.521737,
+        "title" : "Untitled",
+        "transform" : [
+          0.5947425,
+          1.4331345e-08,
+          0.8039163,
+          0,
+          0.26518574,
+          0.94402736,
+          -0.19618617,
+          0,
+          -0.75891894,
+          0.3298674,
+          0.56145316,
+          0,
+          -1.9627922,
+          0.85313606,
+          1.4520862,
+          1
+        ]
+      }
+    ],
     "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08" : [
       {
         "date" : 754711220.208336,
@@ -2635,5 +2742,5 @@
       }
     ]
   },
-  "selectedSceneRelativePath" : "Coffee_Shop.usda"
+  "selectedSceneRelativePath" : "StudioSpotlight.usda"
 }
