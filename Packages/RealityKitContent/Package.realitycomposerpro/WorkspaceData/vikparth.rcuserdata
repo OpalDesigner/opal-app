@@ -1,8 +1,15 @@
 {
   "advancedEditorSelectedIdentifier" : "ProjectBrowser",
   "openSceneRelativePaths" : [
-    "StudioSpotlight.usda",
-    "SpaceStation_Hall.usda"
+    "Coffee_Shop.usda",
+    "House_Interior.usda",
+    "SpaceStation_Hall.usda",
+    "Budapest_Hotel.usda",
+    "Old_Classroom.usda",
+    "Bedroom.usda",
+    "Potions_Store.usda",
+    "Convenience_Store.usda",
+    "Old_Hotel.usda"
   ],
   "recentIdentifiers" : {
     "00BCEBD0-4513-48C5-B668-02AAA4A296FA" : [
@@ -872,6 +879,28 @@
     ],
     "3C8DF254-5A8B-49CE-88EC-6F9FE9DB4481" : [
       {
+        "date" : 755461618.814396,
+        "title" : "Untitled",
+        "transform" : [
+          0.83592916,
+          -1.593229e-08,
+          -0.5488373,
+          0,
+          -0.21407601,
+          0.92079204,
+          -0.32605726,
+          0,
+          0.505365,
+          0.3900537,
+          0.769717,
+          0,
+          3.6833234,
+          3.3869834,
+          6.2030144,
+          1
+        ]
+      },
+      {
         "date" : 754548154.008784,
         "title" : "Untitled",
         "transform" : [
@@ -1066,28 +1095,6 @@
           3.8146973e-05,
           1.1021729,
           1.596283,
-          1
-        ]
-      },
-      {
-        "date" : 751603356.250648,
-        "title" : "Untitled",
-        "transform" : [
-          1,
-          0,
-          -0,
-          0,
-          -0,
-          0.8746023,
-          -0.48484108,
-          0,
-          0,
-          0.48484108,
-          0.8746023,
-          0,
-          30.129097,
-          336.3379,
-          512.4531,
           1
         ]
       }
@@ -2743,5 +2750,5 @@
       }
     ]
   },
-  "selectedSceneRelativePath" : "SpaceStation_Hall.usda"
+  "selectedSceneRelativePath" : "Old_Hotel.usda"
 }

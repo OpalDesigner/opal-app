@@ -20,21 +20,23 @@ struct opalApp: App {
             ModelMenu().tabItem {
                 Label("Home", systemImage: "house.fill")
             }
-            ModelMenu().tabItem {
+            PluginMenu().tabItem {
                 Label("Import", systemImage: "square.and.arrow.down")
             }
-            ModelMenu().tabItem {
+            HomeMenu().tabItem {
                 Label("About", systemImage: "building.2.fill")
             }
-            ModelMenu().tabItem {
+            TeamMenu().tabItem {
                 Label("Team", systemImage: "person")
             }
         }
+        /*
         .task {
             print("Fetching S3 files...")
             await fetchS3Files()
             setupPeriodicFetch()
         }
+         */
     }
 
     private func setupPeriodicFetch() {
