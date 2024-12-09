@@ -12,9 +12,10 @@ def Xform "Root"
 {
     def "SpaceStation_Hall" (
         active = true
-        prepend references = @SpaceStation_Hall.usdz@
+        references = @SpaceStation_Hall.usdz@
     )
     {
+        reorder nameChildren = ["Materials", "Meshes", "Collider", "Moon"]
         float3 xformOp:scale = (0.02, 0.02, 0.02)
         float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
