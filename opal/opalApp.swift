@@ -114,7 +114,16 @@ struct opalApp: App {
     
     private func fetchS3Files() async {
         do {
-            let s3Client = try S3Client(region: "us-east-1")
+            // Create uploads directory if it doesn't exist
+            let documentsDirectory = getDocumentsDirectory()
+            let uploadsDirectory = documentsDirectory.appendingPathComponent("uploads")
+            
+            if !FileManager.default.fileExists(atPath: uploadsDirectory.path) {
+                try FileManager.default.createDirectory(at: uploadsDirectory, withIntermediateDirectories: true)
+                print("Created uploads directory at:", uploadsDirectory.path)
+            }
+
+            let s3Client = try S3Client()
             let input = ListObjectsV2Input(bucket: "opal-designer")
             let output = try await s3Client.listObjectsV2(input: input)
             
