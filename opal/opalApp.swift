@@ -113,6 +113,14 @@ struct opalApp: App {
     }
     
     private func fetchS3Files() async {
+        // Check for required AWS environment variables
+        guard let _ = ProcessInfo.processInfo.environment["AWS_ACCESS_KEY_ID"],
+              let _ = ProcessInfo.processInfo.environment["AWS_SECRET_ACCESS_KEY"],
+              let _ = ProcessInfo.processInfo.environment["AWS_REGION"] else {
+            print("AWS credentials not found in environment variables. Skipping S3 fetch.")
+            return
+        }
+
         do {
             // Create uploads directory if it doesn't exist
             let documentsDirectory = getDocumentsDirectory()
@@ -123,7 +131,7 @@ struct opalApp: App {
                 print("Created uploads directory at:", uploadsDirectory.path)
             }
 
-            let s3Client = try S3Client()
+            let s3Client = try await S3Client()
             let input = ListObjectsV2Input(bucket: "opal-designer")
             let output = try await s3Client.listObjectsV2(input: input)
             
