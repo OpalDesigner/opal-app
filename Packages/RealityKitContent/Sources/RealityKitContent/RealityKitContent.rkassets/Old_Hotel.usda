@@ -12,7 +12,7 @@ def Xform "Root"
 {
     def "Old_Hotel" (
         active = true
-        prepend references = @Old_Hotel.usdz@
+        references = @Old_Hotel.usdz@
     )
     {
         float3 xformOp:scale = (0.035, 0.035, 0.035)
@@ -35,6 +35,121 @@ def Xform "Root"
                 {
                     float3 position = (-1.4868011, 150, -64.65904)
                 }
+            }
+        }
+    }
+
+    def "Toy_Biplane" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, 3.1415927, -0.2617994)
+        }
+        references = @ToyBiplane.usdz@
+    )
+    {
+        reorder nameChildren = ["geom", "AudioLibrary", "Antique_Airplane_Landing_01"]
+        quatf xformOp:orient = (-4.3337433e-8, 0.13052619, 0.9914448, 5.705481e-9)
+        float3 xformOp:scale = (10, 10, 10)
+        float3 xformOp:translate = (-15, 10, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def RealityKitTimeline "Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2", "Track3"]
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                float3 axis = (0, 0.9999354, 0)
+                int blendLayer = 300
+                double duration = 200
+                uniform token info:id = "2E368639-EEBD-4C32-B566-5B6C8A0A397E"
+                token orbitDirection = "clockwise"
+                bool orientToPath = 0
+                rel pivotEntity = </Root/Sphere>
+                float revolutions = 10
+                double startTime = 0
+                rel target = </Root/Toy_Biplane>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 200
+                uniform token info:id = "92F4FACA-AE46-43CA-952B-1C8CF7085CBA"
+                float revolutions = 10
+                double startTime = 0
+                rel target = </Root/Toy_Biplane>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track3"
+        {
+        }
+    }
+
+    def RealityKitComponent "RCP_BehaviorsContainer"
+    {
+        rel behaviors = </Root/OnAddedToScene>
+        uniform token info:id = "RCP.BehaviorsContainer"
+    }
+
+    def Preliminary_Behavior "OnAddedToScene"
+    {
+        rel actions = </Root/OnAddedToScene/Action>
+        uniform bool exclusive
+        rel triggers = </Root/OnAddedToScene/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Root>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Root>
+            rel animationLibraryKey = </Root/Timeline>
+            rel animationLibraryKeyOverrideKey = </Root/OnAddedToScene/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def Sphere "Sphere" (
+        active = true
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Root/Sphere/DefaultMaterial>
+        double radius = 0.1
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (2.220446e-16, 2.220446e-16, 2.220446e-16)
+        float3 xformOp:translate = (0, 10, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Material "DefaultMaterial"
+        {
+            prepend token outputs:surface.connect = </Root/Sphere/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
+
+            def Shader "DefaultSurfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 1, 1)
+                float inputs:roughness = 0.75
+                token outputs:surface
             }
         }
     }

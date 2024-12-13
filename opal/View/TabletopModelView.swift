@@ -19,8 +19,8 @@ struct TabletopModelView: View {
     @Environment(\.realityKitScene) var scene
 
     // State variables
-    @State private var model = Entity()
-    @State private var modelChildEntity: Entity?
+    @State private var modelCurrent = Entity()
+    @State private var modelChildEntity = Entity()
     @State private var weatherEntity = Entity()
     @State private var modelCenter: SIMD3<Float> = .zero
     @State private var modelPivot: SIMD3<Float> = .zero
@@ -28,13 +28,16 @@ struct TabletopModelView: View {
     @State private var currentScale: Float = 1.0
     @State private var isRotating = false
     @State private var isAnimating = false
-    @State private var isWeatherChange = false
-    @State private var hasCameraEntity: Bool = false
+    @State private var isSnowing = false
+    @State private var isCameraEnabled: Bool = false
+    @State private var isLightingEnabled = false
+    @State private var lightSourceEntity = Entity()
+    @State private var lightSourcePosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0.4)
     
     // Notifications setup
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
 
-    // Add this helper function
+    // Helper Function
     private func loadRootEntity() async -> Entity? {
         // Try loading from the realityKitContentBundle first
         do {
@@ -58,77 +61,67 @@ struct TabletopModelView: View {
         }
     }
     
+    private func centerModelAroundPivot(_ model: Entity) {
+        let bounds = model.visualBounds(relativeTo: model)
+        modelCenter = model.convert(position: (bounds.min + bounds.max) * 0.5, to: nil)
+        modelPivot = model.convert(position: .zero, to: nil)
+        
+        print("\n\(modelName) Before centering:")
+        print("Model Center: \(modelCenter)")
+        print("Model Pivot:  \(modelPivot)")
+        
+        if modelCenter != modelPivot {
+            model.transform.translation = modelPivot - modelCenter
+            
+            // Update center and pivot after transform
+            let newBounds = model.visualBounds(relativeTo: model)
+            modelCenter = model.convert(position: (newBounds.min + newBounds.max) * 0.5, to: nil)
+            modelPivot = model.convert(position: .zero, to: nil)
+        }
+        
+        print("\n\(modelName) After centering:")
+        print("Model Center: \(modelCenter)")
+        print("Model Pivot:  \(modelPivot)")
+    }
+    
     var body: some View {
         Spacer()
         RealityView { content in
-            // Replace existing loading code with helper function
-            guard let modelEntity = await loadRootEntity() else {
+            guard let model = await loadRootEntity() else {
                 print("Failed to load model: \(modelName)")
                 return
             }
-            content.add(modelEntity)
+            content.add(model)
                         
             print("\n\(modelName) Debug Information:")
-            print("Initial Position:     \(initialPosition)")
             print("Initial Scale:        \(initialScale)")
-            print("Root Position:        \(modelEntity.transform.translation)")
-            print("Root Scale:           \(modelEntity.transform.scale)")
+            print("Initial Position:     \(initialPosition)")
+            print("Root Scale:           \(model.transform.scale)")
+            print("Root Position:        \(model.transform.translation)")
+
             
             // Set initial transform
-            model = modelEntity
-            model.transform.translation = initialPosition
-            model.transform.scale = SIMD3<Float>(repeating: initialScale)
+            modelCurrent = model
+            modelCurrent.transform.scale = SIMD3<Float>(repeating: initialScale)
+            modelCurrent.transform.translation = initialPosition
             currentScale = initialScale
             
             print("\n\(modelName) Final Position and Scale:")
-            print("Model Positon:       \(model.transform.translation)")
-            print("Model Scale:         \(model.transform.scale)")
+            print("Model Scale:         \(modelCurrent.transform.scale)")
+            print("Model Positon:       \(modelCurrent.transform.translation)")
+
+            // Center the model
+            centerModelAroundPivot(modelCurrent)
             
-            // Obtain model geometric center and pivot point World Coordinates
-            let bounds = model.visualBounds(relativeTo: modelEntity)
-            let localCenter = (bounds.min + bounds.max) * 0.5
-            modelCenter = model.convert(position: localCenter, to: nil)
-            modelPivot = model.convert(position: .zero, to: nil)
-       
-            print("\n\(modelName) Before translating geometric center to pivot point:")
-            print("Model Center:        \(modelCenter)")
-            print("Model Pivot:         \(modelPivot)")
+            // Allow input gestures
+            modelCurrent.components.set(InputTargetComponent(allowedInputTypes: .indirect))
+            modelCurrent.generateCollisionShapes(recursive: true)
+            modelCurrent.components.set(GroundingShadowComponent(castsShadow: true))
             
-            /*
-            // Debug for placing a sphere at modelPivot location
-            let bubble = model.findEntity(named: "Bubble")!
-            let centerSphere = ModelEntity(mesh: .generateSphere(radius: 0.02))
-            centerSphere.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
-            centerSphere.position = modelPivot
-            content.add(centerSphere)
-             */
-            
-            // Translate geometric center to pivot point using transform
-            if(modelCenter != modelPivot){
-                var transform = model.transform
-                transform.translation = modelPivot - modelCenter
-                model.transform = transform
-                
-                // Recalculate both center and pivot after transform
-                let newBounds = model.visualBounds(relativeTo: modelEntity)
-                let newLocalCenter = (newBounds.min + newBounds.max) * 0.5
-                modelCenter = model.convert(position: newLocalCenter, to: nil)
-                modelPivot = model.convert(position: .zero, to: nil)
-            }
-            
-            print("\n\(modelName) After translating geometric center to pivot point:")
-            print("Model Center:        \(modelCenter)")
-            print("Model Pivot:         \(modelPivot)")
-            
-            // Allow the Model to be Interactable using gestures
-            model.components.set(InputTargetComponent(allowedInputTypes: .indirect))
-            model.generateCollisionShapes(recursive: true)
-            model.components.set(GroundingShadowComponent(castsShadow: true))
-            
-            // Add Animation to the 3D model
-            if(model.availableAnimations.count > 0){
-                let anim = model.availableAnimations[0]
-                model.playAnimation(anim.repeat())
+            // Add Animation
+            if(modelCurrent.availableAnimations.count > 0){
+                let anim = modelCurrent.availableAnimations[0]
+                modelCurrent.playAnimation(anim.repeat())
             }
             
             // Add Weather Entity
@@ -137,14 +130,39 @@ struct TabletopModelView: View {
             weatherEntity.setScale(.init(x: 4, y: 4, z: 4), relativeTo: nil)
             content.add(weatherEntity)
             
+            // Check for DLSR Camera Entity in scene
+            isCameraEnabled = modelCurrent.findEntity(named: "Camera") != nil
+            
+            // Add SpotLight LightSource
+            lightSourceEntity = ModelEntity()
+            let spotlightComponent = SpotLightComponent(
+                color: .green,
+                intensity: 5000,          // Default is 6740.94 lumens
+                innerAngleInDegrees: 45,  // Default is 45 degrees
+                outerAngleInDegrees: 60,  // Default is 60 degrees
+                attenuationRadius: 10     // Default is 10 meters
+            )
+            lightSourceEntity.components.set(spotlightComponent)
+            lightSourceEntity.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(0, 0, 0))
+            lightSourceEntity.transform.translation = lightSourcePosition
+            let debugSphere = ModelEntity(
+                mesh: .generateSphere(radius: 0.01),
+                materials: [SimpleMaterial(color: .green, isMetallic: true)]
+            )
+            lightSourceEntity.addChild(debugSphere)
+            
             // Find and store model's child entity specifically
-            if let modelChild = model.findEntity(named: modelName) {
+            if let modelChild = modelCurrent.findEntity(named: modelName) {
                 modelChildEntity = modelChild
             }
             
-            // Check if Model has a virtual camera
-            hasCameraEntity = model.findEntity(named: "Camera") != nil
-            
+        } update: { content in
+            if(isLightingEnabled){
+                content.add(lightSourceEntity)
+                lightSourceEntity.transform.translation = lightSourcePosition
+            } else {
+                content.remove(lightSourceEntity)
+            }
         }
         .onReceive(notificationPublisher) { output in
             guard let notificationName = output.userInfo?["RealityKit.NotificationTrigger.Identifier"] as? String
@@ -154,7 +172,7 @@ struct TabletopModelView: View {
                 case "cameraFlythroughComplete":
                     print("\n\(modelName) Camera Animation Finished")
                     isAnimating.toggle()
-                    modelChildEntity?.components.set(OpacityComponent(opacity: 1.0))
+                    modelChildEntity.components.set(OpacityComponent(opacity: 1.0))
                 default:
                     return
             }
@@ -162,10 +180,17 @@ struct TabletopModelView: View {
         .rotation3DEffect(Angle(degrees: modelRotation), axis: (x: 0.0, y: 1.0, z: 0.0))
         .animation(.easeInOut(duration: 0.5), value: modelRotation)
         .gesture(
+            //Drag Gesture will allow two actions: lighting or model rotation
             DragGesture()
-                .onEnded { value in
-                    modelRotation += 45
-                    print("\(modelName) Rotation: \(modelRotation)%")
+                .onChanged { value in
+                    if isLightingEnabled {
+                        let dragScale: Float = 0.00005
+                        lightSourcePosition.x += Float(value.translation.width) * dragScale
+                        lightSourcePosition.y -= Float(value.translation.height) * dragScale
+                    } else{
+                        modelRotation += 10
+                        print("\(modelName) Rotation: \(modelRotation)%")
+                    }
                 }
         )
         .gesture(
@@ -176,7 +201,7 @@ struct TabletopModelView: View {
                     let minScale = initialScale * 0.5
                     let maxScale = initialScale * 1.5
                     let clampedScale = max(minScale, min(newScale, maxScale))
-                    model.scale = SIMD3<Float>(repeating: clampedScale)
+                    modelCurrent.scale = SIMD3<Float>(repeating: clampedScale)
                     
                     // Print scale percentage
                     let scalePercentage = Int((clampedScale / initialScale) * 100)
@@ -188,7 +213,7 @@ struct TabletopModelView: View {
                     let minScale = initialScale  * 0.5
                     let maxScale = initialScale  * 1.5
                     currentScale = max(minScale, min(newScale, maxScale))
-                    model.scale = SIMD3<Float>(repeating: currentScale)
+                    modelCurrent.scale = SIMD3<Float>(repeating: currentScale)
                 }
         )
         .toolbar {
@@ -206,7 +231,7 @@ struct TabletopModelView: View {
                     }
                 } label: {
                     Label("", systemImage: isRotating ? "arrow.clockwise.circle.fill" : "arrow.clockwise.circle")
-                        .foregroundColor(isRotating ? .green : .primary)
+                        .foregroundColor(isRotating ? .blue : .primary)
                 }
             }
             
@@ -214,8 +239,8 @@ struct TabletopModelView: View {
             // (.snow, .fireworks, .rain, .sparks, .impact, .magic)
             ToolbarItem(placement: .bottomOrnament) {
                 Button {
-                    isWeatherChange.toggle()
-                    if(isWeatherChange){
+                    isSnowing.toggle()
+                    if(isSnowing){
                         var emitter = ParticleEmitterComponent.Presets.snow
                         emitter.mainEmitter.birthRate = 100
                         weatherEntity.components.set(emitter)
@@ -225,13 +250,23 @@ struct TabletopModelView: View {
                         weatherEntity.components.set(emitter)
                     }
                 } label: {
-                    Label("", systemImage: isWeatherChange ? "cloud.snow.fill" : "cloud.snow")
-                        .foregroundColor(isWeatherChange ? .green : .primary)
+                    Label("", systemImage: isSnowing ? "cloud.snow.fill" : "cloud.snow")
+                        .foregroundColor(isSnowing ? .green : .primary)
+                }
+            }
+            
+            // Toolbar button to Light the scene
+            ToolbarItem(placement: .bottomOrnament) {
+                Button {
+                    isLightingEnabled.toggle()
+                } label: {
+                    Label("", systemImage: isLightingEnabled ? "lightbulb.fill" : "lightbulb")
+                        .foregroundColor(isLightingEnabled ? .yellow : .primary)
                 }
             }
             
             // Toolbar button for Camera Flythrough
-            if(hasCameraEntity){
+            if(isCameraEnabled){
                 ToolbarItem(placement: .bottomOrnament){
                     Button {
                         isAnimating.toggle()
@@ -247,7 +282,7 @@ struct TabletopModelView: View {
                             print("\n\(modelName) Camera Animation Started")
                             
                             // Adjust opacity of scene to see the Camera better
-                            modelChildEntity?.components.set(OpacityComponent(opacity: 0.65))
+                            modelChildEntity.components.set(OpacityComponent(opacity: 0.65))
                         }
                     } label: {
                         Label("",systemImage: isAnimating ? "video.fill" : "video")
