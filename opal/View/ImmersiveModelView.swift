@@ -18,6 +18,7 @@ class NavigationData: ObservableObject {
     @Published var isSpotLightVisible: Bool = false
 }
 
+//This code creates an immersive view of your set
 struct ImmersiveModelView: View {
     // Function parameters
     @ObservedObject var navigationData: NavigationData
@@ -25,10 +26,36 @@ struct ImmersiveModelView: View {
     let initialPosition: SIMD3<Float>
     let initialScale: Float
     
+    // Helper Function
+    private func loadRootEntity() async -> Entity? {
+        // Try loading from the realityKitContentBundle first
+        do {
+            return try await Entity(named: modelName, in: realityKitContentBundle)
+        } catch {
+            // If that fails, try loading from the app's document directory
+            let fileManager = FileManager.default
+            if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
+                let modelURL = documentsDirectory.appendingPathComponent("uploads/\(modelName).usdz")
+                if fileManager.fileExists(atPath: modelURL.path) {
+                    do {
+                        return try await Entity.load(contentsOf: modelURL)
+                    } catch {
+                        print("Error loading model from documents: \(error.localizedDescription)")
+                        return nil
+                    }
+                }
+            }
+            print("Error loading model from bundle: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
     var body: some View {
         RealityView{ content in
-            guard let model = try? await Entity(named: modelName, in: realityKitContentBundle)
-            else { fatalError("Unable to load scene model: \(modelName)") }
+            guard let model = await loadRootEntity() else {
+                print("Failed to load model: \(modelName)")
+                return
+            }
             content.add(model)
 
             print("\n\(modelName) Debug Information:")

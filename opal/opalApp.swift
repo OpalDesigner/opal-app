@@ -15,6 +15,7 @@ struct opalApp: App {
     @StateObject var navigationData = NavigationData()
     @State private var fetchTimer: Timer?
     
+    // Helpe Functions
     private func createMainMenu() -> some View {
         TabView {
             ModelMenu().tabItem {
@@ -48,6 +49,49 @@ struct opalApp: App {
                 await fetchS3Files()
             }
         }
+    }
+    
+    private func fetchS3Files() async {
+        do {
+            let s3Client = try S3Client(region: "us-east-1")
+            let input = ListObjectsV2Input(bucket: "opal-designer")
+            let output = try await s3Client.listObjectsV2(input: input)
+            
+            if let contents = output.contents {
+                let fileNames = contents.compactMap { $0.key }
+                    .filter { $0.lowercased().hasSuffix(".usdz") }
+                
+                // Download each file
+                for fileName in fileNames {
+                    let getObjectInput = GetObjectInput(
+                        bucket: "opal-designer",
+                        key: fileName
+                    )
+                    print("Downloading file: \(fileName)")
+                    let getObjectOutput = try await s3Client.getObject(input: getObjectInput)
+                    if let body = getObjectOutput.body {
+                        if let data = try await body.readData() {
+                            // Create local file URL
+                            let localURL = getDocumentsDirectory().appendingPathComponent(fileName)
+                            
+                            // Write file to disk
+                            try data.write(to: localURL)
+                            print("Successfully saved file to:", localURL.path)
+                        }
+                    }
+                }
+                
+                DispatchQueue.main.async {
+                    self.s3Files = fileNames
+                }
+            }
+        } catch {
+            print("Error handling S3 files:", error)
+        }
+    }
+    
+    private func getDocumentsDirectory() -> URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
 
     var body: some Scene {
@@ -112,49 +156,6 @@ struct opalApp: App {
                 }
             }
         }.immersionStyle(selection: .constant(.full), in: .full)
-    }
-    
-    private func fetchS3Files() async {
-        do {
-            let s3Client = try S3Client(region: "us-east-1")
-            let input = ListObjectsV2Input(bucket: "opal-designer")
-            let output = try await s3Client.listObjectsV2(input: input)
-            
-            if let contents = output.contents {
-                let fileNames = contents.compactMap { $0.key }
-                    .filter { $0.lowercased().hasSuffix(".usdz") }
-                
-                // Download each file
-                for fileName in fileNames {
-                    let getObjectInput = GetObjectInput(
-                        bucket: "opal-designer",
-                        key: fileName
-                    )
-                    print("Downloading file: \(fileName)")
-                    let getObjectOutput = try await s3Client.getObject(input: getObjectInput)
-                    if let body = getObjectOutput.body {
-                        if let data = try await body.readData() {
-                            // Create local file URL
-                            let localURL = getDocumentsDirectory().appendingPathComponent(fileName)
-                            
-                            // Write file to disk
-                            try data.write(to: localURL)
-                            print("Successfully saved file to:", localURL.path)
-                        }
-                    }
-                }
-                
-                DispatchQueue.main.async {
-                    self.s3Files = fileNames
-                }
-            }
-        } catch {
-            print("Error handling S3 files:", error)
-        }
-    }
-    
-    private func getDocumentsDirectory() -> URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
 }
 
