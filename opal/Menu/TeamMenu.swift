@@ -9,7 +9,7 @@ import SwiftUI
 enum Team : String, Identifiable, CaseIterable, Equatable
 {
     //Current teammates
-    case vik, kris, opal
+    case kris, vik, jason
     var id: Self{self}
     var name: String{rawValue.lowercased()}
     
@@ -19,8 +19,8 @@ enum Team : String, Identifiable, CaseIterable, Equatable
             "Kris Layng"
         case.vik:
             "Vik Parth"
-        case.opal:
-            "Opal Light"
+        case.jason:
+            "Jason Wong"
         }
     }
     
@@ -30,8 +30,8 @@ enum Team : String, Identifiable, CaseIterable, Equatable
             "Spatial experience designer and creative director building uncharted virtual worlds"
         case.vik:
             "Engineer and physicist exploring the intersection of light and matter"
-        case.opal:
-            "Conversational assistant juggling a dry sense of humor and a tendency to hallucinate"
+        case.jason:
+            "Software architect specialized in gaming and reality distortion fields"
         }
     }
 }

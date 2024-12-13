@@ -46,10 +46,12 @@ struct ModelMenu: View {
         .onAppear {
             updateModels()
         }
+         /*
         .onReceive(timer) { _ in
             print("Checking for new model files...")
             updateModels()
         }
+         */
     }
     
     private func updateModels() {
@@ -77,22 +79,23 @@ struct ModelMenu: View {
             
             // Combine default models with discovered models
             let defaultModels = [
-                ModelInfo(imageName: "coffee-shop",       modelName: "Coffee_Shop",       immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.01),
-                ModelInfo(imageName: "house-interior",    modelName: "House_Interior",    immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.03),
-                ModelInfo(imageName: "budapest-hotel",    modelName: "Budapest_Hotel",    immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.0015, immersiveScale: 0.1),
-                ModelInfo(imageName: "space-corridor",    modelName: "SpaceStation_Hall", immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.02),
-                ModelInfo(imageName: "classroom",         modelName: "Old_Classroom",     immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.015),
-                ModelInfo(imageName: "bedroom",           modelName: "Bedroom",           immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.012),
-                ModelInfo(imageName: "potions-store",     modelName: "Potions_Store",     immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.025),
-                ModelInfo(imageName: "convenience-store", modelName: "Convenience_Store", immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.01),
-                ModelInfo(imageName: "old-hotel",         modelName: "Old_Hotel",         immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.001,  immersiveScale: 0.035),
-                ModelInfo(imageName: "mech-drone",        modelName: "Mech_Drone",        immersive: false, initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.01,   immersiveScale: 0.1),
-                ModelInfo(imageName: "buster-drone",      modelName: "Buster_Drone",      immersive: false, initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.002,  immersiveScale: 0.1),
+                ModelInfo(imageName: "coffee-shop",       modelName: "Coffee_Shop",       immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.1,  immersiveScale: 1),
+                ModelInfo(imageName: "house-interior",    modelName: "House_Interior",    immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.03,  immersiveScale: 1),
+                ModelInfo(imageName: "budapest-hotel",    modelName: "Budapest_Hotel",    immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.015, immersiveScale: 1),
+                ModelInfo(imageName: "space-corridor",    modelName: "SpaceStation_Hall", immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.05,  immersiveScale: 1),
+                ModelInfo(imageName: "classroom",         modelName: "Old_Classroom",     immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.05,  immersiveScale: 1),
+                ModelInfo(imageName: "bedroom",           modelName: "Bedroom",           immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.1,  immersiveScale: 1),
+                ModelInfo(imageName: "potions-store",     modelName: "Potions_Store",     immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.05,  immersiveScale: 1),
+                ModelInfo(imageName: "convenience-store", modelName: "Convenience_Store", immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.1,  immersiveScale: 1),
+                ModelInfo(imageName: "old-hotel",         modelName: "Old_Hotel",         immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.03,  immersiveScale: 1),
+                ModelInfo(imageName: "mech-drone",        modelName: "Mech_Drone",        immersive: false, initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.01,   immersiveScale: 1),
+                ModelInfo(imageName: "buster-drone",      modelName: "Buster_Drone",      immersive: false, initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.002,  immersiveScale: 1),
                 ModelInfo(imageName: "solar-system",      modelName: "Planets",           immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.25,   immersiveScale: 1)
             ]
             
             // Update models array with both default and discovered models
-            models = newModels + defaultModels
+            //models = newModels + defaultModels
+            models = defaultModels
         } catch {
             print("Error reading uploads directory: \(error)")
         }
