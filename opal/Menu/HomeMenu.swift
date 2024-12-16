@@ -10,6 +10,9 @@ import RealityKitContent
 
 struct HomeMenu: View {
     @State private var modelRotation: Double = 0
+    @State private var isPressed = false
+    @Environment(\.openImmersiveSpace) private var openImmersiveSpace
+    @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
 
     var body: some View {
         HStack {
@@ -18,6 +21,18 @@ struct HomeMenu: View {
                     .font(.largeTitle)
                 Text("Opal is a set design visualization tool that combines realistic graphics with intuitive and playful animation.")
                     .font(.system(size: 20))
+                Button{
+                    isPressed.toggle()
+                    Task {
+                        if isPressed {
+                            await openImmersiveSpace(id: "HandTrackingView")
+                        } else {
+                            await dismissImmersiveSpace()
+                        }
+                    }
+                }label: {
+                    Label("Test Hand Tracking", systemImage: "")
+                }
             }
             .frame(width: 500, height: 200)
             .padding()

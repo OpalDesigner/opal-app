@@ -111,8 +111,8 @@ struct opalApp: App {
         .defaultSize(CGSize(width: 300, height: 350))
         
         // HAND INTERACTION
-        ImmersiveSpace(id: "HandInteractionView"){
-            HandInteractionView()
+        ImmersiveSpace(id: "HandTrackingView"){
+            HandTrackingView()
         }
         
         // BUBBLE ANIMATION 
