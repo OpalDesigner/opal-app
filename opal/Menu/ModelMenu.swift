@@ -50,6 +50,17 @@ struct ModelMenu: View {
         
         // Create path to Documents/uploads
         let uploadsPath = documentsPath.appendingPathComponent("uploads")
+        
+        // Create uploads directory if it doesn't exist
+        if !fileManager.fileExists(atPath: uploadsPath.path) {
+            do {
+                try fileManager.createDirectory(at: uploadsPath, withIntermediateDirectories: true)
+            } catch {
+                print("Error creating uploads directory: \(error)")
+                return
+            }
+        }
+        
         do {
             let files = try fileManager.contentsOfDirectory(at: uploadsPath, includingPropertiesForKeys: nil)
             let usdzFiles = files.filter { $0.pathExtension.lowercased() == "usdz" }
