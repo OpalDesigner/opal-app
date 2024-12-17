@@ -15,11 +15,41 @@ struct opalApp: App {
     @StateObject var navigationData = NavigationData()
     @State private var fetchTimer: Timer?
     
-    // Helpe Functions
+    init() {
+            setupAppDirectories()
+        }
+        
+    // Helper Functions
+    private func setupAppDirectories() {
+        let fileManager = FileManager.default
+        guard let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
+        
+        // Create all needed directories
+        let directories = ["uploads", "decor", "scans"]
+        
+        for directory in directories {
+            let directoryPath = documentsPath.appendingPathComponent(directory)
+            if !fileManager.fileExists(atPath: directoryPath.path) {
+                do {
+                    try fileManager.createDirectory(at: directoryPath, withIntermediateDirectories: true)
+                    print("Created directory: \(directory)")
+                } catch {
+                    print("Error creating \(directory) directory: \(error)")
+                }
+            }
+        }
+    }
+    
     private func createMainMenu() -> some View {
         TabView {
             ModelMenu().tabItem {
                 Label("Home", systemImage: "house.fill")
+            }
+            BuildMenu().tabItem {
+                Label("Decor", systemImage: "hammer.fill")
+            }
+            ScanMenu().tabItem {
+                Label("Scans", systemImage: "scanner")
             }
             PluginMenu().tabItem {
                 Label("Import", systemImage: "square.and.arrow.down")
@@ -121,10 +151,13 @@ struct opalApp: App {
         }
         .immersionStyle(selection: .constant(.full), in: .full)
         
-        // 3D MODEL SETS - WINDOW VIEWS
+        // TABLETOP VIEWS
         WindowGroup(id: "ModelRealityView", for: ModelInfo.self) { modelInfo in
             if let modelInfo = modelInfo.wrappedValue {
-                ModelRealityView(modelInfo: modelInfo)
+                TabletopModelView(
+                    modelName: modelInfo.modelName,
+                    initialScale: modelInfo.realityScale
+                )
             } else {
                 Text("No model information available")
             }
@@ -142,39 +175,18 @@ struct opalApp: App {
             return WindowPlacement(size: size)
         }
         
-        // 3D MODEL SETS - IMMERSIVE VIEWS
+        // IMMERSIVE VIEWS
         Group {
             ImmersiveSpace(id: "ModelImmersiveView", for: ModelInfo.self) { modelInfo in
                 if let modelInfo = modelInfo.wrappedValue {
                     ImmersiveModelView(
                         navigationData: navigationData,
-                        modelName: modelInfo.modelName,
-                        initialPosition: modelInfo.initialPosition,
-                        initialScale: modelInfo.immersiveScale)
+                        modelName: modelInfo.modelName
+                    )
                 } else {
                     Text("No model information available")
                 }
             }
         }.immersionStyle(selection: .constant(.full), in: .full)
-    }
-}
-
-struct ModelRealityView: View {
-    @State private var modelName: String
-    @State private var initialPosition: SIMD3<Float>
-    @State private var initialScale: Float
-
-    init(modelInfo: ModelInfo) {
-        _modelName = State(initialValue: modelInfo.modelName)
-        _initialPosition = State(initialValue: modelInfo.initialPosition)
-        _initialScale = State(initialValue: modelInfo.realityScale)
-    }
-
-    var body: some View {
-        TabletopModelView(
-            modelName: modelName,
-            initialPosition: initialPosition,
-            initialScale: initialScale
-        )
     }
 }

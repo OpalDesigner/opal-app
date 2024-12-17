@@ -3,18 +3,17 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		659AD49E2CCB0B2500F834E0 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 659AD49D2CCB0B2500F834E0 /* RealityKitContent */; };
+		6506C3C52D1145F300194CB2 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6506C3C42D1145F300194CB2 /* MainMenu.swift */; };
 		659AD4A02CCB0B2500F834E0 /* opalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD49F2CCB0B2500F834E0 /* opalApp.swift */; };
 		659AD4A62CCB0B2500F834E0 /* ImageBasedLighting.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4A52CCB0B2500F834E0 /* ImageBasedLighting.skybox */; };
 		659AD4A82CCB0B2500F834E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4A72CCB0B2500F834E0 /* Assets.xcassets */; };
 		659AD4AB2CCB0B2500F834E0 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4AA2CCB0B2500F834E0 /* Preview Assets.xcassets */; };
 		659AD4B62CCB0B2600F834E0 /* opalTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4B52CCB0B2600F834E0 /* opalTests.swift */; };
 		659AD4C32CCB0D1D00F834E0 /* HomeMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4BF2CCB0D1D00F834E0 /* HomeMenu.swift */; };
-		659AD4C42CCB0D1D00F834E0 /* ModelMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C02CCB0D1D00F834E0 /* ModelMenu.swift */; };
 		659AD4C52CCB0D1D00F834E0 /* TeamMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C12CCB0D1D00F834E0 /* TeamMenu.swift */; };
 		659AD4CD2CCB0D3C00F834E0 /* BubbleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */; };
 		659AD4CF2CCB0D3C00F834E0 /* ImmersiveModelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */; };
@@ -23,6 +22,7 @@
 		65B7ABFB2CCB38F00068ED3D /* PluginMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */; };
 		65BE9B472D0D2BDF00F6A0FA /* HandTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE9B462D0D2BDF00F6A0FA /* HandTrackingView.swift */; };
 		65E3C0142CEF12650037A68C /* tv_retro.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 65E3C0132CEF12650037A68C /* tv_retro.usdz */; };
+		65EBB7AE2D10C44500782661 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 65EBB7AD2D10C44500782661 /* RealityKitContent */; };
 		A58EA5282CFFB4C1009E4EB4 /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = A58EA5272CFFB4C1009E4EB4 /* AWSS3 */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +37,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		6506C3C42D1145F300194CB2 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
 		659AD4982CCB0B2500F834E0 /* opal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = opal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		659AD49C2CCB0B2500F834E0 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		659AD49F2CCB0B2500F834E0 /* opalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = opalApp.swift; sourceTree = "<group>"; };
@@ -47,7 +48,6 @@
 		659AD4B12CCB0B2600F834E0 /* opalTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = opalTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		659AD4B52CCB0B2600F834E0 /* opalTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = opalTests.swift; sourceTree = "<group>"; };
 		659AD4BF2CCB0D1D00F834E0 /* HomeMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeMenu.swift; sourceTree = "<group>"; };
-		659AD4C02CCB0D1D00F834E0 /* ModelMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ModelMenu.swift; sourceTree = "<group>"; };
 		659AD4C12CCB0D1D00F834E0 /* TeamMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeamMenu.swift; sourceTree = "<group>"; };
 		659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BubbleView.swift; sourceTree = "<group>"; };
 		659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImmersiveModelView.swift; sourceTree = "<group>"; };
@@ -63,8 +63,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65EBB7AE2D10C44500782661 /* RealityKitContent in Frameworks */,
 				A58EA5282CFFB4C1009E4EB4 /* AWSS3 in Frameworks */,
-				659AD49E2CCB0B2500F834E0 /* RealityKitContent in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +84,7 @@
 				659AD49A2CCB0B2500F834E0 /* opal */,
 				659AD49B2CCB0B2500F834E0 /* Packages */,
 				659AD4B42CCB0B2600F834E0 /* opalTests */,
+				65EBB7AB2D10C41A00782661 /* Frameworks */,
 				659AD4992CCB0B2500F834E0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -140,7 +141,7 @@
 		659AD4C22CCB0D1D00F834E0 /* Menu */ = {
 			isa = PBXGroup;
 			children = (
-				659AD4C02CCB0D1D00F834E0 /* ModelMenu.swift */,
+				6506C3C42D1145F300194CB2 /* MainMenu.swift */,
 				65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */,
 				659AD4BF2CCB0D1D00F834E0 /* HomeMenu.swift */,
 				659AD4C12CCB0D1D00F834E0 /* TeamMenu.swift */,
@@ -167,6 +168,13 @@
 			path = Control;
 			sourceTree = "<group>";
 		};
+		65EBB7AB2D10C41A00782661 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -184,8 +192,8 @@
 			);
 			name = opal;
 			packageProductDependencies = (
-				659AD49D2CCB0B2500F834E0 /* RealityKitContent */,
 				A58EA5272CFFB4C1009E4EB4 /* AWSS3 */,
+				65EBB7AD2D10C44500782661 /* RealityKitContent */,
 			);
 			productName = opal;
 			productReference = 659AD4982CCB0B2500F834E0 /* opal.app */;
@@ -239,6 +247,7 @@
 			mainGroup = 659AD48F2CCB0B2500F834E0;
 			packageReferences = (
 				A58EA5262CFFB412009E4EB4 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
+				65EBB7AC2D10C44500782661 /* XCLocalSwiftPackageReference "Packages/RealityKitContent" */,
 			);
 			productRefGroup = 659AD4992CCB0B2500F834E0 /* Products */;
 			projectDirPath = "";
@@ -277,10 +286,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				659AD4CD2CCB0D3C00F834E0 /* BubbleView.swift in Sources */,
-				659AD4C42CCB0D1D00F834E0 /* ModelMenu.swift in Sources */,
 				659AD4CF2CCB0D3C00F834E0 /* ImmersiveModelView.swift in Sources */,
 				659AD4C52CCB0D1D00F834E0 /* TeamMenu.swift in Sources */,
 				659AD4A02CCB0B2500F834E0 /* opalApp.swift in Sources */,
+				6506C3C52D1145F300194CB2 /* MainMenu.swift in Sources */,
 				659AD4D32CCB0D6B00F834E0 /* NavigationControl.swift in Sources */,
 				65BE9B472D0D2BDF00F6A0FA /* HandTrackingView.swift in Sources */,
 				659AD4C32CCB0D1D00F834E0 /* HomeMenu.swift in Sources */,
@@ -559,6 +568,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		65EBB7AC2D10C44500782661 /* XCLocalSwiftPackageReference "Packages/RealityKitContent" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/RealityKitContent;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		A58EA5262CFFB412009E4EB4 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -571,7 +587,7 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		659AD49D2CCB0B2500F834E0 /* RealityKitContent */ = {
+		65EBB7AD2D10C44500782661 /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RealityKitContent;
 		};

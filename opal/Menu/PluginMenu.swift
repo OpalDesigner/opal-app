@@ -8,7 +8,7 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct PluginMenu: View {
-    @State private var isPickingFile = false
+    @State private var isPickingFile: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -70,7 +70,7 @@ struct PluginMenu: View {
                     Text("Import your Gaussian Splats (.ply) files to preview realistic 3D scenes")
                         .font(.system(size: 14))
                     Button{
-                        isPickingFile = true
+                        isPickingFile.toggle()
                     }label: {
                         Label("Import", systemImage: "arrow.triangle.2.circlepath.circle")
                     }

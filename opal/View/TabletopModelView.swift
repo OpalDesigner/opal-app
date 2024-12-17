@@ -12,7 +12,6 @@ import RealityKitContent
 struct TabletopModelView: View {
     // Function parameters
     let modelName: String
-    let initialPosition: SIMD3<Float>
     let initialScale: Float
     
     // Environment variables
@@ -43,20 +42,28 @@ struct TabletopModelView: View {
         do {
             return try await Entity(named: modelName, in: realityKitContentBundle)
         } catch {
-            // If that fails, try loading from the app's document directory
+            // If bundle fails, try loading from app's document directories
             let fileManager = FileManager.default
-            if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-                let modelURL = documentsDirectory.appendingPathComponent("uploads/\(modelName).usdz")
+            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                print("Error accessing documents directory")
+                return nil
+            }
+            
+            // Check all three directories in order
+            let directories = ["uploads", "decor", "scans"]
+            for directory in directories {
+                let modelURL = documentsDirectory.appendingPathComponent("\(directory)/\(modelName).usdz")
                 if fileManager.fileExists(atPath: modelURL.path) {
                     do {
                         return try await Entity.load(contentsOf: modelURL)
                     } catch {
-                        print("Error loading model from documents: \(error.localizedDescription)")
-                        return nil
+                        print("Error loading model from \(directory): \(error.localizedDescription)")
+                        continue // Try next directory if this one fails
                     }
                 }
             }
-            print("Error loading model from bundle: \(error.localizedDescription)")
+            
+            print("Model not found in any directory: \(modelName)")
             return nil
         }
     }
@@ -95,7 +102,6 @@ struct TabletopModelView: View {
                         
             print("\n\(modelName) Debug Information:")
             print("Initial Scale:        \(initialScale)")
-            print("Initial Position:     \(initialPosition)")
             print("Root Scale:           \(model.transform.scale)")
             print("Root Position:        \(model.transform.translation)")
 
@@ -103,7 +109,6 @@ struct TabletopModelView: View {
             // Set initial transform
             modelCurrent = model
             modelCurrent.transform.scale = SIMD3<Float>(repeating: initialScale)
-            modelCurrent.transform.translation = initialPosition
             currentScale = initialScale
             
             print("\n\(modelName) Final Position and Scale:")
@@ -300,7 +305,6 @@ struct TabletopModelView: View {
 #Preview {
     TabletopModelView(
         modelName: "Coffee_Shop",
-        initialPosition: SIMD3<Float>(0, 0, 0),
         initialScale: 0.001
     )
 }
