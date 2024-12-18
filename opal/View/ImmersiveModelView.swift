@@ -23,8 +23,6 @@ struct ImmersiveModelView: View {
     // Function parameters
     @ObservedObject var navigationData: NavigationData
     let modelName: String
-    let initialPosition: SIMD3<Float>
-    let initialScale: Float
     
     // Helper Function
     private func loadRootEntity() async -> Entity? {
@@ -32,20 +30,28 @@ struct ImmersiveModelView: View {
         do {
             return try await Entity(named: modelName, in: realityKitContentBundle)
         } catch {
-            // If that fails, try loading from the app's document directory
+            // If bundle fails, try loading from app's document directories
             let fileManager = FileManager.default
-            if let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first {
-                let modelURL = documentsDirectory.appendingPathComponent("uploads/\(modelName).usdz")
+            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                print("Error accessing documents directory")
+                return nil
+            }
+            
+            // Check all three directories in order
+            let directories = ["uploads", "decor", "scans"]
+            for directory in directories {
+                let modelURL = documentsDirectory.appendingPathComponent("\(directory)/\(modelName).usdz")
                 if fileManager.fileExists(atPath: modelURL.path) {
                     do {
                         return try await Entity.load(contentsOf: modelURL)
                     } catch {
-                        print("Error loading model from documents: \(error.localizedDescription)")
-                        return nil
+                        print("Error loading model from \(directory): \(error.localizedDescription)")
+                        continue // Try next directory if this one fails
                     }
                 }
             }
-            print("Error loading model from bundle: \(error.localizedDescription)")
+            
+            print("Model not found in any directory: \(modelName)")
             return nil
         }
     }
@@ -203,8 +209,6 @@ struct ImmersiveModelView: View {
 #Preview {
     ImmersiveModelView(
         navigationData: NavigationData(),
-        modelName: "Planets",
-        initialPosition: SIMD3<Float>(0, 0, 0),
-        initialScale: 1
+        modelName: "Planets"
     )
 }

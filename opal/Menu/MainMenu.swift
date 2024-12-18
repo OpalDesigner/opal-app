@@ -1,62 +1,101 @@
 //
-//  ModelMenu.swift
-//  TestApp
+//  MainMenu.swift
+//  opal
 //
-//  Created by Vik Parth on 9/27/24.
+//  Created by Vik Parth on 12/16/24.
 //
 
 import SwiftUI
-import AWSS3
 
-// Struct to hold Model info
+// Configuration for different menu types
+struct MenuConfiguration {
+    let directoryName: String
+    let isImmersive: Bool
+    let realityScale: Float
+    
+    static let model = MenuConfiguration(
+        directoryName: "uploads",
+        isImmersive: true,
+        realityScale: 0.03
+    )
+    
+    static let build = MenuConfiguration(
+        directoryName: "decor",
+        isImmersive: false,
+        realityScale: 0.3
+    )
+    
+    static let scan = MenuConfiguration(
+        directoryName: "scans",
+        isImmersive: true,
+        realityScale: 0.05
+    )
+}
+
+// Unified ModelInfo struct remains the same
 struct ModelInfo: Identifiable, Codable, Hashable {
     let id = UUID()
     let imageName: String
     let modelName: String
-    let immersive: Bool
-    let initialPosition: SIMD3<Float>
+    let isImmersive: Bool
     let realityScale: Float
-    let immersiveScale: Float
 }
 
 // Default Models array
 let defaultModels = [
-    ModelInfo(imageName: "coffee-shop",       modelName: "Coffee_Shop",       immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.1,  immersiveScale: 1),
-    ModelInfo(imageName: "house-interior",    modelName: "House_Interior",    immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.03,  immersiveScale: 1),
-    ModelInfo(imageName: "budapest-hotel",    modelName: "Budapest_Hotel",    immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.015, immersiveScale: 1),
-    ModelInfo(imageName: "space-corridor",    modelName: "SpaceStation_Hall", immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.05,  immersiveScale: 1),
-    ModelInfo(imageName: "classroom",         modelName: "Old_Classroom",     immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.05,  immersiveScale: 1),
-    ModelInfo(imageName: "bedroom",           modelName: "Bedroom",           immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.1,  immersiveScale: 1),
-    ModelInfo(imageName: "potions-store",     modelName: "Potions_Store",     immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.05,  immersiveScale: 1),
-    ModelInfo(imageName: "convenience-store", modelName: "Convenience_Store", immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.1,  immersiveScale: 1),
-    ModelInfo(imageName: "old-hotel",         modelName: "Old_Hotel",         immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.03,  immersiveScale: 1),
-    ModelInfo(imageName: "mech-drone",        modelName: "Mech_Drone",        immersive: false, initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.01,   immersiveScale: 1),
-    ModelInfo(imageName: "buster-drone",      modelName: "Buster_Drone",      immersive: false, initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.002,  immersiveScale: 1),
-    ModelInfo(imageName: "solar-system",      modelName: "Planets",           immersive: true,  initialPosition: SIMD3<Float>(0, 0, 0), realityScale: 0.25,   immersiveScale: 1)
+    ModelInfo(imageName: "coffee-shop",       modelName: "Coffee_Shop",       isImmersive: true,  realityScale: 0.1    ),
+    ModelInfo(imageName: "house-interior",    modelName: "House_Interior",    isImmersive: true,  realityScale: 0.03   ),
+    ModelInfo(imageName: "budapest-hotel",    modelName: "Budapest_Hotel",    isImmersive: true,  realityScale: 0.015  ),
+    ModelInfo(imageName: "space-corridor",    modelName: "SpaceStation_Hall", isImmersive: true,  realityScale: 0.05   ),
+    ModelInfo(imageName: "classroom",         modelName: "Old_Classroom",     isImmersive: true,  realityScale: 0.05   ),
+    ModelInfo(imageName: "bedroom",           modelName: "Bedroom",           isImmersive: true,  realityScale: 0.1    ),
+    ModelInfo(imageName: "potions-store",     modelName: "Potions_Store",     isImmersive: true,  realityScale: 0.05   ),
+    ModelInfo(imageName: "convenience-store", modelName: "Convenience_Store", isImmersive: true,  realityScale: 0.1    ),
+    ModelInfo(imageName: "old-hotel",         modelName: "Old_Hotel",         isImmersive: true,  realityScale: 0.03   ),
+    ModelInfo(imageName: "mech-drone",        modelName: "Mech_Drone",        isImmersive: false, realityScale: 0.01   ),
+    ModelInfo(imageName: "buster-drone",      modelName: "Buster_Drone",      isImmersive: false, realityScale: 0.002  ),
+    ModelInfo(imageName: "solar-system",      modelName: "Planets",           isImmersive: true,  realityScale: 0.25   )
 ]
 
-// Setup Grid View
+// Example usage for different menus
 struct ModelMenu: View {
-    // Timer for polling
-    //let timer = Timer.publish(every: 5, on: .main, in: .common).autoconnect()
+    var body: some View {
+        MainMenu(configuration: .model, defaultModels: defaultModels)
+    }
+}
+
+struct BuildMenu: View {
+    var body: some View {
+        MainMenu(configuration: .build, defaultModels: [])
+    }
+}
+
+struct ScanMenu: View {
+    var body: some View {
+        MainMenu(configuration: .scan, defaultModels: [])
+    }
+}
+
+// Unified Menu View
+struct MainMenu: View {
+    // Function parameters
+    let configuration: MenuConfiguration
+    let defaultModels: [ModelInfo]
     
-    // State Variables
-    @State private var models: [ModelInfo] = []  // Convert from constant to state
+    // State variables
+    @State private var models: [ModelInfo] = []
     
-    // Helper Functions
+    // Helper functions
     private func updateModels() {
         let fileManager = FileManager.default
         guard let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
         
-        // Create path to Documents/uploads
-        let uploadsPath = documentsPath.appendingPathComponent("uploads")
-        
-        // Create uploads directory if it doesn't exist
+        let uploadsPath = documentsPath.appendingPathComponent(configuration.directoryName)
         if !fileManager.fileExists(atPath: uploadsPath.path) {
             do {
                 try fileManager.createDirectory(at: uploadsPath, withIntermediateDirectories: true)
             } catch {
-                print("Error creating uploads directory: \(error)")
+                print("Error creating directory: \(error)")
                 return
             }
         }
@@ -65,7 +104,6 @@ struct ModelMenu: View {
             let files = try fileManager.contentsOfDirectory(at: uploadsPath, includingPropertiesForKeys: nil)
             let usdzFiles = files.filter { $0.pathExtension.lowercased() == "usdz" }
             
-            // Convert USDZ files to ModelInfo objects
             let newModels = usdzFiles.map { url in
                 let baseName = url.deletingPathExtension().lastPathComponent
                 let imageExtensions = ["jpg", "png", "jpeg"]
@@ -75,21 +113,16 @@ struct ModelMenu: View {
                 }.first ?? ""
                 
                 return ModelInfo(
-                    imageName: matchingImage,                                   // Default empty image
+                    imageName: matchingImage,
                     modelName: baseName,
-                    immersive: true,                                            // Default to non-immersive
-                    initialPosition: SIMD3<Float>(0, 0, 0),
-                    realityScale: 0.03,                                         // Default scale
-                    immersiveScale: 1                                           // Default immersive scale
+                    isImmersive: configuration.isImmersive,
+                    realityScale: configuration.realityScale
                 )
             }
-            print("New models discovered:", newModels.map { $0.modelName })
-            print("Full directory path:", uploadsPath.path)
             
-            // Update models array with both default and discovered models
             models = newModels + defaultModels
         } catch {
-            print("Error reading uploads directory: \(error)")
+            print("Error reading directory: \(error)")
         }
     }
     
@@ -101,56 +134,46 @@ struct ModelMenu: View {
                 GridItem(.flexible())
             ], spacing: 20) {
                 ForEach(models, id: \.id) { model in
-                    ModelItemView(model: model)
+                    ModelItemView(model: model, directoryName: configuration.directoryName)
                 }
             }
             .padding(20)
         }
-        .id(models)
         .background {
             Image("interior-shot-03")
         }
         .onAppear {
             updateModels()
         }
-        /*
-        .onReceive(timer) { _ in
-            print("Checking for new model files...")
-            updateModels()
-        }
-         */
     }
 }
 
-// Setup Model View (Window and Immersive)
+// Model Item View
 struct ModelItemView: View {
-    // Function parameters
     let model: ModelInfo
+    let directoryName: String
     
-    // Environment variables
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
-
-    // State variables for each button
+    
     @State private var isWindowOpen = false
     @State private var isImmersiveOpen = false
     
-    // Helper Functions
     private func loadImage(named imageName: String) -> Image {
         if imageName.contains("."),
            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first,
-           let uiImage = UIImage(contentsOfFile: documentsPath.appendingPathComponent("uploads/\(imageName)").path) {
+           let uiImage = UIImage(contentsOfFile: documentsPath.appendingPathComponent("\(directoryName)/\(imageName)").path) {
             return Image(uiImage: uiImage)
         }
         return Image(imageName.isEmpty ? "ui" : imageName)
     }
-
+    
     var body: some View {
-        VStack() {
+        VStack {
             Button {
-                if model.immersive {
+                if model.isImmersive {
                     isImmersiveOpen.toggle()
                     Task {
                         if isImmersiveOpen {
@@ -170,8 +193,6 @@ struct ModelItemView: View {
                     .clipped()
                     .hoverEffect(.highlight)
             }
-        
-            // Use an overlay to place button over the image
             .overlay(alignment: .bottomTrailing) {
                 Button {
                     isWindowOpen.toggle()
@@ -194,6 +215,3 @@ struct ModelItemView: View {
     }
 }
 
-#Preview {
-    ModelMenu()
-}
