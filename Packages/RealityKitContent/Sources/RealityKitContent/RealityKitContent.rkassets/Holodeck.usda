@@ -1,0 +1,352 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "Reality Composer Pro Version 2.0 (448.0.16.0.3)"
+    }
+    defaultPrim = "Root"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+def Xform "Root"
+{
+    reorder nameChildren = ["Holodeck", "Material", "Test", "Final"]
+    def Cube "Holodeck" (
+        active = true
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Root/Material> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        double size = 6
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (0, 3, -6)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Material "DefaultMaterial"
+        {
+            token outputs:surface.connect = </Root/Holodeck/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
+
+            def Shader "DefaultSurfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 1, 1)
+                float inputs:roughness = 0.75
+                token outputs:surface
+            }
+        }
+
+        def RealityKitComponent "HierarchicalFade"
+        {
+            uniform token info:id = "RealityKit.HierarchicalFade"
+            float opacity = 0.5017392
+        }
+    }
+
+    def Material "Material"
+    {
+        token outputs:mtlx:surface
+        token outputs:realitykit:vertex
+        prepend token outputs:surface.connect = </Root/Material/UsdPreviewSurface.outputs:surface>
+
+        def Shader "UsdPreviewSurface"
+        {
+            uniform token info:id = "UsdPreviewSurface"
+            color3f inputs:diffuseColor = (0.57919407, 0.12801445, 0.57268614) (
+                colorSpace = "srgb_texture"
+            )
+            token outputs:surface
+        }
+    }
+
+    def "Director_Movie_Chair" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, 1.5707963, 0)
+        }
+        references = @DirectorMovieChair.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.70710677, 0, 0.70710677, 0)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (-2.5, 0, -4)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "Blue_Robot" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, 0.78539807, 0)
+        }
+        references = @Blue_Robot.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.92387956, 0, 0.3826834, 0)
+        float3 xformOp:scale = (0.001, 0.001, 0.001)
+        float3 xformOp:translate = (-2, -2.3841858e-7, -5.5)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            uniform token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitClipDefinition "Clip_default_subtree_animation"
+            {
+                uniform string[] clipNames = ["Clip", "Clip 1"]
+                uniform string sourceAnimationName = "default subtree animation"
+                uniform double[] startTimes = [0, 6.705222222222222]
+            }
+
+            def RealityKitClipDefinition "Clip_Clip_1"
+            {
+                uniform string[] clipNames = ["Clip 2", "Clip 3"]
+                uniform string sourceAnimationName = "Clip 1"
+                uniform double[] startTimes = [0, 8.251611111111112]
+            }
+
+            def RealityKitAnimationFile "Clip_2"
+            {
+                uniform bool looping = 1
+                uniform string name = "Clip 2"
+            }
+        }
+    }
+
+    def "wheeler" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, -0.78539807, 0)
+        }
+        references = @wheeler.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.92387956, 0, -0.3826834, 0)
+        float3 xformOp:scale = (0.01, 0.01, 0.01)
+        float3 xformOp:translate = (-1, 0, -5)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitAnimationFile "default_subtree_animation"
+            {
+                uniform bool looping = 1
+                uniform string name = "default subtree animation"
+            }
+        }
+    }
+
+    def "ToyBiplane" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, -0.78539807, 0)
+        }
+        references = @ToyBiplane.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.92387956, 0, -0.3826834, 0)
+        float3 xformOp:scale = (3, 3, 3)
+        float3 xformOp:translate = (2.25, 0, -4)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "ToyRocket" (
+        active = true
+        references = @ToyRocket.usdz@
+    )
+    {
+        float3 xformOp:scale = (3, 3, 3)
+        float3 xformOp:translate = (2.5, 0, -6)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "StudioSpotlight" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, 0.78539807, 0)
+        }
+        references = @StudioSpotlight.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.92387956, 0, 0.3826834, 0)
+        float3 xformOp:scale = (2, 2, 2)
+        float3 xformOp:translate = (-2, 0, -8)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def RealityKitComponent "RCP_BehaviorsContainer"
+    {
+        rel behaviors = </Root/OnAddedToScene>
+        uniform token info:id = "RCP.BehaviorsContainer"
+    }
+
+    def RealityKitTimeline "Test"
+    {
+        reorder nameChildren = ["Track", "Track2", "Track3"]
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 8.260355056015943
+                uniform token info:id = "34804A28-3F8C-484C-BE19-11D668447DD4"
+                bool orientToPath = 1
+                rel pivotEntity = </Root/Blue_Robot>
+                double startTime = 0
+                rel target = </Root/wheeler>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Animation"
+            {
+                string actionKind = "animation"
+                string animation = "Clip 2"
+                int blendLayer = 500
+                double duration = 8.251611111111112
+                uniform token info:id = "B2261EF0-BC73-4BDF-9C9A-3BE20ADF558E"
+                double loopCount = 1
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/Blue_Robot>
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
+    }
+
+    def RealityKitComponent "AnimationLibrary"
+    {
+        token info:id = "RealityKit.AnimationLibrary"
+
+        def RealityKitAnimationFile "default_subtree_animation"
+        {
+            uniform bool looping = 1
+            uniform string name = "default subtree animation"
+        }
+    }
+
+    def RealityKitTimeline "Final"
+    {
+        reorder nameChildren = ["Track", "Track2", "Track3"]
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Play_Timeline"
+            {
+                string actionKind = "timeline"
+                int blendLayer = 500
+                double duration = 8.260355056015943
+                uniform token info:id = "778564FC-839B-4D42-9662-D6D9C8E72F18"
+                double loopCount = 0
+                double startTime = 0
+                rel timeline = </Root/Test>
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Animation"
+            {
+                string actionKind = "animation"
+                string animation = "default subtree animation"
+                int blendLayer = 500
+                double duration = 0.6666666865348816
+                uniform token info:id = "57B13AD1-A15F-4334-8C72-7F54A6789865"
+                double loopCount = 0
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/wheeler>
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track3"
+        {
+            def RealityKitAction "Animation"
+            {
+                string actionKind = "animation"
+                string animation = "default subtree animation"
+                int blendLayer = 500
+                double duration = 25
+                uniform token info:id = "C0BEB61A-F4AF-44CA-A847-F86D7EC1462A"
+                double loopCount = 0
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/Buster_Drone>
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
+    }
+
+    def Preliminary_Behavior "OnAddedToScene"
+    {
+        rel actions = </Root/OnAddedToScene/Action>
+        uniform bool exclusive
+        rel triggers = </Root/OnAddedToScene/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Root>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Root>
+            rel animationLibraryKey = </Root/Final>
+            rel animationLibraryKeyOverrideKey = </Root/OnAddedToScene/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def "Buster_Drone" (
+        active = true
+        prepend references = @Buster_Drone.usdz@
+    )
+    {
+        float3 xformOp:scale = (0.01, 0.01, 0.01)
+        float3 xformOp:translate = (0, 1.3, -8)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitAnimationFile "default_subtree_animation"
+            {
+                uniform bool looping = 1
+                uniform string name = "default subtree animation"
+            }
+        }
+    }
+
+    def "Planets" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, -0.78539807, 0)
+        }
+        prepend references = @Planets.usda@
+    )
+    {
+        quatf xformOp:orient = (0.92387956, 0, -0.3826834, 0)
+        float3 xformOp:scale = (0.5, 0.5, 0.5)
+        float3 xformOp:translate = (1, 2, -7)
+    }
+}
+

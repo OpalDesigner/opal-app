@@ -1,1 +1,13 @@
 .DS_Store
+# Xcode
+xcuserdata/
+*.xcuserdata/
+*.xcuserdata
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+
+# Reality Composer Pro user data
+*.rcuserdata/
+*.realitycomposerpro/WorkspaceData/*.rcuserdata
+*.rcuserdata/
+*.realitycomposerpro/WorkspaceData/*.rcuserdata

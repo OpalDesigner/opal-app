@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 // Configuration for different menu types
 struct MenuConfiguration {
@@ -43,6 +44,7 @@ struct ModelInfo: Identifiable, Codable, Hashable {
 
 // Default Models array
 let defaultModels = [
+    ModelInfo(imageName: "holodeck",          modelName: "Holodeck",          isImmersive: true,  realityScale: 0.05   ),
     ModelInfo(imageName: "coffee-shop",       modelName: "Coffee_Shop",       isImmersive: true,  realityScale: 0.1    ),
     ModelInfo(imageName: "house-interior",    modelName: "House_Interior",    isImmersive: true,  realityScale: 0.03   ),
     ModelInfo(imageName: "budapest-hotel",    modelName: "Budapest_Hotel",    isImmersive: true,  realityScale: 0.015  ),
@@ -84,6 +86,7 @@ struct MainMenu: View {
     
     // State variables
     @State private var models: [ModelInfo] = []
+    @State private var isPickingFile: Bool = false
     
     // Helper functions
     private func updateModels() {
@@ -119,25 +122,55 @@ struct MainMenu: View {
                     realityScale: configuration.realityScale
                 )
             }
-            
             models = newModels + defaultModels
+            print("New Models found:    \(newModels.map { $0.modelName })")
+            print("Uploads directory:   \(uploadsPath.path)")
         } catch {
             print("Error reading directory: \(error)")
         }
     }
     
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: [
-                GridItem(.flexible()),
-                GridItem(.flexible()),
-                GridItem(.flexible())
-            ], spacing: 20) {
-                ForEach(models, id: \.id) { model in
-                    ModelItemView(model: model, directoryName: configuration.directoryName)
+        ZStack(alignment: .topTrailing) {
+            ScrollView {
+                LazyVGrid(columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                    GridItem(.flexible())
+                ], spacing: 20) {
+                    ForEach(models, id: \.id) { model in
+                        ModelItemView(model: model, directoryName: configuration.directoryName)
+                    }
+                }
+                .padding(20)
+            }
+            
+            Button {
+                isPickingFile.toggle()
+            } label: {
+                Label("", systemImage: "plus.circle.fill")
+            }
+            .padding(.top, 20)
+            .padding(.trailing, 20)
+            .disabled(isPickingFile)
+            .fileImporter(isPresented: $isPickingFile, allowedContentTypes: [.usdz]) { result in
+                isPickingFile = false
+                if let url = try? result.get() {
+                    let fileManager = FileManager.default
+                        let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first
+                        let uploadsPath = documentsPath?.appendingPathComponent(configuration.directoryName)
+                        
+                        do {
+                            try fileManager.moveItem(at: url, to: uploadsPath!.appendingPathComponent(url.lastPathComponent))
+                            print("File moved to uploads directory: \(uploadsPath!.appendingPathComponent(url.lastPathComponent).path)")
+                            
+                            // Call updateModels() to refresh the grid
+                            updateModels()
+                        } catch {
+                            print("Error moving file: \(error)")
+                        }
                 }
             }
-            .padding(20)
         }
         .background {
             Image("interior-shot-03")
@@ -215,3 +248,9 @@ struct ModelItemView: View {
     }
 }
 
+#Preview {
+    MainMenu(
+        configuration: .model,
+        defaultModels: defaultModels
+    )
+}

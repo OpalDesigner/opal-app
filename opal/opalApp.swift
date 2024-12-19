@@ -45,15 +45,17 @@ struct opalApp: App {
             ModelMenu().tabItem {
                 Label("Home", systemImage: "house.fill")
             }
-            BuildMenu().tabItem {
-                Label("Decor", systemImage: "hammer.fill")
-            }
             ScanMenu().tabItem {
                 Label("Scans", systemImage: "scanner")
             }
+            BuildMenu().tabItem {
+                Label("Build", systemImage: "hammer.fill")
+            }
+            /*
             PluginMenu().tabItem {
                 Label("Import", systemImage: "square.and.arrow.down")
             }
+            */
             HomeMenu().tabItem {
                 Label("About", systemImage: "building.2.fill")
             }

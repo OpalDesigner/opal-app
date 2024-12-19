@@ -10,6 +10,7 @@
 
 def Xform "Root"
 {
+    reorder nameChildren = ["SpaceStation_Hall", "Timeline", "ToyRocket", "Moon"]
     def "SpaceStation_Hall" (
         active = true
         references = @SpaceStation_Hall.usdz@
@@ -38,6 +39,139 @@ def Xform "Root"
                 }
             }
         }
+    }
+
+    def RealityKitTimeline "Timeline"
+    {
+        reorder nameChildren = ["Track", "Track2", "Track3"]
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 25
+                uniform token info:id = "8ABC2121-302E-49DB-B96D-5E4C6747357D"
+                float revolutions = 1
+                double startTime = 0
+                rel target = </Root/ToyRocket>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track2"
+        {
+            def RealityKitAction "Transform_To"
+            {
+                string actionKind = "moveTo"
+                int blendLayer = 300
+                double duration = 25
+                uniform token info:id = "DAC2445C-E8CB-4E3B-B33E-1E535DBAFAC2"
+                float3 position = (0, -6, 20)
+                quatf rotation = (1, 0, 0, 0)
+                float3 scale = (100, 100, 100)
+                double startTime = 0
+                rel target = </Root/ToyRocket>
+
+                def RealityKitStruct "transformMode"
+                {
+                    rel referenceEntity = </Root>
+                    token type = "parent"
+                }
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track3"
+        {
+            def RealityKitAction "Spin"
+            {
+                string actionKind = "spin"
+                int blendLayer = 400
+                double duration = 500
+                uniform token info:id = "00E62925-433B-44C6-BDBC-49536168E1FC"
+                double startTime = 0
+                rel target = </Root/Earth>
+
+                def RealityKitStruct "timingFunction"
+                {
+                }
+            }
+        }
+    }
+
+    def "ToyRocket" (
+        active = false
+        references = @ToyRocket.usdz@
+    )
+    {
+        float3 xformOp:scale = (100, 100, 100)
+        float3 xformOp:translate = (0, 50, 50)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "Moon" (
+        active = false
+        customData = {
+            float3 rotationEulerHint = (7.565518e-9, 0.17453292, -1.0471976)
+        }
+        references = @Moon.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.8627299, 0.043577872, 0.07547908, -0.49809736)
+        float3 xformOp:scale = (1000, 1000, 1000)
+        float3 xformOp:translate = (0, -101, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def RealityKitComponent "RCP_BehaviorsContainer"
+    {
+        rel behaviors = </Root/OnAddedToScene>
+        uniform token info:id = "RCP.BehaviorsContainer"
+    }
+
+    def Preliminary_Behavior "OnAddedToScene"
+    {
+        rel actions = </Root/OnAddedToScene/Action>
+        uniform bool exclusive
+        rel triggers = </Root/OnAddedToScene/Trigger>
+
+        def Preliminary_Trigger "Trigger"
+        {
+            rel affectedObjects = </Root>
+            token info:id = "SceneTransition"
+        }
+
+        def Preliminary_Action "Action"
+        {
+            rel affectedObjects = </Root>
+            rel animationLibraryKey = </Root/Timeline>
+            rel animationLibraryKeyOverrideKey = </Root/OnAddedToScene/Trigger>
+            token info:id = "PlayTimeline"
+            int loops = 0
+            int performCount = 1
+            token type = "serial"
+        }
+    }
+
+    def "Earth" (
+        active = false
+        customData = {
+            float3 rotationEulerHint = (-0.4363323, 0, 0)
+        }
+        prepend references = @Earth.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.976296, -0.2164396, 0, 0)
+        float3 xformOp:scale = (100000, 100000, 100000)
+        float3 xformOp:translate = (-5000, 0, 20000)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 }
 
