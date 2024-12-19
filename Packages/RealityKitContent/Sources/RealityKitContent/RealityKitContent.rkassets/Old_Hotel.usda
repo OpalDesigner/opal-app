@@ -10,6 +10,7 @@
 
 def Xform "Root"
 {
+    reorder nameChildren = ["Old_Hotel", "Toy_Biplane", "RCP_BehaviorsContainer", "OnAddedToScene", "Sphere", "Orbit", "Timeline"]
     def "Old_Hotel" (
         active = true
         references = @Old_Hotel.usdz@
@@ -54,7 +55,7 @@ def Xform "Root"
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 
-    def RealityKitTimeline "Timeline"
+    def RealityKitTimeline "Orbit"
     {
         reorder nameChildren = ["Track", "Track2", "Track3"]
         def RealityKitTrack "Track"
@@ -64,12 +65,12 @@ def Xform "Root"
                 string actionKind = "orbit"
                 float3 axis = (0, 0.9999354, 0)
                 int blendLayer = 300
-                double duration = 200
+                double duration = 20
                 uniform token info:id = "2E368639-EEBD-4C32-B566-5B6C8A0A397E"
                 token orbitDirection = "clockwise"
-                bool orientToPath = 0
+                bool orientToPath = 1
                 rel pivotEntity = </Root/Sphere>
-                float revolutions = 10
+                float revolutions = 1
                 double startTime = 0
                 rel target = </Root/Toy_Biplane>
             }
@@ -77,20 +78,6 @@ def Xform "Root"
 
         def RealityKitTrack "Track2"
         {
-            def RealityKitAction "Spin"
-            {
-                string actionKind = "spin"
-                int blendLayer = 400
-                double duration = 200
-                uniform token info:id = "92F4FACA-AE46-43CA-952B-1C8CF7085CBA"
-                float revolutions = 10
-                double startTime = 0
-                rel target = </Root/Toy_Biplane>
-
-                def RealityKitStruct "timingFunction"
-                {
-                }
-            }
         }
 
         def RealityKitTrack "Track3"
@@ -150,6 +137,23 @@ def Xform "Root"
                 color3f inputs:diffuseColor = (1, 1, 1)
                 float inputs:roughness = 0.75
                 token outputs:surface
+            }
+        }
+    }
+
+    def RealityKitTimeline "Timeline"
+    {
+        def RealityKitTrack "Track"
+        {
+            def RealityKitAction "Play_Timeline"
+            {
+                string actionKind = "timeline"
+                int blendLayer = 500
+                double duration = 20
+                uniform token info:id = "3727AF47-65A4-4480-A060-ED23715A01C9"
+                double loopCount = 0
+                double startTime = 0
+                rel timeline = </Root/Orbit>
             }
         }
     }
