@@ -48,7 +48,6 @@ struct TabletopModelView: View {
                 print("Error accessing documents directory")
                 return nil
             }
-            
             // Check all three directories in order
             let directories = ["uploads", "decor", "scans"]
             for directory in directories {
@@ -62,7 +61,6 @@ struct TabletopModelView: View {
                     }
                 }
             }
-            
             print("Model not found in any directory: \(modelName)")
             return nil
         }
@@ -70,25 +68,21 @@ struct TabletopModelView: View {
     
     private func centerModelAroundPivot(_ model: Entity) {
         let bounds = model.visualBounds(relativeTo: model)
+        let size = bounds.max - bounds.min
+        print("\n\(modelName) Bounds:")
+        print("Minimum bounds: \(bounds.min)")  // Shows lowest x,y,z coordinates
+        print("Maximum bounds: \(bounds.max)")  // Shows highest x,y,z coordinates
+        print("Model dimensions: \(size)")  // Shows width, height, depth
+
         modelCenter = model.convert(position: (bounds.min + bounds.max) * 0.5, to: nil)
         modelPivot = model.convert(position: .zero, to: nil)
-        
-        print("\n\(modelName) Before centering:")
-        print("Model Center: \(modelCenter)")
-        print("Model Pivot:  \(modelPivot)")
-        
         if modelCenter != modelPivot {
             model.transform.translation = modelPivot - modelCenter
-            
             // Update center and pivot after transform
             let newBounds = model.visualBounds(relativeTo: model)
             modelCenter = model.convert(position: (newBounds.min + newBounds.max) * 0.5, to: nil)
             modelPivot = model.convert(position: .zero, to: nil)
         }
-        
-        print("\n\(modelName) After centering:")
-        print("Model Center: \(modelCenter)")
-        print("Model Pivot:  \(modelPivot)")
     }
     
     var body: some View {
@@ -99,26 +93,25 @@ struct TabletopModelView: View {
                 return
             }
             content.add(model)
-                        
-            print("\n\(modelName) Debug Information:")
-            print("Initial Scale:        \(initialScale)")
-            print("Root Scale:           \(model.transform.scale)")
-            print("Root Position:        \(model.transform.translation)")
-
             
-            // Set initial transform
+            print("\n\(modelName) Model Parameters:")
+            for child in model.children {
+                print("Child:       \(child.name)")
+                print("Position:    \(child.position),       Scale: \(child.scale)")
+                // Print grandchildren if any
+                for grandchild in child.children {
+                    print("Grandchild:  \(grandchild.name)")
+                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
+                }
+            }
+            
+            // Set initial transform and center model
             modelCurrent = model
             modelCurrent.transform.scale = SIMD3<Float>(repeating: initialScale)
             currentScale = initialScale
-            
-            print("\n\(modelName) Final Position and Scale:")
-            print("Model Scale:         \(modelCurrent.transform.scale)")
-            print("Model Positon:       \(modelCurrent.transform.translation)")
-
-            // Center the model
             centerModelAroundPivot(modelCurrent)
             
-            // Allow input gestures
+            // Enable input gestures
             modelCurrent.components.set(InputTargetComponent(allowedInputTypes: .indirect))
             modelCurrent.generateCollisionShapes(recursive: true)
             modelCurrent.components.set(GroundingShadowComponent(castsShadow: true))
