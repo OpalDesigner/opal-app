@@ -8,13 +8,21 @@
 import SwiftUI
 import AWSS3
 
+class TabSelection: ObservableObject {
+    @Published var selectedTab = 0
+}
+
 @main
 struct opalApp: App {
-    // Access shared data in NavigationControlUI.swift
-    @State private var s3Files: [String] = []
+    // Shared variables
     @StateObject var navigationData = NavigationData()
+    @StateObject var tabSelection = TabSelection()
+
+    // Private variables
+    @State private var s3Files: [String] = []
     @State private var fetchTimer: Timer?
     
+    // Initialization Functions
     init() {
             setupAppDirectories()
         }
@@ -41,27 +49,32 @@ struct opalApp: App {
     }
     
     private func createMainMenu() -> some View {
-        TabView {
+        TabView (selection: $tabSelection.selectedTab) {
+            HomeMenu().tabItem {
+                Label("About", systemImage: "building.2.fill")
+            }
+            .tag(0)
             ModelMenu().tabItem {
                 Label("Home", systemImage: "house.fill")
             }
+            .tag(1)
             ScanMenu().tabItem {
                 Label("Scans", systemImage: "scanner")
             }
+            .tag(2)
             BuildMenu().tabItem {
                 Label("Build", systemImage: "hammer.fill")
             }
+            .tag(3)
             /*
             PluginMenu().tabItem {
                 Label("Import", systemImage: "square.and.arrow.down")
             }
             */
-            HomeMenu().tabItem {
-                Label("About", systemImage: "building.2.fill")
-            }
             TeamMenu().tabItem {
                 Label("Team", systemImage: "person")
             }
+            .tag(4)
         }
         /*
         .task {
@@ -135,12 +148,27 @@ struct opalApp: App {
         
         // NAVIGATION CONTROL
         WindowGroup(id: "NavigationControl") {
-            NavigationControl(navigationData: navigationData)
+            NavigationControl(navigationData: navigationData, tabSelection: tabSelection)
         }
         .defaultWindowPlacement{content, context in
             return WindowPlacement(.utilityPanel)
         }
         .defaultSize(CGSize(width: 300, height: 350))
+        
+        // BUILDER
+        WindowGroup(id: "BuilderView") {
+            TabletopModelView(
+                modelName: "Mech_Drone",  // Replace with your model name
+                initialScale: 0.01
+            )
+        }
+        .windowStyle(.volumetric)
+        .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
+        /*
+        .defaultWindowPlacement{content, context in
+            return WindowPlacement(.trailing(<#T##relativeWindow: WindowProxy##WindowProxy#>))
+        }
+         */
         
         // HAND INTERACTION
         ImmersiveSpace(id: "HandTrackingView"){

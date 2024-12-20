@@ -11,6 +11,10 @@ import RealityKit
 struct NavigationControl: View {
     // Access shared data
     @ObservedObject var navigationData: NavigationData
+    @ObservedObject var tabSelection: TabSelection
+    
+    //State variables
+    @State private var isBuildReady = false
     
     // Environment Variables
     @Environment(\.openWindow) private var openWindow
@@ -160,24 +164,12 @@ struct NavigationControl: View {
             Text("Navigate 3D space")
                 .font(.headline)
                 .padding()
-            
-            // Debug Camera Coordinates
-            /*
-            VStack {
-                Text("Camera Position:")
-                    .font(.subheadline)
-                HStack {
-                    Text("X: \(String(format: "%.f", modelControlData.cameraPosition.x))")
-                    Text("Y: \(String(format: "%.f", modelControlData.cameraPosition.y))")
-                    Text("Z: \(String(format: "%.f", modelControlData.cameraPosition.z))")
-                }
-            }
-             */
 
-            // Home, Origin, and Camera controls
+            // Home, Origin, and Build controls
             HStack {
                 Button {
                     dismissWindow(id: "NavigationControl")
+                    dismissWindow(id: "Menu")
                 } label: {
                     Label("", systemImage: "house.fill")
                 }
@@ -188,6 +180,19 @@ struct NavigationControl: View {
                     Label("", systemImage: "location")
                 }
                 
+                Button {
+                    isBuildReady.toggle()
+                    if isBuildReady {
+                        openWindow(id: "Menu")
+                        tabSelection.selectedTab = 3
+                    } else {
+                        dismissWindow(id: "Menu")
+                    }
+                } label: {
+                    Label("", systemImage: "plus.circle.fill")
+                }
+                
+                /*
                 Button {
                     navigationData.isCameraVisible.toggle()
                 } label: {
@@ -201,6 +206,7 @@ struct NavigationControl: View {
                     Label("", systemImage: "light.beacon.max")
                         .foregroundColor(navigationData.isSpotLightVisible ? .yellow : .primary)
                 }
+                 */
             }
             
             HStack {
@@ -289,6 +295,8 @@ struct NavigationControl: View {
         }
         .onDisappear{
             openWindow(id: "Menu")
+            dismissWindow(id: "ModelRealityView")
+            tabSelection.selectedTab = 1
             Task {
                 await dismissImmersiveSpace()
             }
@@ -299,6 +307,6 @@ struct NavigationControl: View {
 }
 
 #Preview {
-    NavigationControl(navigationData: NavigationData())
+    NavigationControl(navigationData: NavigationData(), tabSelection: TabSelection())
 }
 

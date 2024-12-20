@@ -11,56 +11,6 @@
 def Xform "Root"
 {
     reorder nameChildren = ["Holodeck", "Material", "Test", "Final"]
-    def Cube "Holodeck" (
-        active = true
-        prepend apiSchemas = ["MaterialBindingAPI"]
-    )
-    {
-        rel material:binding = </Root/Material> (
-            bindMaterialAs = "weakerThanDescendants"
-        )
-        double size = 6
-        quatf xformOp:orient = (1, 0, 0, 0)
-        float3 xformOp:scale = (1, 1, 1)
-        float3 xformOp:translate = (0, 3, -6)
-        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
-
-        def Material "DefaultMaterial"
-        {
-            token outputs:surface.connect = </Root/Holodeck/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
-
-            def Shader "DefaultSurfaceShader"
-            {
-                uniform token info:id = "UsdPreviewSurface"
-                color3f inputs:diffuseColor = (1, 1, 1)
-                float inputs:roughness = 0.75
-                token outputs:surface
-            }
-        }
-
-        def RealityKitComponent "HierarchicalFade"
-        {
-            uniform token info:id = "RealityKit.HierarchicalFade"
-            float opacity = 0.5017392
-        }
-    }
-
-    def Material "Material"
-    {
-        token outputs:mtlx:surface
-        token outputs:realitykit:vertex
-        prepend token outputs:surface.connect = </Root/Material/UsdPreviewSurface.outputs:surface>
-
-        def Shader "UsdPreviewSurface"
-        {
-            uniform token info:id = "UsdPreviewSurface"
-            color3f inputs:diffuseColor = (0.57919407, 0.12801445, 0.57268614) (
-                colorSpace = "srgb_texture"
-            )
-            token outputs:surface
-        }
-    }
-
     def "Director_Movie_Chair" (
         active = true
         customData = {
@@ -317,7 +267,7 @@ def Xform "Root"
 
     def "Buster_Drone" (
         active = true
-        prepend references = @Buster_Drone.usdz@
+        references = @Buster_Drone.usdz@
     )
     {
         float3 xformOp:scale = (0.01, 0.01, 0.01)
@@ -341,12 +291,29 @@ def Xform "Root"
         customData = {
             float3 rotationEulerHint = (0, -0.78539807, 0)
         }
-        prepend references = @Planets.usda@
+        references = @Planets.usda@
     )
     {
         quatf xformOp:orient = (0.92387956, 0, -0.3826834, 0)
         float3 xformOp:scale = (0.5, 0.5, 0.5)
         float3 xformOp:translate = (1, 2, -7)
+
+        over "SkySphere" (
+            active = false
+        )
+        {
+        }
+    }
+
+    def "SkyDome" (
+        active = true
+        prepend apiSchemas = ["MaterialBindingAPI"]
+        references = @SkyDome.usdz@
+    )
+    {
+        reorder nameChildren = ["Dome_01", "Ground_01", "Grid", "Looks", "Material"]
+        float3 xformOp:scale = (0.01, 0.01, 0.01)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 }
 
