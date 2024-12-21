@@ -3,11 +3,16 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 60;
+	objectVersion = 70;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		6506C3C52D1145F300194CB2 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6506C3C42D1145F300194CB2 /* MainMenu.swift */; };
+		6573DF492D16BEA100D7917A /* MetalSplatter in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF482D16BEA100D7917A /* MetalSplatter */; };
+		6573DF4B2D16BEA100D7917A /* PLYIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF4A2D16BEA100D7917A /* PLYIO */; };
+		6573DF4D2D16BEA100D7917A /* SampleBoxRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF4C2D16BEA100D7917A /* SampleBoxRenderer */; };
+		6573DF4F2D16BEA100D7917A /* SplatIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF4E2D16BEA100D7917A /* SplatIO */; };
+		6573DF512D16BEA100D7917A /* SplatConverter in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF502D16BEA100D7917A /* SplatConverter */; };
 		659AD4A02CCB0B2500F834E0 /* opalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD49F2CCB0B2500F834E0 /* opalApp.swift */; };
 		659AD4A62CCB0B2500F834E0 /* ImageBasedLighting.skybox in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4A52CCB0B2500F834E0 /* ImageBasedLighting.skybox */; };
 		659AD4A82CCB0B2500F834E0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 659AD4A72CCB0B2500F834E0 /* Assets.xcassets */; };
@@ -58,6 +63,10 @@
 		65E3C0132CEF12650037A68C /* tv_retro.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = tv_retro.usdz; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		6573DF522D16BF1E00D7917A /* Splat Engine */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Splat Engine"; sourceTree = "<group>"; };
+/* End PBXFileSystemSynchronizedRootGroup section */
+
 /* Begin PBXFrameworksBuildPhase section */
 		659AD4952CCB0B2500F834E0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -65,6 +74,11 @@
 			files = (
 				65EBB7AE2D10C44500782661 /* RealityKitContent in Frameworks */,
 				A58EA5282CFFB4C1009E4EB4 /* AWSS3 in Frameworks */,
+				6573DF4B2D16BEA100D7917A /* PLYIO in Frameworks */,
+				6573DF4F2D16BEA100D7917A /* SplatIO in Frameworks */,
+				6573DF492D16BEA100D7917A /* MetalSplatter in Frameworks */,
+				6573DF512D16BEA100D7917A /* SplatConverter in Frameworks */,
+				6573DF4D2D16BEA100D7917A /* SampleBoxRenderer in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +120,7 @@
 				659AD4C22CCB0D1D00F834E0 /* Menu */,
 				659AD4CC2CCB0D3C00F834E0 /* View */,
 				659AD4D22CCB0D6B00F834E0 /* Control */,
+				6573DF522D16BF1E00D7917A /* Splat Engine */,
 				659AD4A52CCB0B2500F834E0 /* ImageBasedLighting.skybox */,
 				659AD4A72CCB0B2500F834E0 /* Assets.xcassets */,
 				659AD4AC2CCB0B2500F834E0 /* Info.plist */,
@@ -190,10 +205,18 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				6573DF522D16BF1E00D7917A /* Splat Engine */,
+			);
 			name = opal;
 			packageProductDependencies = (
 				A58EA5272CFFB4C1009E4EB4 /* AWSS3 */,
 				65EBB7AD2D10C44500782661 /* RealityKitContent */,
+				6573DF482D16BEA100D7917A /* MetalSplatter */,
+				6573DF4A2D16BEA100D7917A /* PLYIO */,
+				6573DF4C2D16BEA100D7917A /* SampleBoxRenderer */,
+				6573DF4E2D16BEA100D7917A /* SplatIO */,
+				6573DF502D16BEA100D7917A /* SplatConverter */,
 			);
 			productName = opal;
 			productReference = 659AD4982CCB0B2500F834E0 /* opal.app */;
@@ -248,6 +271,7 @@
 			packageReferences = (
 				A58EA5262CFFB412009E4EB4 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */,
 				65EBB7AC2D10C44500782661 /* XCLocalSwiftPackageReference "Packages/RealityKitContent" */,
+				6573DF472D16BEA100D7917A /* XCLocalSwiftPackageReference "Packages/MetalSplatter" */,
 			);
 			productRefGroup = 659AD4992CCB0B2500F834E0 /* Products */;
 			projectDirPath = "";
@@ -569,6 +593,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
+		6573DF472D16BEA100D7917A /* XCLocalSwiftPackageReference "Packages/MetalSplatter" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/MetalSplatter;
+		};
 		65EBB7AC2D10C44500782661 /* XCLocalSwiftPackageReference "Packages/RealityKitContent" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/RealityKitContent;
@@ -587,6 +615,26 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6573DF482D16BEA100D7917A /* MetalSplatter */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MetalSplatter;
+		};
+		6573DF4A2D16BEA100D7917A /* PLYIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PLYIO;
+		};
+		6573DF4C2D16BEA100D7917A /* SampleBoxRenderer */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SampleBoxRenderer;
+		};
+		6573DF4E2D16BEA100D7917A /* SplatIO */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SplatIO;
+		};
+		6573DF502D16BEA100D7917A /* SplatConverter */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SplatConverter;
+		};
 		65EBB7AD2D10C44500782661 /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RealityKitContent;
