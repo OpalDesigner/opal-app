@@ -64,7 +64,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6573DF522D16BF1E00D7917A /* Splat Engine */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = "Splat Engine"; sourceTree = "<group>"; };
+		6573DF522D16BF1E00D7917A /* SplatEngine */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = SplatEngine; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -120,7 +120,7 @@
 				659AD4C22CCB0D1D00F834E0 /* Menu */,
 				659AD4CC2CCB0D3C00F834E0 /* View */,
 				659AD4D22CCB0D6B00F834E0 /* Control */,
-				6573DF522D16BF1E00D7917A /* Splat Engine */,
+				6573DF522D16BF1E00D7917A /* SplatEngine */,
 				659AD4A52CCB0B2500F834E0 /* ImageBasedLighting.skybox */,
 				659AD4A72CCB0B2500F834E0 /* Assets.xcassets */,
 				659AD4AC2CCB0B2500F834E0 /* Info.plist */,
@@ -206,7 +206,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				6573DF522D16BF1E00D7917A /* Splat Engine */,
+				6573DF522D16BF1E00D7917A /* SplatEngine */,
 			);
 			name = opal;
 			packageProductDependencies = (
