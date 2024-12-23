@@ -8,6 +8,21 @@
 import SwiftUI
 import RealityKit
 
+class NavigationData: ObservableObject {
+    @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
+    @Published var cameraRotation: Float = 0
+    
+    @Published var cameraEntity = Entity()
+    @Published var spotlightEntity = Entity()
+    @Published var lightSource = ModelEntity()
+    @Published var isCameraVisible: Bool = false
+    @Published var isSpotLightVisible: Bool = false
+    
+    @Published var splatRotationAxis = SIMD3<Float>(0, 1, 0)           // X is pitch, Y is yaw, Z is roll
+    @Published var splatRotationAmount = Angle(degrees: 0)
+    @Published var splatRotationPerSecond = Angle(degrees: 0)
+}
+
 struct NavigationControl: View {
     // Access shared data
     @ObservedObject var navigationData: NavigationData
@@ -97,47 +112,15 @@ struct NavigationControl: View {
             try? await Task.sleep(nanoseconds: 16_666_667)
         }
     }
-    
-    func turnLeft(degrees: Float) async {
-        let stepSize: Float = degrees * .pi / 180 // 45 degrees at a time
-        let steps = Int(degrees / 45)
-        var newRotation = navigationData.cameraRotation - stepSize
-        
-        // Normalize between 0 and 2π
-        newRotation = newRotation.truncatingRemainder(dividingBy: 2 * .pi)
-        if newRotation < 0 {
-            newRotation += 2 * .pi
-        }
-        for _ in 0..<steps {
-            navigationData.cameraRotation = newRotation
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
-        /*
-        print("Turning Left")
-        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
-         */
+
+    func turnLeft() async {
+        let modelRotationStep = Float(45) * .pi / 180
+        navigationData.cameraRotation -= modelRotationStep
     }
-    
-    func turnRight(degrees: Float) async {
-        let stepSize: Float = degrees * .pi / 180 // 45 degrees at a time
-        let steps = Int(degrees / 45)
-        var newRotation = navigationData.cameraRotation + stepSize
-        
-        // Normalize between 0 and 2π
-        newRotation = newRotation.truncatingRemainder(dividingBy: 2 * .pi)
-        if newRotation < 0 {
-            newRotation += 2 * .pi
-        }
-        
-        for _ in 0..<steps {
-            navigationData.cameraRotation = newRotation
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
-        /*
-        print("Turn Right")
-        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
-        */
-         
+     
+    func turnRight() async {
+        let modelRotationStep = Float(45) * .pi / 180
+        navigationData.cameraRotation += modelRotationStep
     }
     
     func moveHigher(_ meters: Float) async {
@@ -213,7 +196,7 @@ struct NavigationControl: View {
                 // Action for Rotate Left
                 Button {
                     Task {
-                        await turnLeft(degrees: 45)
+                        await turnLeft()
                     }
                 } label: {
                     Label("", systemImage: "rotate.left")
@@ -222,7 +205,7 @@ struct NavigationControl: View {
                 // Action for Move Forward
                 Button {
                     Task {
-                        await moveForward(1)
+                        await moveForward(0.5)
                     }
                 } label: {
                     Label("", systemImage: "arrow.up")
@@ -231,7 +214,7 @@ struct NavigationControl: View {
                 // Action for Rotate Right
                 Button {
                     Task {
-                        await turnRight(degrees: 45)
+                        await turnRight()
                     }
                 } label: {
                     Label("", systemImage: "rotate.right")
@@ -272,7 +255,7 @@ struct NavigationControl: View {
                 // Action for Move Backward
                 Button {
                     Task {
-                        await moveBackward(1)
+                        await moveBackward(0.5)
                     }
                 } label: {
                     Label("", systemImage: "arrow.down")
@@ -306,7 +289,10 @@ struct NavigationControl: View {
     }
 }
 
-#Preview {
-    NavigationControl(navigationData: NavigationData(), tabSelection: TabSelection())
-}
 
+#Preview {
+    NavigationControl(
+        navigationData: NavigationData(),
+        tabSelection: TabSelection()
+        )
+}

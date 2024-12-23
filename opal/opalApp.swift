@@ -9,20 +9,6 @@ import SwiftUI
 import AWSS3
 import CompositorServices
 
-enum ModelIdentifier: Equatable, Hashable, Codable, CustomStringConvertible {
-    case gaussianSplat(URL)
-    case sampleBox
-
-    var description: String {
-        switch self {
-        case .gaussianSplat(let url):
-            "Gaussian Splat: \(url.path)"
-        case .sampleBox:
-            "Sample Box"
-        }
-    }
-}
-
 class TabSelection: ObservableObject {
     @Published var selectedTab = 0
 }
@@ -234,12 +220,12 @@ struct opalApp: App {
         }.immersionStyle(selection: .constant(.full), in: .full)
         
         // SPLAT VIEWS
-        ImmersiveSpace(for: ModelIdentifier.self) { modelIdentifier in
+        ImmersiveSpace(id: "GaussianSplatView", for: URL.self) { url in
             CompositorLayer(configuration: ContentStageConfiguration()) { layerRenderer in
-                let renderer = VisionSceneRenderer(layerRenderer)
+                let renderer = VisionSceneRenderer(layerRenderer, navigationData: navigationData)
                 Task {
                     do {
-                        try await renderer.load(modelIdentifier.wrappedValue)
+                        try await renderer.load(url.wrappedValue)
                     } catch {
                         print("Error loading model: \(error.localizedDescription)")
                     }

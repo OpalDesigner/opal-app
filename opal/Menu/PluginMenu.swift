@@ -87,7 +87,7 @@ struct PluginMenu: View {
                             isImmersiveOpen.toggle()
                             Task {
                                 if isImmersiveOpen {
-                                    await openImmersiveSpace(value: ModelIdentifier.gaussianSplat(url))
+                                    await openImmersiveSpace(id: "GaussianSplatView", value: url)
                                     openWindow(id: "NavigationControl")
                                 } else {
                                     await dismissImmersiveSpace()

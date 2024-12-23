@@ -8,16 +8,6 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
-class NavigationData: ObservableObject {
-    @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
-    @Published var cameraRotation: Float = 0
-    @Published var cameraEntity = Entity()
-    @Published var spotlightEntity = Entity()
-    @Published var lightSource = ModelEntity()
-    @Published var isCameraVisible: Bool = false
-    @Published var isSpotLightVisible: Bool = false
-}
-
 //This code creates an immersive view of your set
 struct ImmersiveModelView: View {
     // Function parameters
