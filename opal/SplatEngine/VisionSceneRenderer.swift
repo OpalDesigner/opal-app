@@ -190,7 +190,8 @@ class VisionSceneRenderer {
             return ModelRendererViewportDescriptor(
                 viewport: view.textureMap.viewport,
                 projectionMatrix: .init(projectionMatrix),
-                viewMatrix: userViewpointMatrix * translationMatrix * rotationMatrix * commonUpCalibration,
+                //viewMatrix: userViewpointMatrix * translationMatrix * rotationMatrix * commonUpCalibration,
+                viewMatrix: userViewpointMatrix * rotationMatrix * translationMatrix * commonUpCalibration,
                 screenSize: screenSize)
         }
     }
