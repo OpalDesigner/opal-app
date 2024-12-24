@@ -19,9 +19,9 @@ struct PluginMenu: View {
     var body: some View {
         NavigationStack {
             Text("Choose your tool to import from")
-                .font(.largeTitle)
-                .padding(20)
-                .glassBackgroundEffect()
+                .monospaced()
+                .font(.system(size: 30, weight: .bold))
+                .padding()
             HStack{
                 // Unreal Engine
                 VStack(alignment: .leading) {

@@ -156,9 +156,9 @@
 		659AD4C22CCB0D1D00F834E0 /* Menu */ = {
 			isa = PBXGroup;
 			children = (
+				659AD4BF2CCB0D1D00F834E0 /* HomeMenu.swift */,
 				6506C3C42D1145F300194CB2 /* MainMenu.swift */,
 				65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */,
-				659AD4BF2CCB0D1D00F834E0 /* HomeMenu.swift */,
 				659AD4C12CCB0D1D00F834E0 /* TeamMenu.swift */,
 			);
 			path = Menu;
