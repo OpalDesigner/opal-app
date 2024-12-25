@@ -76,11 +76,6 @@ struct HomeMenu: View {
             .background {
                 Image("interior-shot")
             }
-            
-            //Render Opals
-            if(isTypingFinished){
-                BubbleView()
-            }
         }
     }
 }

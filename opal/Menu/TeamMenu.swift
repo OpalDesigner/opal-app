@@ -42,21 +42,26 @@ enum Team : String, Identifiable, CaseIterable, Equatable
  
 struct TeamMenu: View {
     var body: some View {
-        VStack{
-            Text("Meet the team")
-                .monospaced()
-                .font(.system(size: 30, weight: .bold))
-                .padding()
-            VStack {
-                HStack {
-                    TeamCard(team: .kris)
-                    TeamCard(team: .vik)
-                }
-                HStack {
-                    TeamCard(team: .jason)
-                    TeamCard(team: .pablo)
+        ZStack{
+            VStack{
+                Text("Meet the team")
+                    .monospaced()
+                    .font(.system(size: 30, weight: .bold))
+                    .padding()
+                VStack {
+                    HStack {
+                        TeamCard(team: .kris)
+                        TeamCard(team: .vik)
+                    }
+                    HStack {
+                        TeamCard(team: .jason)
+                        TeamCard(team: .pablo)
+                    }
                 }
             }
+            
+            //Render Opals
+            BubbleView()
         }
         .padding()
         .background(){

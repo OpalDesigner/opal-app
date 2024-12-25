@@ -145,8 +145,29 @@ struct opalApp: App {
             createMainMenu()
         }
         .defaultSize(CGSize(width: 1000, height: 880))
+        .defaultWindowPlacement { content, context in
+            let size = content.sizeThatFits(.unspecified)
+            let navigationWindow = context.windows.first { window in
+                window.id == "NavigationControl"
+            }
+            if let navigationWindow {
+                return WindowPlacement(.trailing(navigationWindow), size: size)
+            }
+            return WindowPlacement(size: size)
+        }
         
-        // NAVIGATION CONTROL
+        // HAND INTERACTION
+        ImmersiveSpace(id: "HandTrackingView"){
+            HandTrackingView()
+        }
+        
+        // BUBBLE ANIMATION
+        ImmersiveSpace(id: "BubbleView") {
+            BubbleView()
+        }
+        .immersionStyle(selection: .constant(.full), in: .full)
+        
+        // NAVIGATION CONTROL VIEW
         WindowGroup(id: "NavigationControl") {
             NavigationControl(navigationData: navigationData, tabSelection: tabSelection)
         }
@@ -155,33 +176,7 @@ struct opalApp: App {
         }
         .defaultSize(CGSize(width: 300, height: 350))
         
-        // BUILDER
-        WindowGroup(id: "BuilderView") {
-            TabletopModelView(
-                modelName: "Mech_Drone",  // Replace with your model name
-                initialScale: 0.01
-            )
-        }
-        .windowStyle(.volumetric)
-        .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-        /*
-        .defaultWindowPlacement{content, context in
-            return WindowPlacement(.trailing(<#T##relativeWindow: WindowProxy##WindowProxy#>))
-        }
-         */
-        
-        // HAND INTERACTION
-        ImmersiveSpace(id: "HandTrackingView"){
-            HandTrackingView()
-        }
-        
-        // BUBBLE ANIMATION 
-        ImmersiveSpace(id: "BubbleView") {
-            BubbleView()
-        }
-        .immersionStyle(selection: .constant(.full), in: .full)
-        
-        // TABLETOP VIEWS
+        // TABLETOP VIEW
         WindowGroup(id: "ModelRealityView", for: ModelInfo.self) { modelInfo in
             if let modelInfo = modelInfo.wrappedValue {
                 TabletopModelView(
@@ -194,18 +189,25 @@ struct opalApp: App {
         }
         .windowStyle(.volumetric)
         .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
-        .defaultWindowPlacement{content, context in
+        .defaultWindowPlacement { content, context in
             let size = content.sizeThatFits(.unspecified)
             let mainWindow = context.windows.first { window in
                 window.id == "Menu"
             }
-            if let mainWindow{
+            let navigationWindow = context.windows.first { window in
+                window.id == "NavigationControl"
+            }
+            // Check if both windows exist
+            if let mainWindow, let navigationWindow {
+                return WindowPlacement(.leading(navigationWindow), size: size)
+            } else if let mainWindow {
+                // If only main window exists, place trailing to it
                 return WindowPlacement(.trailing(mainWindow), size: size)
             }
             return WindowPlacement(size: size)
         }
         
-        // IMMERSIVE VIEWS
+        // IMMERSIVE VIEW
         Group {
             ImmersiveSpace(id: "ModelImmersiveView", for: ModelInfo.self) { modelInfo in
                 if let modelInfo = modelInfo.wrappedValue {
@@ -217,9 +219,10 @@ struct opalApp: App {
                     Text("No model information available")
                 }
             }
-        }.immersionStyle(selection: .constant(.full), in: .full)
+        }
+        .immersionStyle(selection: .constant(.full), in: .full)
         
-        // SPLAT VIEWS
+        // SPLAT VIEW
         ImmersiveSpace(id: "GaussianSplatView", for: URL.self) { url in
             CompositorLayer(configuration: ContentStageConfiguration()) { layerRenderer in
                 let renderer = VisionSceneRenderer(layerRenderer, navigationData: navigationData)
