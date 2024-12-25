@@ -284,6 +284,15 @@ def Xform "Root"
                 uniform string name = "default subtree animation"
             }
         }
+
+        over "Materials"
+        {
+            over "material"
+            {
+                token outputs:mtlx:surface
+                token outputs:realitykit:vertex
+            }
+        }
     }
 
     def "Planets" (
@@ -307,11 +316,9 @@ def Xform "Root"
 
     def "SkyDome" (
         active = true
-        prepend apiSchemas = ["MaterialBindingAPI"]
-        references = @SkyDome.usdz@
+        prepend references = @SkyDome.usdz@
     )
     {
-        reorder nameChildren = ["Dome_01", "Ground_01", "Grid", "Looks", "Material"]
         float3 xformOp:scale = (0.01, 0.01, 0.01)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }

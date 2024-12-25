@@ -9,18 +9,23 @@ import RealityKit
 import RealityKitContent
 
 struct HomeMenu: View {
-    @State private var modelRotation: Double = 0
-    @State private var isPressed = false
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
+    
+    @State private var titleText: String = ""
+    @State private var finalTitle: String = "Welcome to Scene Designer"
+    @State private var descriptionText: String = "Scene Designer is an intuitive simulation tool that combines realistic graphics with playful animation."
+    @State private var isTypingFinished: Bool = false
+    @State private var isPressed = false
+    @State private var modelRotation: Double = 0
 
     var body: some View {
         ZStack{
             HStack {
                 VStack(spacing: 20) {
-                    Text("Welcome to Scene Designer")
+                    Text(titleText)
                         .font(.largeTitle)
-                    Text("Scene Designer is an intuitive simulation tool that combines realistic graphics with playful animation.")
+                    Text(descriptionText)
                         .font(.system(size: 20))
                     Button{
                         isPressed.toggle()
@@ -38,6 +43,13 @@ struct HomeMenu: View {
                 .frame(width: 500, height: 200)
                 .padding()
                 .glassBackgroundEffect()
+                .task {
+                    for index in finalTitle.indices {
+                        titleText = String(finalTitle.prefix(through: index))
+                        try? await Task.sleep(for: .milliseconds(100))
+                    }
+                    isTypingFinished = true
+                }
                 
                 NavigationStack {
                     Model3D(named: "tv_retro") { model in model
@@ -65,8 +77,10 @@ struct HomeMenu: View {
                 Image("interior-shot")
             }
             
-        //Render Opals
-        BubbleView()
+            //Render Opals
+            if(isTypingFinished){
+                BubbleView()
+            }
         }
     }
 }

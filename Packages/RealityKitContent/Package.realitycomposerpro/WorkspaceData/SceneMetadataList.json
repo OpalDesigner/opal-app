@@ -40,18 +40,8 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Earth_Timeline",
+        "Saturn_Timeline",
         "Track2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Mercury_Timeline",
-        "Track"
       ],
       {
         "isExpanded" : true,
@@ -69,8 +59,7 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Venus_Timeline",
-        "Track2"
+        "Jupiter_Timeline"
       ],
       {
         "isExpanded" : true,
@@ -80,63 +69,6 @@
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
         "Saturn_Timeline",
-        "Track4"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Earth_Timeline"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Mars_Timeline",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "SkySphere"
-      ],
-      {
-        "disallowsFraming" : true,
-        "isExpanded" : false,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Mercury_Timeline",
-        "Track2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Earth_Timeline",
         "Track"
       ],
       {
@@ -146,7 +78,7 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Mars_Timeline",
+        "Venus_Timeline",
         "Track2"
       ],
       {
@@ -165,7 +97,7 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Moon_Timeline",
+        "Mars_Timeline",
         "Track2"
       ],
       {
@@ -175,41 +107,11 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Saturn_Timeline",
-        "Track3"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Moon_Timeline",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "Jupiter_Timeline",
+        "Earth_Timeline",
         "Track2"
       ],
       {
         "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
-        "Planets",
-        "SkyDome"
-      ],
-      {
-        "disallowsFraming" : true,
-        "isExpanded" : false,
         "isLocked" : false
       },
       [
@@ -225,7 +127,8 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Venus_Timeline"
+        "Mercury_Timeline",
+        "Track2"
       ],
       {
         "isExpanded" : true,
@@ -234,7 +137,18 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Mars_Timeline"
+        "Moon_Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Moon_Timeline",
+        "Track2"
       ],
       {
         "isExpanded" : true,
@@ -253,7 +167,64 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Sun_Timeline",
+        "Earth_Timeline"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Saturn_Timeline",
+        "Track4"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Mars_Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Saturn_Timeline",
+        "Track3"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Jupiter_Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Earth_Timeline",
         "Track"
       ],
       {
@@ -273,17 +244,17 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Saturn_Timeline",
-        "Track2"
+        "SkySphere"
       ],
       {
-        "isExpanded" : true,
+        "disallowsFraming" : true,
+        "isExpanded" : false,
         "isLocked" : false
       },
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Saturn_Timeline",
+        "Mercury_Timeline",
         "Track"
       ],
       {
@@ -293,10 +264,11 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Sun_Timeline"
+        "SkyDome"
       ],
       {
-        "isExpanded" : true,
+        "disallowsFraming" : true,
+        "isExpanded" : false,
         "isLocked" : false
       },
       [
@@ -311,7 +283,8 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Jupiter_Timeline"
+        "Jupiter_Timeline",
+        "Track2"
       ],
       {
         "isExpanded" : true,
@@ -320,8 +293,35 @@
       [
         "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
         "Planets",
-        "Jupiter_Timeline",
+        "Sun_Timeline",
         "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Mars_Timeline"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Venus_Timeline"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "26E67ACE-72C2-4078-9F5F-B09DB85B07FE",
+        "Planets",
+        "Sun_Timeline"
       ],
       {
         "isExpanded" : true,
@@ -333,8 +333,7 @@
     "objectMetadataList" : [
       [
         "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
-        "Root",
-        "Cube"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -352,7 +351,8 @@
       },
       [
         "31E0E38C-EA94-4110-B0B6-FDE77BE9BB16",
-        "Root"
+        "Root",
+        "Cube"
       ],
       {
         "isExpanded" : true,
@@ -397,16 +397,6 @@
     "objectMetadataList" : [
       [
         "5D40A7D9-3C48-4CFB-98C5-BBE7B9B72D57",
-        "Root",
-        "Timeline",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "5D40A7D9-3C48-4CFB-98C5-BBE7B9B72D57",
         "Root"
       ],
       {
@@ -425,6 +415,46 @@
       [
         "5D40A7D9-3C48-4CFB-98C5-BBE7B9B72D57",
         "Root",
+        "Orbit",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "5D40A7D9-3C48-4CFB-98C5-BBE7B9B72D57",
+        "Root",
+        "SkyDome",
+        "Looks"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "5D40A7D9-3C48-4CFB-98C5-BBE7B9B72D57",
+        "Root",
+        "SkySphere",
+        "Material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "5D40A7D9-3C48-4CFB-98C5-BBE7B9B72D57",
+        "Root",
+        "SkyDome",
+        "Material"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "5D40A7D9-3C48-4CFB-98C5-BBE7B9B72D57",
+        "Root",
         "Timeline",
         "Track2"
       ],
@@ -435,7 +465,8 @@
       [
         "5D40A7D9-3C48-4CFB-98C5-BBE7B9B72D57",
         "Root",
-        "Orbit"
+        "Timeline",
+        "Track"
       ],
       {
         "isExpanded" : true,
@@ -444,8 +475,7 @@
       [
         "5D40A7D9-3C48-4CFB-98C5-BBE7B9B72D57",
         "Root",
-        "Orbit",
-        "Track"
+        "Orbit"
       ],
       {
         "isExpanded" : true,
@@ -504,27 +534,8 @@
       [
         "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
         "Root",
-        "MoveRobot"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
-        "Root",
         "AnimateRobot",
         "Track3"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
-        "Root",
-        "Timeline",
-        "Track"
       ],
       {
         "isExpanded" : true,
@@ -542,15 +553,6 @@
       [
         "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
         "Root",
-        "FinalTimeline"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
-        "Root",
         "MoveRobot",
         "Track2"
       ],
@@ -560,9 +562,7 @@
       },
       [
         "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
-        "Root",
-        "FinalTimeline",
-        "Track"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -571,7 +571,16 @@
       [
         "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
         "Root",
-        "MoveRobot",
+        "FinalTimeline"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
+        "Root",
+        "Timeline",
         "Track"
       ],
       {
@@ -590,7 +599,28 @@
       },
       [
         "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
-        "Root"
+        "Root",
+        "MoveRobot"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
+        "Root",
+        "MoveRobot",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "82E83C91-DF7F-4EA5-B2BF-9718E308D87A",
+        "Root",
+        "FinalTimeline",
+        "Track"
       ],
       {
         "isExpanded" : true,
@@ -600,6 +630,103 @@
   },
   "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749" : {
     "objectMetadataList" : [
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root",
+        "Timeline",
+        "Track3"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root",
+        "Final",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root",
+        "Final",
+        "Track2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root",
+        "Final",
+        "Track3"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root",
+        "Test",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root",
+        "Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root",
+        "Test"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root",
+        "Test",
+        "Track2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
+        "Root",
+        "SkyDome",
+        "Looks"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
       [
         "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
         "Root",
@@ -622,107 +749,11 @@
       [
         "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
         "Root",
-        "Final",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root",
-        "Test",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root",
-        "Timeline",
-        "Track3"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root",
-        "Buster_Drone"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root",
-        "Timeline",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root",
-        "Final",
-        "Track2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root",
         "SkyDome"
       ],
       {
         "disallowsFraming" : true,
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root",
-        "Test",
-        "Track2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root",
-        "Final",
-        "Track3"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "87FBBE09-2F61-4CA7-84FD-25A7FEFBB749",
-        "Root",
-        "Test"
-      ],
-      {
-        "isExpanded" : true,
+        "isExpanded" : false,
         "isLocked" : false
       }
     ]
@@ -732,21 +763,11 @@
       [
         "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F",
         "Root",
-        "Timeline",
-        "Track"
+        "SkySphere"
       ],
       {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F",
-        "Root",
-        "Timeline",
-        "Track2"
-      ],
-      {
-        "isExpanded" : true,
+        "disallowsFraming" : true,
+        "isExpanded" : false,
         "isLocked" : false
       },
       [
@@ -760,16 +781,6 @@
       },
       [
         "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F",
-        "Root",
-        "SkyDome"
-      ],
-      {
-        "disallowsFraming" : true,
-        "isExpanded" : false,
-        "isLocked" : false
-      },
-      [
-        "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F",
         "Root"
       ],
       {
@@ -779,7 +790,27 @@
       [
         "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F",
         "Root",
-        "SkySphere"
+        "Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F",
+        "Root",
+        "Timeline",
+        "Track2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "8D97C161-8BF9-43C5-8B63-22A01A1C8E4F",
+        "Root",
+        "SkyDome"
       ],
       {
         "disallowsFraming" : true,
@@ -844,8 +875,7 @@
       },
       [
         "AF09ED6F-1707-48FD-8720-65B998362C09",
-        "Root",
-        "Sphere_Right"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -853,7 +883,8 @@
       },
       [
         "AF09ED6F-1707-48FD-8720-65B998362C09",
-        "Root"
+        "Root",
+        "Sphere_Right"
       ],
       {
         "isExpanded" : true,
@@ -865,8 +896,7 @@
     "objectMetadataList" : [
       [
         "CB766F92-EE55-4A63-9401-E7B8C009764D",
-        "Root",
-        "GridMaterial"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -874,7 +904,8 @@
       },
       [
         "CB766F92-EE55-4A63-9401-E7B8C009764D",
-        "Root"
+        "Root",
+        "GridMaterial"
       ],
       {
         "isExpanded" : true,
@@ -891,7 +922,9 @@
     "objectMetadataList" : [
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root"
+        "Root",
+        "GridMaterial",
+        "GridMaterial"
       ],
       {
         "isExpanded" : true,
@@ -899,9 +932,7 @@
       },
       [
         "D66134B1-3681-4A8E-AFE5-29F257229F3B",
-        "Root",
-        "GridMaterial",
-        "GridMaterial"
+        "Root"
       ],
       {
         "isExpanded" : true,
@@ -926,6 +957,36 @@
       [
         "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
         "Root",
+        "Timeline",
+        "Track2"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
+        "Root",
+        "Timeline",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
+        "Root",
+        "CameraFlythrough",
+        "Track"
+      ],
+      {
+        "isExpanded" : true,
+        "isLocked" : false
+      },
+      [
+        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
+        "Root",
         "Timeline"
       ],
       {
@@ -945,36 +1006,6 @@
       [
         "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
         "Root"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
-        "Root",
-        "CameraFlythrough",
-        "Track"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
-        "Root",
-        "Timeline",
-        "Track2"
-      ],
-      {
-        "isExpanded" : true,
-        "isLocked" : false
-      },
-      [
-        "DC4FA9A7-51AF-4ABE-9BC3-FB8C2C3B1A08",
-        "Root",
-        "Timeline",
-        "Track"
       ],
       {
         "isExpanded" : true,

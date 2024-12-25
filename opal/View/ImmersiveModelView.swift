@@ -72,7 +72,21 @@ struct ImmersiveModelView: View {
                 model.playAnimation(anim.repeat())
             }
             
-            // Load DSLR Camera model USDZ
+            // Add Skybox
+            guard let resource = try? await TextureResource(named: "Starfield") else {
+                fatalError("Unable to load starfield texture.")
+            }
+            var material = UnlitMaterial()
+            material.color = .init(texture: .init(resource))
+            let skyboxEntity = Entity()
+            skyboxEntity.components.set(ModelComponent(
+                mesh: .generateSphere(radius: 1000),
+                materials: [material]
+            ))
+            skyboxEntity.scale *= .init(x: -1, y: 1, z: 1)
+            content.add(skyboxEntity)
+            
+            // Add DSLR Camera USDZ
             guard let camera = try? await Entity(named: "Camera", in: realityKitContentBundle)
             else { fatalError("Unable to load Camera)") }
             let boxSize = SIMD3<Float>(0.2, 0.5, 0.2)
@@ -96,14 +110,13 @@ struct ImmersiveModelView: View {
                 print(hasCollision ? "Collision began between perspective camera and model" : "No Collision detected")
             }
             
-            // Spotlight USDZ
+            // Add Spotlight USDZ
             guard let spotlight = try? await Entity(named: "StudioSpotlight", in: realityKitContentBundle)
             else { fatalError("Unable to load Spotlight)") }
             spotlight.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(0, 1, 0))
             spotlight.transform.translation = SIMD3<Float>(-0.2, 0, -0.5)
             navigationData.spotlightEntity = spotlight
             content.add(spotlight)
-            
             // Add SpotLight LightSource
             let lightSourceEntity = ModelEntity()
             let spotlightComponent = SpotLightComponent(
