@@ -31,6 +31,14 @@ func matrix4x4_translation(_ translationX: Float, _ translationY: Float, _ trans
         vector_float4(translationX, translationY, translationZ, 1)))
 }
 
+func matrix4x4_scale(_ scale: Float) -> matrix_float4x4 {
+    return matrix_float4x4.init(columns:(
+        vector_float4(scale,     0,     0, 0),
+        vector_float4(    0, scale,     0, 0),
+        vector_float4(    0,     0, scale, 0),
+        vector_float4(    0,     0,     0, 1)))
+}
+
 func matrix_perspective_right_hand(fovyRadians fovy: Float, aspectRatio: Float, nearZ: Float, farZ: Float) -> matrix_float4x4 {
     let ys = 1 / tanf(fovy * 0.5)
     let xs = ys / aspectRatio
@@ -166,6 +174,9 @@ class VisionSceneRenderer {
             navigationData.cameraPosition.y,
             navigationData.cameraPosition.z)
         
+        let scaleMatrix = matrix4x4_scale(
+            navigationData.splatScale)
+        
         // Turn common 3D GS PLY files rightside-up. This isn't generally meaningful, it just
         // happens to be a useful default for the most common datasets at the moment.
         let commonUpCalibration = matrix4x4_rotation(radians: .pi, axis: SIMD3<Float>(0, 0, 1))
@@ -191,7 +202,7 @@ class VisionSceneRenderer {
                 viewport: view.textureMap.viewport,
                 projectionMatrix: .init(projectionMatrix),
                 //viewMatrix: userViewpointMatrix * translationMatrix * rotationMatrix * commonUpCalibration,
-                viewMatrix: userViewpointMatrix * rotationMatrix * translationMatrix * commonUpCalibration,
+                viewMatrix: userViewpointMatrix * scaleMatrix * rotationMatrix * translationMatrix * commonUpCalibration,
                 screenSize: screenSize)
         }
     }

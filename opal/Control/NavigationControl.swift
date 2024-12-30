@@ -21,6 +21,7 @@ class NavigationData: ObservableObject {
     @Published var splatRotationAxis = SIMD3<Float>(0, 1, 0)           // X is pitch, Y is yaw, Z is roll
     @Published var splatRotationAmount = Angle(degrees: 0)
     @Published var splatRotationPerSecond = Angle(degrees: 0)
+    @Published var splatScale: Float = 1
 }
 
 struct NavigationControl: View {

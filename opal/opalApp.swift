@@ -140,7 +140,8 @@ struct opalApp: App {
     }
 
     var body: some Scene {
-        // MAIN SCENE
+        // ----------------- DEFINE WINDOW SPACES ---------------
+        // WINDOW - MENU
         WindowGroup(id: "Menu") {
             createMainMenu()
         }
@@ -156,18 +157,7 @@ struct opalApp: App {
             return WindowPlacement(size: size)
         }
         
-        // HAND INTERACTION
-        ImmersiveSpace(id: "HandTrackingView"){
-            HandTrackingView()
-        }
-        
-        // BUBBLE ANIMATION
-        ImmersiveSpace(id: "BubbleView") {
-            BubbleView()
-        }
-        .immersionStyle(selection: .constant(.full), in: .full)
-        
-        // NAVIGATION CONTROL VIEW
+        // WINDOW - NAVIGATION CONTROL VIEW
         WindowGroup(id: "NavigationControl") {
             NavigationControl(navigationData: navigationData, tabSelection: tabSelection)
         }
@@ -176,7 +166,7 @@ struct opalApp: App {
         }
         .defaultSize(CGSize(width: 300, height: 350))
         
-        // TABLETOP VIEW
+        // WINDOW - MODEL TABLETOP VIEW
         WindowGroup(id: "ModelRealityView", for: ModelInfo.self) { modelInfo in
             if let modelInfo = modelInfo.wrappedValue {
                 TabletopModelView(
@@ -207,22 +197,21 @@ struct opalApp: App {
             return WindowPlacement(size: size)
         }
         
-        // IMMERSIVE VIEW
-        Group {
-            ImmersiveSpace(id: "ModelImmersiveView", for: ModelInfo.self) { modelInfo in
-                if let modelInfo = modelInfo.wrappedValue {
-                    ImmersiveModelView(
-                        navigationData: navigationData,
-                        modelName: modelInfo.modelName
-                    )
-                } else {
-                    Text("No model information available")
-                }
+        // ----------------- DEFINE IMMERSIVE SPACES ---------------
+        // IMMERSIVE - MODEL IMMERSIVE VIEW
+        ImmersiveSpace(id: "ModelImmersiveView", for: ModelInfo.self) { modelInfo in
+            if let modelInfo = modelInfo.wrappedValue {
+                ImmersiveModelView(
+                    navigationData: navigationData,
+                    modelName: modelInfo.modelName
+                )
+            } else {
+                Text("No model information available")
             }
         }
         .immersionStyle(selection: .constant(.full), in: .full)
         
-        // SPLAT VIEW
+        // IMMERSIVE - SPLAT VIEW
         ImmersiveSpace(id: "GaussianSplatView", for: URL.self) { url in
             CompositorLayer(configuration: ContentStageConfiguration()) { layerRenderer in
                 let renderer = VisionSceneRenderer(layerRenderer, navigationData: navigationData)
@@ -235,6 +224,17 @@ struct opalApp: App {
                     renderer.startRenderLoop()
                 }
             }
+        }
+        .immersionStyle(selection: .constant(.full), in: .full)
+        
+        // IMMERSIVE - HAND INTERACTION
+        ImmersiveSpace(id: "HandTrackingView"){
+            HandTrackingView()
+        }
+        
+        // IMMERSIVE - BUBBLE ANIMATION
+        ImmersiveSpace(id: "BubbleView") {
+            BubbleView()
         }
         .immersionStyle(selection: .constant(.full), in: .full)
     }

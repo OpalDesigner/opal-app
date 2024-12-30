@@ -66,14 +66,33 @@ struct TabletopModelView: View {
         }
     }
     
+    private func getAutoScale(_ model: Entity) -> Float {
+        let bounds = model.visualBounds(relativeTo: model)
+        let size = bounds.max - bounds.min
+        let maxWidth: Float = 0.8
+        let maxHeight: Float = 0.533
+        let maxDepth: Float = 0.533
+        // Calculate scale needed for each dimension
+        let scaleX = maxWidth / size.x
+        let scaleY = maxHeight / size.y
+        let scaleZ = maxDepth / size.z
+        // Use the smallest scale to ensure all dimensions fit within limits
+        let autoScale = min(scaleX, min(scaleY, scaleZ))
+        // Print resulting dimensions
+        let scaledWidth = size.x * autoScale
+        let scaledHeight = size.y * autoScale
+        let scaledDepth = size.z * autoScale
+        print("\n\(modelName) Auto-Scaling Details:")
+        print("Original dimensions:     width=\(size.x)m, height=\(size.y)m, depth=\(size.z)m")
+        print("Scale factors:           width=\(scaleX), height=\(scaleY), depth=\(scaleZ)")
+        print("Resulting dimensions:    width=\(scaledWidth)m, height=\(scaledHeight)m, depth=\(scaledDepth)m")
+        print("Autoscale: \(autoScale)")
+        return autoScale
+    }
+    
     private func centerModelAroundPivot(_ model: Entity) {
         let bounds = model.visualBounds(relativeTo: model)
         let size = bounds.max - bounds.min
-        print("\n\(modelName) Bounds:")
-        print("Minimum bounds: \(bounds.min)")  // Shows lowest x,y,z coordinates
-        print("Maximum bounds: \(bounds.max)")  // Shows highest x,y,z coordinates
-        print("Model dimensions: \(size)")  // Shows width, height, depth
-
         modelCenter = model.convert(position: (bounds.min + bounds.max) * 0.5, to: nil)
         modelPivot = model.convert(position: .zero, to: nil)
         if modelCenter != modelPivot {
@@ -105,10 +124,11 @@ struct TabletopModelView: View {
                 }
             }
             
-            // Set initial transform and center model
+            // Set initial scale and center model
             modelCurrent = model
-            modelCurrent.transform.scale = SIMD3<Float>(repeating: initialScale)
-            currentScale = initialScale
+            let autoScale = getAutoScale(model)
+            modelCurrent.transform.scale = SIMD3<Float>(repeating: autoScale)
+            currentScale = autoScale
             centerModelAroundPivot(modelCurrent)
             
             // Enable input gestures
