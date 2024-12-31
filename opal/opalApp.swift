@@ -225,7 +225,7 @@ struct opalApp: App {
                 }
             }
         }
-        .immersionStyle(selection: .constant(.full), in: .full)
+        .immersionStyle(selection: .constant(.mixed), in: .mixed)
         
         // IMMERSIVE - HAND INTERACTION
         ImmersiveSpace(id: "HandTrackingView"){

@@ -12,16 +12,23 @@ class NavigationData: ObservableObject {
     @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
     @Published var cameraRotation: Float = 0
     
+    @Published var modelEntity = Entity()
     @Published var cameraEntity = Entity()
     @Published var spotlightEntity = Entity()
+    @Published var gridEntity = Entity()
     @Published var lightSource = ModelEntity()
     @Published var isCameraVisible: Bool = false
     @Published var isSpotLightVisible: Bool = false
     
+    // New properties for splat
     @Published var splatRotationAxis = SIMD3<Float>(0, 1, 0)           // X is pitch, Y is yaw, Z is roll
     @Published var splatRotationAmount = Angle(degrees: 0)
     @Published var splatRotationPerSecond = Angle(degrees: 0)
     @Published var splatScale: Float = 1
+    
+    // New properties for model placement
+    @Published var placementCoordinates: (x: Int, z: Int)? = nil
+    @Published var isPlacementMode: Bool = false
 }
 
 struct NavigationControl: View {
@@ -165,19 +172,6 @@ struct NavigationControl: View {
                 }
                 
                 Button {
-                    isBuildReady.toggle()
-                    if isBuildReady {
-                        openWindow(id: "Menu")
-                        tabSelection.selectedTab = 3
-                    } else {
-                        dismissWindow(id: "Menu")
-                    }
-                } label: {
-                    Label("", systemImage: "plus.circle.fill")
-                }
-                
-                /*
-                Button {
                     navigationData.isCameraVisible.toggle()
                 } label: {
                     Label("", systemImage: "camera.circle.fill")
@@ -190,7 +184,20 @@ struct NavigationControl: View {
                     Label("", systemImage: "light.beacon.max")
                         .foregroundColor(navigationData.isSpotLightVisible ? .yellow : .primary)
                 }
-                 */
+                
+                Button {
+                    isBuildReady.toggle()
+                    if isBuildReady {
+                        openWindow(id: "Menu")
+                        tabSelection.selectedTab = 3
+                        navigationData.gridEntity.isEnabled = true
+                    } else {
+                        dismissWindow(id: "Menu")
+                        navigationData.gridEntity.isEnabled = false
+                    }
+                } label: {
+                    Label("", systemImage: "plus.circle.fill")
+                }
             }
             
             HStack {

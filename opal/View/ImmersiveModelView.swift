@@ -46,6 +46,41 @@ struct ImmersiveModelView: View {
         }
     }
     
+    private func createFloorGrid(attachedTo modelEntity: Entity) -> Entity {
+        let gridEntity = Entity()
+        let gridSize = 5                    // 5x5 grid
+        let tileSize: Float = 1             // 2 meters per tile
+        for x in -gridSize...gridSize {
+            for z in -gridSize...gridSize {
+                let tileEntity = ModelEntity(
+                    mesh: .generatePlane(width: tileSize, depth: tileSize),
+                    materials: [UnlitMaterial(color: .lightGray)]
+                )
+                // Position each tile at the floor level of the model
+                tileEntity.position = SIMD3<Float>(
+                    Float(x) * tileSize,
+                    -0.01,
+                    Float(z) * tileSize
+                )
+                let placementPoint = ModelEntity(
+                     mesh: .generateCone(height: 0.3, radius: 0.05),
+                     materials: [SimpleMaterial(color: .lightGray, isMetallic: true)]
+                 )
+                placementPoint.components.set(InputTargetComponent(allowedInputTypes: .indirect))
+                placementPoint.generateCollisionShapes(recursive: true)
+                
+                // Add label and Rotate the cone 180 degrees around the X-axis to point downward
+                placementPoint.name = "placementPoint_\(x)_\(z)"
+                placementPoint.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(1, 0, 0))
+                placementPoint.position = SIMD3<Float>(0, 0.5, 0)
+                
+                tileEntity.addChild(placementPoint)
+                gridEntity.addChild(tileEntity)
+            }
+        }
+        return gridEntity
+    }
+    
     var body: some View {
         RealityView{ content in
             guard let model = await loadRootEntity() else {
@@ -53,18 +88,6 @@ struct ImmersiveModelView: View {
                 return
             }
             content.add(model)
-
-            print("\n\(modelName) Debug Information:")
-            for child in model.children {
-                print("Child:       \(child.name)")
-                print("Position:    \(child.position),       Scale: \(child.scale)")
-                
-                // Print grandchildren if any
-                for grandchild in child.children {
-                    print("Grandchild:  \(grandchild.name)")
-                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
-                }
-            }
             
             // Add Animation to the 3D model
             if(model.availableAnimations.count > 0){
@@ -89,26 +112,11 @@ struct ImmersiveModelView: View {
             // Add DSLR Camera USDZ
             guard let camera = try? await Entity(named: "Camera", in: realityKitContentBundle)
             else { fatalError("Unable to load Camera)") }
-            let boxSize = SIMD3<Float>(0.2, 0.5, 0.2)
-            //let debugMesh = ModelComponent(mesh: .generateBox(size: boxSize), materials: [UnlitMaterial(color: .red)])
-            //camera.components.set(debugMesh)
-            let collisionComponent = CollisionComponent(
-                shapes: [.generateBox(size: boxSize)],
-                mode: .default,
-                filter: .init(group: .default, mask: .all)
-            )
-            camera.components.set(collisionComponent)
             camera.scale = SIMD3<Float>(repeating: 0.5)
             camera.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(0, 1, 0))
             camera.transform.translation = SIMD3<Float>(0.2, 1.35, -0.5)
             navigationData.cameraEntity = camera
             content.add(camera)
-            content.subscribe(to: CollisionEvents.Began.self) { event in
-                let modelBoundary = model.children.first?.children.first
-                let hasCollision = (event.entityA == camera && event.entityB == modelBoundary) ||
-                                  (event.entityA == modelBoundary && event.entityB == camera)
-                print(hasCollision ? "Collision began between perspective camera and model" : "No Collision detected")
-            }
             
             // Add Spotlight USDZ
             guard let spotlight = try? await Entity(named: "StudioSpotlight", in: realityKitContentBundle)
@@ -117,6 +125,7 @@ struct ImmersiveModelView: View {
             spotlight.transform.translation = SIMD3<Float>(-0.2, 0, -0.5)
             navigationData.spotlightEntity = spotlight
             content.add(spotlight)
+            
             // Add SpotLight LightSource
             let lightSourceEntity = ModelEntity()
             let spotlightComponent = SpotLightComponent(
@@ -130,30 +139,26 @@ struct ImmersiveModelView: View {
             lightSourceEntity.transform.translation = SIMD3<Float>(-0.2, 1.40, -0.75)
             navigationData.lightSource = lightSourceEntity
             content.add(lightSourceEntity)
-                        
-            /*
-            // Add PointLight
-            // Default intensity value is 26963.76 lumens.
-            // Default attenuation is 10 meters
-            let pointLightComponent = PointLightComponent(
-                color: .red,
-                intensity: 100000,
-                attenuationRadius: 1000
-             )
-            testSphere.components.set(pointLightComponent)
-            */
-
-            /*
-            // Add DirectionalLight:
-            // Default intensity (lumens per square meter = lux) is 2145 lux
-            let directionalLightComponent = DirectionalLightComponent(
-               color: .red,
-               intensity: 10000
-            )
-            let lightShadowComponent = DirectionalLightComponent.Shadow()
-            testSphere.components.set([directionalLightComponent, lightShadowComponent])
-            */
             
+            // Add the grid as a child of Root
+            let rootEntity = model.findEntity(named: "Root")
+            navigationData.gridEntity = createFloorGrid(attachedTo: model)
+            navigationData.gridEntity.isEnabled = false
+            rootEntity?.addChild(navigationData.gridEntity)
+            
+            /*
+            print("\n\(modelName) Debug Information:")
+            for child in model.children {
+                print("Child:       \(child.name)")
+                print("Position:    \(child.position),       Scale: \(child.scale)")
+                
+                // Print grandchildren if any
+                for grandchild in child.children {
+                    print("Grandchild:  \(grandchild.name)")
+                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
+                }
+            }
+             */
             
         } update: { content in
             // Update position, orientation in scene
@@ -177,6 +182,35 @@ struct ImmersiveModelView: View {
                 navigationData.lightSource.components[SpotLightComponent.self]?.intensity = 0
             }
         }
+        
+        .gesture(
+            SpatialTapGesture()
+                .targetedToAnyEntity()
+                .onEnded { value in
+                    let entity = value.entity
+                    let name = entity.name
+                    if name.starts(with: "placementPoint_") {
+                        // Extract x,z coordinates from the name (format: "placementPoint_x_z")
+                        let coordinates = name.split(separator: "_")
+                        if coordinates.count == 3,
+                           let x = Int(coordinates[1]),
+                           let z = Int(coordinates[2]) {
+                            navigationData.placementCoordinates = (x: x, z: z)
+                            navigationData.isPlacementMode = true
+                            print("Tapped grid point: x=\(x), z=\(z)")
+                            // Highlight the tapped point
+                            if let modelEntity = entity as? ModelEntity {
+                                modelEntity.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
+                                // Reset color after a short delay
+                                Task {
+                                    try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+                                    modelEntity.model?.materials = [SimpleMaterial(color: .lightGray, isMetallic: true)]
+                                }
+                            }
+                        }
+                    }
+                }
+        )
     }
     
     private func updateCameraTransform(_ scene: Entity) {

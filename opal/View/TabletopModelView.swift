@@ -113,17 +113,6 @@ struct TabletopModelView: View {
             }
             content.add(model)
             
-            print("\n\(modelName) Model Parameters:")
-            for child in model.children {
-                print("Child:       \(child.name)")
-                print("Position:    \(child.position),       Scale: \(child.scale)")
-                // Print grandchildren if any
-                for grandchild in child.children {
-                    print("Grandchild:  \(grandchild.name)")
-                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
-                }
-            }
-            
             // Set initial scale and center model
             modelCurrent = model
             let autoScale = getAutoScale(model)
@@ -173,6 +162,19 @@ struct TabletopModelView: View {
             if let modelChild = modelCurrent.findEntity(named: modelName) {
                 modelChildEntity = modelChild
             }
+            
+            /*
+            print("\n\(modelName) Model Parameters:")
+            for child in model.children {
+                print("Child:       \(child.name)")
+                print("Position:    \(child.position),       Scale: \(child.scale)")
+                // Print grandchildren if any
+                for grandchild in child.children {
+                    print("Grandchild:  \(grandchild.name)")
+                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
+                }
+            }
+             */
             
         } update: { content in
             if(isLightingEnabled){
