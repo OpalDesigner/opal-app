@@ -20,28 +20,27 @@ struct ImmersiveModelView: View {
         do {
             return try await Entity(named: modelName, in: realityKitContentBundle)
         } catch {
-            // If bundle fails, try loading from app's document directories
+            // If bundle fails, try loading from documents directory
             let fileManager = FileManager.default
             guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
                 print("Error accessing documents directory")
                 return nil
             }
-            
-            // Check all three directories in order
-            let directories = ["uploads", "decor", "scans"]
-            for directory in directories {
-                let modelURL = documentsDirectory.appendingPathComponent("\(directory)/\(modelName).usdz")
+            // Check all categories defined in ModelCategory
+            for category in ModelCategory.allCases {
+                let categoryPath = category.rawValue.lowercased()
+                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
                 if fileManager.fileExists(atPath: modelURL.path) {
                     do {
+                        print("Loading model from \(categoryPath): \(modelName)")
                         return try await Entity.load(contentsOf: modelURL)
                     } catch {
-                        print("Error loading model from \(directory): \(error.localizedDescription)")
-                        continue // Try next directory if this one fails
+                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
+                        continue // Try next category if this one fails
                     }
                 }
             }
-            
-            print("Model not found in any directory: \(modelName)")
+            print("Model not found in any category: \(modelName)")
             return nil
         }
     }

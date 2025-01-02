@@ -12,7 +12,6 @@ import RealityKitContent
 struct TabletopModelView: View {
     // Function parameters
     let modelName: String
-    let initialScale: Float
     
     // Environment variables
     @Environment(\.realityKitScene) var scene
@@ -42,26 +41,27 @@ struct TabletopModelView: View {
         do {
             return try await Entity(named: modelName, in: realityKitContentBundle)
         } catch {
-            // If bundle fails, try loading from app's document directories
+            // If bundle fails, try loading from documents directory
             let fileManager = FileManager.default
             guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
                 print("Error accessing documents directory")
                 return nil
             }
-            // Check all three directories in order
-            let directories = ["uploads", "decor", "scans"]
-            for directory in directories {
-                let modelURL = documentsDirectory.appendingPathComponent("\(directory)/\(modelName).usdz")
+            // Check all categories defined in ModelCategory
+            for category in ModelCategory.allCases {
+                let categoryPath = category.rawValue.lowercased()
+                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
                 if fileManager.fileExists(atPath: modelURL.path) {
                     do {
+                        print("Loading model from \(categoryPath): \(modelName)")
                         return try await Entity.load(contentsOf: modelURL)
                     } catch {
-                        print("Error loading model from \(directory): \(error.localizedDescription)")
-                        continue // Try next directory if this one fails
+                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
+                        continue // Try next category if this one fails
                     }
                 }
             }
-            print("Model not found in any directory: \(modelName)")
+            print("Model not found in any category: \(modelName)")
             return nil
         }
     }
@@ -218,20 +218,20 @@ struct TabletopModelView: View {
                 .onChanged { value in
                     // Calculate new scale based on current gesture value
                     let newScale = currentScale * Float(value)
-                    let minScale = initialScale * 0.5
-                    let maxScale = initialScale * 1.5
+                    let minScale = currentScale * 0.5
+                    let maxScale = currentScale * 1.5
                     let clampedScale = max(minScale, min(newScale, maxScale))
                     modelCurrent.scale = SIMD3<Float>(repeating: clampedScale)
                     
                     // Print scale percentage
-                    let scalePercentage = Int((clampedScale / initialScale) * 100)
+                    let scalePercentage = Int((clampedScale / currentScale) * 100)
                     print("\(modelName) Scale: \(scalePercentage)%")
                 }
                 .onEnded { value in
                     // Save the new scale
                     let newScale = currentScale * Float(value)
-                    let minScale = initialScale  * 0.5
-                    let maxScale = initialScale  * 1.5
+                    let minScale = currentScale  * 0.5
+                    let maxScale = currentScale  * 1.5
                     currentScale = max(minScale, min(newScale, maxScale))
                     modelCurrent.scale = SIMD3<Float>(repeating: currentScale)
                 }
@@ -319,7 +319,6 @@ struct TabletopModelView: View {
 //Test Sample Preview on Xcode Preview Window
 #Preview {
     TabletopModelView(
-        modelName: "Coffee_Shop",
-        initialScale: 0.001
+        modelName: "Coffee_Shop"
     )
 }

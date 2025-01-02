@@ -23,64 +23,30 @@ struct opalApp: App {
     @State private var s3Files: [String] = []
     @State private var fetchTimer: Timer?
     
-    // Initialization Functions
-    init() {
-            setupAppDirectories()
-        }
-        
-    // Helper Functions
-    private func setupAppDirectories() {
-        let fileManager = FileManager.default
-        guard let documentsPath = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else { return }
-        
-        // Create all needed directories
-        let directories = ["uploads", "decor", "scans"]
-        
-        for directory in directories {
-            let directoryPath = documentsPath.appendingPathComponent(directory)
-            if !fileManager.fileExists(atPath: directoryPath.path) {
-                do {
-                    try fileManager.createDirectory(at: directoryPath, withIntermediateDirectories: true)
-                    print("Created directory: \(directory)")
-                } catch {
-                    print("Error creating \(directory) directory: \(error)")
-                }
-            }
-        }
-    }
-    
     private func createMainMenu() -> some View {
         TabView (selection: $tabSelection.selectedTab) {
             HomeMenu().tabItem {
                 Label("About", systemImage: "building.2.fill")
             }
             .tag(0)
-            ModelMenu().tabItem {
-                Label("Home", systemImage: "house.fill")
-            }
-            .tag(1)
-            ScanMenu().tabItem {
-                Label("Scans", systemImage: "scanner")
-            }
-            .tag(2)
-            BuildMenu().tabItem {
+            CatalogMenu(defaultModels: defaultModels).tabItem {
                 Label("Build", systemImage: "hammer.fill")
             }
-            .tag(3)
+            .tag(1)
             PluginMenu().tabItem {
                 Label("Import", systemImage: "square.and.arrow.down")
             }
-            .tag(4)
+            .tag(2)
             TeamMenu().tabItem {
                 Label("Team", systemImage: "person")
             }
-            .tag(5)
+            .tag(3)
         }
         /*
         .task {
             print("Fetching S3 files...")
             await fetchS3Files()
-            setupPeriodicFetch()
+            //setupPeriodicFetch()
         }
          */
     }
@@ -97,37 +63,20 @@ struct opalApp: App {
     }
     
     private func fetchS3Files() async {
+        print("\nDownloading S3 files to: \(getDocumentsDirectory().path)\n")
         do {
             let s3Client = try S3Client(region: "us-east-1")
-            let input = ListObjectsV2Input(bucket: "opal-designer")
-            let output = try await s3Client.listObjectsV2(input: input)
-            
-            if let contents = output.contents {
-                let fileNames = contents.compactMap { $0.key }
-                    .filter { $0.lowercased().hasSuffix(".usdz") }
-                
-                // Download each file
-                for fileName in fileNames {
-                    let getObjectInput = GetObjectInput(
-                        bucket: "opal-designer",
-                        key: fileName
-                    )
-                    print("Downloading file: \(fileName)")
-                    let getObjectOutput = try await s3Client.getObject(input: getObjectInput)
-                    if let body = getObjectOutput.body {
-                        if let data = try await body.readData() {
-                            // Create local file URL
-                            let localURL = getDocumentsDirectory().appendingPathComponent(fileName)
-                            
-                            // Write file to disk
-                            try data.write(to: localURL)
-                            print("Successfully saved file to:", localURL.path)
-                        }
+            let output = try await s3Client.listObjectsV2(input: ListObjectsV2Input(bucket: "opal-designer"))
+            if let objects = output.contents {
+                for object in objects {
+                    guard let key = object.key else { continue }
+                    let localURL = getDocumentsDirectory().appendingPathComponent(key)
+                    try? FileManager.default.createDirectory(at: localURL.deletingLastPathComponent(),
+                                                          withIntermediateDirectories: true)
+                    if let data = try await s3Client.getObject(input: GetObjectInput(bucket: "opal-designer", key: key)).body?.readData() {
+                        try data.write(to: localURL)
+                        print("Downloaded: \(key) to \(localURL.path)")
                     }
-                }
-                
-                DispatchQueue.main.async {
-                    self.s3Files = fileNames
                 }
             }
         } catch {
@@ -170,8 +119,7 @@ struct opalApp: App {
         WindowGroup(id: "ModelRealityView", for: ModelInfo.self) { modelInfo in
             if let modelInfo = modelInfo.wrappedValue {
                 TabletopModelView(
-                    modelName: modelInfo.modelName,
-                    initialScale: modelInfo.realityScale
+                    modelName: modelInfo.modelName
                 )
             } else {
                 Text("No model information available")

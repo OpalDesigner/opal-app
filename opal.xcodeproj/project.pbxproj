@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		6506C3C52D1145F300194CB2 /* MainMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6506C3C42D1145F300194CB2 /* MainMenu.swift */; };
 		6573DF492D16BEA100D7917A /* MetalSplatter in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF482D16BEA100D7917A /* MetalSplatter */; };
 		6573DF4B2D16BEA100D7917A /* PLYIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF4A2D16BEA100D7917A /* PLYIO */; };
 		6573DF4D2D16BEA100D7917A /* SampleBoxRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF4C2D16BEA100D7917A /* SampleBoxRenderer */; };
@@ -26,6 +25,7 @@
 		659AD4D32CCB0D6B00F834E0 /* NavigationControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 659AD4D12CCB0D6B00F834E0 /* NavigationControl.swift */; };
 		65B7ABFB2CCB38F00068ED3D /* PluginMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */; };
 		65BE9B472D0D2BDF00F6A0FA /* HandTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE9B462D0D2BDF00F6A0FA /* HandTrackingView.swift */; };
+		65C3A1D82D24B2130056D695 /* CatalogMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65C3A1D72D24B2130056D695 /* CatalogMenu.swift */; };
 		65E3C0142CEF12650037A68C /* tv_retro.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 65E3C0132CEF12650037A68C /* tv_retro.usdz */; };
 		65EBB7AE2D10C44500782661 /* RealityKitContent in Frameworks */ = {isa = PBXBuildFile; productRef = 65EBB7AD2D10C44500782661 /* RealityKitContent */; };
 		A58EA5282CFFB4C1009E4EB4 /* AWSS3 in Frameworks */ = {isa = PBXBuildFile; productRef = A58EA5272CFFB4C1009E4EB4 /* AWSS3 */; };
@@ -42,7 +42,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		6506C3C42D1145F300194CB2 /* MainMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainMenu.swift; sourceTree = "<group>"; };
 		659AD4982CCB0B2500F834E0 /* opal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = opal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		659AD49C2CCB0B2500F834E0 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		659AD49F2CCB0B2500F834E0 /* opalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = opalApp.swift; sourceTree = "<group>"; };
@@ -60,6 +59,7 @@
 		659AD4D12CCB0D6B00F834E0 /* NavigationControl.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationControl.swift; sourceTree = "<group>"; };
 		65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginMenu.swift; sourceTree = "<group>"; };
 		65BE9B462D0D2BDF00F6A0FA /* HandTrackingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandTrackingView.swift; sourceTree = "<group>"; };
+		65C3A1D72D24B2130056D695 /* CatalogMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatalogMenu.swift; sourceTree = "<group>"; };
 		65E3C0132CEF12650037A68C /* tv_retro.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = tv_retro.usdz; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -157,7 +157,7 @@
 			isa = PBXGroup;
 			children = (
 				659AD4BF2CCB0D1D00F834E0 /* HomeMenu.swift */,
-				6506C3C42D1145F300194CB2 /* MainMenu.swift */,
+				65C3A1D72D24B2130056D695 /* CatalogMenu.swift */,
 				65B7ABFA2CCB38F00068ED3D /* PluginMenu.swift */,
 				659AD4C12CCB0D1D00F834E0 /* TeamMenu.swift */,
 			);
@@ -312,8 +312,8 @@
 				659AD4CD2CCB0D3C00F834E0 /* BubbleView.swift in Sources */,
 				659AD4CF2CCB0D3C00F834E0 /* ImmersiveModelView.swift in Sources */,
 				659AD4C52CCB0D1D00F834E0 /* TeamMenu.swift in Sources */,
+				65C3A1D82D24B2130056D695 /* CatalogMenu.swift in Sources */,
 				659AD4A02CCB0B2500F834E0 /* opalApp.swift in Sources */,
-				6506C3C52D1145F300194CB2 /* MainMenu.swift in Sources */,
 				659AD4D32CCB0D6B00F834E0 /* NavigationControl.swift in Sources */,
 				65BE9B472D0D2BDF00F6A0FA /* HandTrackingView.swift in Sources */,
 				659AD4C32CCB0D1D00F834E0 /* HomeMenu.swift in Sources */,

@@ -189,7 +189,7 @@ struct NavigationControl: View {
                     isBuildReady.toggle()
                     if isBuildReady {
                         openWindow(id: "Menu")
-                        tabSelection.selectedTab = 3
+                        tabSelection.selectedTab = 1
                         navigationData.gridEntity.isEnabled = true
                     } else {
                         dismissWindow(id: "Menu")
