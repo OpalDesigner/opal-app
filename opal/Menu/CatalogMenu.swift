@@ -136,6 +136,8 @@ struct CatalogItemView: View {
     let model: ModelInfo
     let category: ModelCategory
     
+    @EnvironmentObject var navigationData: NavigationData
+    
     @Environment(\.openWindow) private var openWindow
     @Environment(\.dismissWindow) private var dismissWindow
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
@@ -185,6 +187,9 @@ struct CatalogItemView: View {
         }
         .overlay(alignment: .bottomTrailing) {
             Button {
+                if(category == .decor || category == .rocks || category == .building){
+                    navigationData.modelToPlace = (model: model, category: category)
+                }
                 isWindowOpen.toggle()
                 if isWindowOpen {
                     openWindow(id: "ModelRealityView", value: model)

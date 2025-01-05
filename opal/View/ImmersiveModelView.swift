@@ -49,6 +49,15 @@ struct ImmersiveModelView: View {
         let gridEntity = Entity()
         let gridSize = 5                    // 5x5 grid
         let tileSize: Float = 1             // 2 meters per tile
+        
+        // Print model bounds using visualBounds
+        let bounds = modelEntity.visualBounds(relativeTo: modelEntity)
+        let size = bounds.max - bounds.min
+        print("\nModel Visual Bounds:")
+        print("Min Y: \(bounds.min.y)")
+        print("Max Y: \(bounds.max.y)")
+        print("Height: \(size.y)")
+        
         for x in -gridSize...gridSize {
             for z in -gridSize...gridSize {
                 let tileEntity = ModelEntity(
@@ -141,6 +150,7 @@ struct ImmersiveModelView: View {
             
             // Add the grid as a child of Root
             let rootEntity = model.findEntity(named: "Root")
+            navigationData.rootEntity = rootEntity
             navigationData.gridEntity = createFloorGrid(attachedTo: model)
             navigationData.gridEntity.isEnabled = false
             rootEntity?.addChild(navigationData.gridEntity)
@@ -180,6 +190,16 @@ struct ImmersiveModelView: View {
                 navigationData.spotlightEntity.components.set(OpacityComponent(opacity: 0))
                 navigationData.lightSource.components[SpotLightComponent.self]?.intensity = 0
             }
+            
+            // Place the loaded entity
+            if let loadedEntity = navigationData.loadedEntity,
+               let position = navigationData.placementPosition,
+               let rootEntity = navigationData.rootEntity {
+                loadedEntity.position = position
+                loadedEntity.scale = SIMD3<Float>(repeating: 1)
+                rootEntity.addChild(loadedEntity)
+                navigationData.loadedEntity = nil
+            }
         }
         
         .gesture(
@@ -194,9 +214,18 @@ struct ImmersiveModelView: View {
                         if coordinates.count == 3,
                            let x = Int(coordinates[1]),
                            let z = Int(coordinates[2]) {
-                            navigationData.placementCoordinates = (x: x, z: z)
-                            navigationData.isPlacementMode = true
-                            print("Tapped grid point: x=\(x), z=\(z)")
+                            navigationData.placementPosition = SIMD3<Float>(Float(x), 0.5, Float(z))
+                            
+                            // Load model if one is selected
+                            if let modelToPlace = navigationData.modelToPlace {
+                                let modelURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                                    .appendingPathComponent("\(modelToPlace.category.rawValue.lowercased())/\(modelToPlace.model.modelName).usdz")
+                                Task {
+                                    let entity = try? await Entity.load(contentsOf: modelURL)
+                                    navigationData.loadedEntity = entity
+                                }
+                            }
+                            
                             // Highlight the tapped point
                             if let modelEntity = entity as? ModelEntity {
                                 modelEntity.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]

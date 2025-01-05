@@ -42,6 +42,7 @@ struct opalApp: App {
             }
             .tag(3)
         }
+        .environmentObject(navigationData)
         /*
         .task {
             print("Fetching S3 files...")

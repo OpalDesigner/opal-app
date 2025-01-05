@@ -12,10 +12,9 @@ class NavigationData: ObservableObject {
     @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
     @Published var cameraRotation: Float = 0
     
-    @Published var modelEntity = Entity()
+    // New properties for immersive view
     @Published var cameraEntity = Entity()
     @Published var spotlightEntity = Entity()
-    @Published var gridEntity = Entity()
     @Published var lightSource = ModelEntity()
     @Published var isCameraVisible: Bool = false
     @Published var isSpotLightVisible: Bool = false
@@ -27,8 +26,11 @@ class NavigationData: ObservableObject {
     @Published var splatScale: Float = 1
     
     // New properties for model placement
-    @Published var placementCoordinates: (x: Int, z: Int)? = nil
-    @Published var isPlacementMode: Bool = false
+    @Published var rootEntity: Entity? = nil
+    @Published var loadedEntity: Entity? = nil
+    @Published var gridEntity = Entity()
+    @Published var modelToPlace: (model: ModelInfo, category: ModelCategory)? = nil
+    @Published var placementPosition: SIMD3<Float>? = nil
 }
 
 struct NavigationControl: View {
