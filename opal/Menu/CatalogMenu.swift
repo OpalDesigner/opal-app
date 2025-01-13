@@ -12,11 +12,10 @@ enum ModelCategory: String, CaseIterable {
     case scans      =   "Scans"
     case decor      =   "Decor"
     case rocks      =   "Rocks"
-    case building   =   "Building"
+    case anatomy    =   "Anatomy"
 }
 
 struct ModelInfo: Identifiable, Codable, Hashable {
-    //let id: String
     let id = UUID()
     let modelName: String
     let imageName: String
@@ -26,6 +25,7 @@ struct ModelInfo: Identifiable, Codable, Hashable {
 // Default Models array
 let defaultModels = [
     ModelInfo(modelName: "Holodeck",          imageName: "holodeck",            isImmersive: true   ),
+    ModelInfo(modelName: "Operating_Room",    imageName: "operating-room",      isImmersive: true   ),
     ModelInfo(modelName: "Coffee_Shop",       imageName: "coffee-shop",         isImmersive: true   ),
     ModelInfo(modelName: "House_Interior",    imageName: "house-interior",      isImmersive: true   ),
     ModelInfo(modelName: "Budapest_Hotel",    imageName: "budapest-hotel",      isImmersive: true   ),
@@ -187,7 +187,7 @@ struct CatalogItemView: View {
         }
         .overlay(alignment: .bottomTrailing) {
             Button {
-                if(category == .decor || category == .rocks || category == .building){
+                if(category == .decor || category == .rocks || category == .anatomy){
                     navigationData.modelToPlace = (model: model, category: category)
                 }
                 isWindowOpen.toggle()

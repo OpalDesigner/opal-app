@@ -126,8 +126,9 @@ struct opalApp: App {
                 Text("No model information available")
             }
         }
+        .volumeWorldAlignment(.gravityAligned)
         .windowStyle(.volumetric)
-        .defaultSize(width: 1.5, height: 1, depth: 1, in: .meters)
+        .defaultSize(width: 1.5, height: 0.75, depth: 0.75, in: .meters)
         .defaultWindowPlacement { content, context in
             let size = content.sizeThatFits(.unspecified)
             let mainWindow = context.windows.first { window in

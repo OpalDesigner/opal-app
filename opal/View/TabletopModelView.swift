@@ -30,7 +30,7 @@ struct TabletopModelView: View {
     @State private var isCameraEnabled: Bool = false
     @State private var isLightingEnabled = false
     @State private var lightSourceEntity = Entity()
-    @State private var lightSourcePosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0.4)
+    @State private var lightSourcePosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0.35)
     
     // Notifications setup
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))

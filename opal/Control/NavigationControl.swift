@@ -20,7 +20,7 @@ class NavigationData: ObservableObject {
     @Published var isSpotLightVisible: Bool = false
     
     // New properties for splat
-    @Published var splatRotationAxis = SIMD3<Float>(0, 1, 0)           // X is pitch, Y is yaw, Z is roll
+    @Published var splatRotationAxis = SIMD3<Float>(0, 1, 0)    // X is pitch, Y is yaw, Z is roll
     @Published var splatRotationAmount = Angle(degrees: 0)
     @Published var splatRotationPerSecond = Angle(degrees: 0)
     @Published var splatScale: Float = 1
@@ -47,9 +47,6 @@ struct NavigationControl: View {
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
     func moveForward(_ meters: Float) async {
-        let stepSize: Float = 0.05
-        let steps = Int(meters / stepSize)
-        
         // (0,0,1) represents moving moveForward vector
         let baseVector = SIMD3<Float>(0, 0, 1)
         let c = cos(navigationData.cameraRotation)
@@ -59,16 +56,10 @@ struct NavigationControl: View {
             baseVector.y,
             baseVector.x * s + baseVector.z * c
         )
-        for _ in 0..<steps {
-            navigationData.cameraPosition += rotatedVector * stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
+        navigationData.cameraPosition += rotatedVector * meters
     }
 
     func moveBackward(_ meters: Float) async {
-        let stepSize: Float = 0.05
-        let steps = Int(meters / stepSize)
-        
         // (0,0,1) represents moving moveForward vector, but since we are subtracting in below for() loop we moveBackward
         let baseVector = SIMD3<Float>(0, 0, 1)
         let c = cos(navigationData.cameraRotation)
@@ -78,18 +69,12 @@ struct NavigationControl: View {
              baseVector.y,
              baseVector.x * s + baseVector.z * c
         )
-        for _ in 0..<steps {
-            navigationData.cameraPosition -= rotatedVector * stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
+        navigationData.cameraPosition -= rotatedVector * meters
     }
     
     func moveLeft(_ meters: Float) async {
-        let stepSize: Float = 0.05
-        let steps = Int(meters / stepSize)
-        let baseVector = SIMD3<Float>(1, 0, 0)
-        
         // (1,0,0) represents moving moveLeft vector
+        let baseVector = SIMD3<Float>(1, 0, 0)
         let c = cos(navigationData.cameraRotation)
         let s = sin(navigationData.cameraRotation)
         let rotatedVector = SIMD3<Float>(
@@ -97,18 +82,12 @@ struct NavigationControl: View {
             baseVector.y,
             baseVector.x * s + baseVector.z * c
         )
-        for _ in 0..<steps {
-            navigationData.cameraPosition += rotatedVector * stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
+        navigationData.cameraPosition += rotatedVector * meters
     }
 
     func moveRight(_ meters: Float) async {
-        let stepSize: Float = 0.05
-        let steps = Int(meters / stepSize)
-        let baseVector = SIMD3<Float>(1, 0, 0)
-        
         // (1,0,0) represents moving moveLeft vector, but since we are subtracting in for() loop we moveRight
+        let baseVector = SIMD3<Float>(1, 0, 0)
         let c = cos(navigationData.cameraRotation)
         let s = sin(navigationData.cameraRotation)
         let rotatedVector = SIMD3<Float>(
@@ -116,11 +95,7 @@ struct NavigationControl: View {
             baseVector.y,
             baseVector.x * s + baseVector.z * c
         )
-        
-        for _ in 0..<steps {
-            navigationData.cameraPosition -= rotatedVector * stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
+        navigationData.cameraPosition -= rotatedVector * meters
     }
 
     func turnLeft() async {
@@ -134,22 +109,12 @@ struct NavigationControl: View {
     }
     
     func moveHigher(_ meters: Float) async {
-        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
-        let steps = Int(meters / stepSize)
-        for _ in 0..<steps {
-            navigationData.cameraPosition.y -= stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
-        }
+        navigationData.cameraPosition.y -= meters
     }
     
     // Helper function to move down a specific distance
     func moveLower(_ meters: Float) async {
-        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
-        let steps = Int(meters / stepSize)
-        for _ in 0..<steps {
-            navigationData.cameraPosition.y += stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
-        }
+        navigationData.cameraPosition.y += meters
     }
             
     var body: some View {

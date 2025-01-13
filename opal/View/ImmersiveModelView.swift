@@ -14,81 +14,6 @@ struct ImmersiveModelView: View {
     @ObservedObject var navigationData: NavigationData
     let modelName: String
     
-    // Helper Function
-    private func loadRootEntity() async -> Entity? {
-        // Try loading from the realityKitContentBundle first
-        do {
-            return try await Entity(named: modelName, in: realityKitContentBundle)
-        } catch {
-            // If bundle fails, try loading from documents directory
-            let fileManager = FileManager.default
-            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-                print("Error accessing documents directory")
-                return nil
-            }
-            // Check all categories defined in ModelCategory
-            for category in ModelCategory.allCases {
-                let categoryPath = category.rawValue.lowercased()
-                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
-                if fileManager.fileExists(atPath: modelURL.path) {
-                    do {
-                        print("Loading model from \(categoryPath): \(modelName)")
-                        return try await Entity.load(contentsOf: modelURL)
-                    } catch {
-                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
-                        continue // Try next category if this one fails
-                    }
-                }
-            }
-            print("Model not found in any category: \(modelName)")
-            return nil
-        }
-    }
-    
-    private func createFloorGrid(attachedTo modelEntity: Entity) -> Entity {
-        let gridEntity = Entity()
-        let gridSize = 5                    // 5x5 grid
-        let tileSize: Float = 1             // 2 meters per tile
-        
-        // Print model bounds using visualBounds
-        let bounds = modelEntity.visualBounds(relativeTo: modelEntity)
-        let size = bounds.max - bounds.min
-        print("\nModel Visual Bounds:")
-        print("Min Y: \(bounds.min.y)")
-        print("Max Y: \(bounds.max.y)")
-        print("Height: \(size.y)")
-        
-        for x in -gridSize...gridSize {
-            for z in -gridSize...gridSize {
-                let tileEntity = ModelEntity(
-                    mesh: .generatePlane(width: tileSize, depth: tileSize),
-                    materials: [UnlitMaterial(color: .lightGray)]
-                )
-                // Position each tile at the floor level of the model
-                tileEntity.position = SIMD3<Float>(
-                    Float(x) * tileSize,
-                    -0.01,
-                    Float(z) * tileSize
-                )
-                let placementPoint = ModelEntity(
-                     mesh: .generateCone(height: 0.3, radius: 0.05),
-                     materials: [SimpleMaterial(color: .lightGray, isMetallic: true)]
-                 )
-                placementPoint.components.set(InputTargetComponent(allowedInputTypes: .indirect))
-                placementPoint.generateCollisionShapes(recursive: true)
-                
-                // Add label and Rotate the cone 180 degrees around the X-axis to point downward
-                placementPoint.name = "placementPoint_\(x)_\(z)"
-                placementPoint.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(1, 0, 0))
-                placementPoint.position = SIMD3<Float>(0, 0.5, 0)
-                
-                tileEntity.addChild(placementPoint)
-                gridEntity.addChild(tileEntity)
-            }
-        }
-        return gridEntity
-    }
-    
     var body: some View {
         RealityView{ content in
             guard let model = await loadRootEntity() else {
@@ -206,40 +131,109 @@ struct ImmersiveModelView: View {
             SpatialTapGesture()
                 .targetedToAnyEntity()
                 .onEnded { value in
-                    let entity = value.entity
-                    let name = entity.name
-                    if name.starts(with: "placementPoint_") {
-                        // Extract x,z coordinates from the name (format: "placementPoint_x_z")
-                        let coordinates = name.split(separator: "_")
-                        if coordinates.count == 3,
-                           let x = Int(coordinates[1]),
-                           let z = Int(coordinates[2]) {
-                            navigationData.placementPosition = SIMD3<Float>(Float(x), 0.5, Float(z))
-                            
-                            // Load model if one is selected
-                            if let modelToPlace = navigationData.modelToPlace {
-                                let modelURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                                    .appendingPathComponent("\(modelToPlace.category.rawValue.lowercased())/\(modelToPlace.model.modelName).usdz")
-                                Task {
-                                    let entity = try? await Entity.load(contentsOf: modelURL)
-                                    navigationData.loadedEntity = entity
-                                }
-                            }
-                            
-                            // Highlight the tapped point
-                            if let modelEntity = entity as? ModelEntity {
-                                modelEntity.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
-                                // Reset color after a short delay
-                                Task {
-                                    try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
-                                    modelEntity.model?.materials = [SimpleMaterial(color: .lightGray, isMetallic: true)]
-                                }
-                            }
-                        }
-                    }
+                    handleTap(on: value.entity)
                 }
         )
     }
+    
+    // Helper Function
+    private func loadRootEntity() async -> Entity? {
+        // Try loading from the realityKitContentBundle first
+        do {
+            return try await Entity(named: modelName, in: realityKitContentBundle)
+        } catch {
+            // If bundle fails, try loading from documents directory
+            let fileManager = FileManager.default
+            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                print("Error accessing documents directory")
+                return nil
+            }
+            // Check all categories defined in ModelCategory
+            for category in ModelCategory.allCases {
+                let categoryPath = category.rawValue.lowercased()
+                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
+                if fileManager.fileExists(atPath: modelURL.path) {
+                    do {
+                        print("Loading model from \(categoryPath): \(modelName)")
+                        return try await Entity.load(contentsOf: modelURL)
+                    } catch {
+                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
+                        continue // Try next category if this one fails
+                    }
+                }
+            }
+            print("Model not found in any category: \(modelName)")
+            return nil
+        }
+    }
+    
+    private func createFloorGrid(attachedTo modelEntity: Entity) -> Entity {
+        let gridEntity = Entity()
+        let gridSize = 5                    // 5x5 grid
+        let tileSize: Float = 1             // 2 meters per tile
+        
+        // Print model bounds using visualBounds
+        let bounds = modelEntity.visualBounds(relativeTo: modelEntity)
+        let size = bounds.max - bounds.min
+        print("\nModel Visual Bounds:")
+        print("Min Y: \(bounds.min.y)")
+        print("Max Y: \(bounds.max.y)")
+        print("Height: \(size.y)")
+        
+        for x in -gridSize...gridSize {
+            for z in -gridSize...gridSize {
+                let tileEntity = ModelEntity(
+                    mesh: .generatePlane(width: tileSize, depth: tileSize),
+                    materials: [UnlitMaterial(color: .lightGray)]
+                )
+                // Position each tile at the floor level of the model
+                tileEntity.position = SIMD3<Float>(
+                    Float(x) * tileSize,
+                    -0.01,
+                    Float(z) * tileSize
+                )
+                let placementPoint = ModelEntity(
+                     mesh: .generateCone(height: 0.3, radius: 0.05),
+                     materials: [SimpleMaterial(color: .lightGray, isMetallic: true)]
+                 )
+                placementPoint.components.set(InputTargetComponent(allowedInputTypes: .indirect))
+                placementPoint.generateCollisionShapes(recursive: true)
+                
+                // Add label and Rotate the cone 180 degrees around the X-axis to point downward
+                placementPoint.name = "placementPoint_\(x)_\(z)"
+                placementPoint.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(1, 0, 0))
+                placementPoint.position = SIMD3<Float>(0, 0.5, 0)
+                
+                tileEntity.addChild(placementPoint)
+                gridEntity.addChild(tileEntity)
+            }
+        }
+        return gridEntity
+    }
+    
+    private func handleTap(on entity: Entity) {
+         guard entity.name.starts(with: "placementPoint_"),
+               let modelEntity = entity as? ModelEntity else { return }
+         let coordinates = entity.name.split(separator: "_")
+         guard coordinates.count == 3,
+               let x = Int(coordinates[1]),
+               let z = Int(coordinates[2]) else { return }
+         navigationData.placementPosition = [Float(x), 0.5, Float(z)]
+         // Load model if one is selected
+         if let modelToPlace = navigationData.modelToPlace {
+             let modelURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                 .appendingPathComponent("\(modelToPlace.category.rawValue.lowercased())/\(modelToPlace.model.modelName).usdz")
+             Task {
+                 navigationData.loadedEntity = try? await Entity.load(contentsOf: modelURL)
+             }
+         }
+         // Highlight the tapped point temporarily
+         modelEntity.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
+         Task {
+             try? await Task.sleep(nanoseconds: 500_000_000)
+             modelEntity.model?.materials = [SimpleMaterial(color: .lightGray, isMetallic: true)]
+         }
+     }
     
     private func updateCameraTransform(_ scene: Entity) {
         let c = cos(navigationData.cameraRotation)
