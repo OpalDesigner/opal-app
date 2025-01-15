@@ -22,60 +22,6 @@ struct opalApp: App {
     // Private variables
     @State private var s3Files: [String] = []
     @State private var fetchTimer: Timer?
-    
-    private func createMainMenu() -> some View {
-        TabView (selection: $tabSelection.selectedTab) {
-            HomeMenu().tabItem {
-                Label("About", systemImage: "building.2.fill")
-            }
-            .tag(0)
-            CatalogMenu(defaultModels: defaultModels).tabItem {
-                Label("Build", systemImage: "hammer.fill")
-            }
-            .tag(1)
-            PluginMenu().tabItem {
-                Label("Import", systemImage: "square.and.arrow.down")
-            }
-            .tag(2)
-            TeamMenu().tabItem {
-                Label("Team", systemImage: "person")
-            }
-            .tag(3)
-        }
-        .environmentObject(navigationData)
-        /*
-        .task {
-            print("Fetching S3 files...")
-            await fetchS3Files()
-        }
-         */
-    }
-    
-    private func fetchS3Files() async {
-        print("\nDownloading S3 files to: \(getDocumentsDirectory().path)\n")
-        do {
-            let s3Client = try S3Client(region: "us-east-1")
-            let output = try await s3Client.listObjectsV2(input: ListObjectsV2Input(bucket: "opal-designer"))
-            if let objects = output.contents {
-                for object in objects {
-                    guard let key = object.key else { continue }
-                    let localURL = getDocumentsDirectory().appendingPathComponent(key)
-                    try? FileManager.default.createDirectory(at: localURL.deletingLastPathComponent(),
-                                                          withIntermediateDirectories: true)
-                    if let data = try await s3Client.getObject(input: GetObjectInput(bucket: "opal-designer", key: key)).body?.readData() {
-                        try data.write(to: localURL)
-                        print("Downloaded: \(key) to \(localURL.path)")
-                    }
-                }
-            }
-        } catch {
-            print("Error handling S3 files:", error)
-        }
-    }
-    
-    private func getDocumentsDirectory() -> URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-    }
 
     var body: some Scene {
         // ----------------- DEFINE WINDOW SPACES ---------------
@@ -175,5 +121,59 @@ struct opalApp: App {
             BubbleView()
         }
         .immersionStyle(selection: .constant(.full), in: .full)
+    }
+    
+    private func createMainMenu() -> some View {
+        TabView (selection: $tabSelection.selectedTab) {
+            HomeMenu().tabItem {
+                Label("About", systemImage: "building.2.fill")
+            }
+            .tag(0)
+            CatalogMenu(defaultModels: defaultModels).tabItem {
+                Label("Build", systemImage: "hammer.fill")
+            }
+            .tag(1)
+            PluginMenu().tabItem {
+                Label("Import", systemImage: "square.and.arrow.down")
+            }
+            .tag(2)
+            TeamMenu().tabItem {
+                Label("Team", systemImage: "person")
+            }
+            .tag(3)
+        }
+        .environmentObject(navigationData)
+        /*
+        .task {
+            print("Fetching S3 files...")
+            await fetchS3Files()
+        }
+         */
+    }
+    
+    private func fetchS3Files() async {
+        print("\nDownloading S3 files to: \(getDocumentsDirectory().path)\n")
+        do {
+            let s3Client = try S3Client(region: "us-east-1")
+            let output = try await s3Client.listObjectsV2(input: ListObjectsV2Input(bucket: "opal-designer"))
+            if let objects = output.contents {
+                for object in objects {
+                    guard let key = object.key else { continue }
+                    let localURL = getDocumentsDirectory().appendingPathComponent(key)
+                    try? FileManager.default.createDirectory(at: localURL.deletingLastPathComponent(),
+                                                          withIntermediateDirectories: true)
+                    if let data = try await s3Client.getObject(input: GetObjectInput(bucket: "opal-designer", key: key)).body?.readData() {
+                        try data.write(to: localURL)
+                        print("Downloaded: \(key) to \(localURL.path)")
+                    }
+                }
+            }
+        } catch {
+            print("Error handling S3 files:", error)
+        }
+    }
+    
+    private func getDocumentsDirectory() -> URL {
+        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
     }
 }

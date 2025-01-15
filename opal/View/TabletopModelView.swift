@@ -35,75 +35,6 @@ struct TabletopModelView: View {
     // Notifications setup
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
 
-    // Helper Function
-    private func loadRootEntity() async -> Entity? {
-        // Try loading from the realityKitContentBundle first
-        do {
-            return try await Entity(named: modelName, in: realityKitContentBundle)
-        } catch {
-            // If bundle fails, try loading from documents directory
-            let fileManager = FileManager.default
-            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-                print("Error accessing documents directory")
-                return nil
-            }
-            // Check all categories defined in ModelCategory
-            for category in ModelCategory.allCases {
-                let categoryPath = category.rawValue.lowercased()
-                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
-                if fileManager.fileExists(atPath: modelURL.path) {
-                    do {
-                        print("Loading model from \(categoryPath): \(modelName)")
-                        return try await Entity.load(contentsOf: modelURL)
-                    } catch {
-                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
-                        continue // Try next category if this one fails
-                    }
-                }
-            }
-            print("Model not found in any category: \(modelName)")
-            return nil
-        }
-    }
-    
-    private func getAutoScale(_ model: Entity) -> Float {
-        let bounds = model.visualBounds(relativeTo: model)
-        let size = bounds.max - bounds.min
-        let maxWidth: Float = 0.8
-        let maxHeight: Float = 0.533
-        let maxDepth: Float = 0.533
-        // Calculate scale needed for each dimension
-        let scaleX = maxWidth / size.x
-        let scaleY = maxHeight / size.y
-        let scaleZ = maxDepth / size.z
-        // Use the smallest scale to ensure all dimensions fit within limits
-        let autoScale = min(scaleX, min(scaleY, scaleZ))
-        // Print resulting dimensions
-        let scaledWidth = size.x * autoScale
-        let scaledHeight = size.y * autoScale
-        let scaledDepth = size.z * autoScale
-        print("\n\(modelName) Auto-Scaling Details:")
-        print("Original dimensions:     width=\(size.x)m, height=\(size.y)m, depth=\(size.z)m")
-        print("Scale factors:           width=\(scaleX), height=\(scaleY), depth=\(scaleZ)")
-        print("Resulting dimensions:    width=\(scaledWidth)m, height=\(scaledHeight)m, depth=\(scaledDepth)m")
-        print("Autoscale: \(autoScale)")
-        return autoScale
-    }
-    
-    private func centerModelAroundPivot(_ model: Entity) {
-        let bounds = model.visualBounds(relativeTo: model)
-        let size = bounds.max - bounds.min
-        modelCenter = model.convert(position: (bounds.min + bounds.max) * 0.5, to: nil)
-        modelPivot = model.convert(position: .zero, to: nil)
-        if modelCenter != modelPivot {
-            model.transform.translation = modelPivot - modelCenter
-            // Update center and pivot after transform
-            let newBounds = model.visualBounds(relativeTo: model)
-            modelCenter = model.convert(position: (newBounds.min + newBounds.max) * 0.5, to: nil)
-            modelPivot = model.convert(position: .zero, to: nil)
-        }
-    }
-    
     var body: some View {
         Spacer()
         RealityView { content in
@@ -313,6 +244,75 @@ struct TabletopModelView: View {
             }
         }
         .frame(height: 400)
+    }
+    
+    // Helper Function
+    private func loadRootEntity() async -> Entity? {
+        // Try loading from the realityKitContentBundle first
+        do {
+            return try await Entity(named: modelName, in: realityKitContentBundle)
+        } catch {
+            // If bundle fails, try loading from documents directory
+            let fileManager = FileManager.default
+            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                print("Error accessing documents directory")
+                return nil
+            }
+            // Check all categories defined in ModelCategory
+            for category in ModelCategory.allCases {
+                let categoryPath = category.rawValue.lowercased()
+                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
+                if fileManager.fileExists(atPath: modelURL.path) {
+                    do {
+                        print("Loading model from \(categoryPath): \(modelName)")
+                        return try await Entity.load(contentsOf: modelURL)
+                    } catch {
+                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
+                        continue // Try next category if this one fails
+                    }
+                }
+            }
+            print("Model not found in any category: \(modelName)")
+            return nil
+        }
+    }
+    
+    private func getAutoScale(_ model: Entity) -> Float {
+        let bounds = model.visualBounds(relativeTo: model)
+        let size = bounds.max - bounds.min
+        let maxWidth: Float = 0.8
+        let maxHeight: Float = 0.533
+        let maxDepth: Float = 0.533
+        // Calculate scale needed for each dimension
+        let scaleX = maxWidth / size.x
+        let scaleY = maxHeight / size.y
+        let scaleZ = maxDepth / size.z
+        // Use the smallest scale to ensure all dimensions fit within limits
+        let autoScale = min(scaleX, min(scaleY, scaleZ))
+        // Print resulting dimensions
+        let scaledWidth = size.x * autoScale
+        let scaledHeight = size.y * autoScale
+        let scaledDepth = size.z * autoScale
+        print("\n\(modelName) Auto-Scaling Details:")
+        print("Original dimensions:     width=\(size.x)m, height=\(size.y)m, depth=\(size.z)m")
+        print("Scale factors:           width=\(scaleX), height=\(scaleY), depth=\(scaleZ)")
+        print("Resulting dimensions:    width=\(scaledWidth)m, height=\(scaledHeight)m, depth=\(scaledDepth)m")
+        print("Autoscale: \(autoScale)")
+        return autoScale
+    }
+    
+    private func centerModelAroundPivot(_ model: Entity) {
+        let bounds = model.visualBounds(relativeTo: model)
+        let size = bounds.max - bounds.min
+        modelCenter = model.convert(position: (bounds.min + bounds.max) * 0.5, to: nil)
+        modelPivot = model.convert(position: .zero, to: nil)
+        if modelCenter != modelPivot {
+            model.transform.translation = modelPivot - modelCenter
+            // Update center and pivot after transform
+            let newBounds = model.visualBounds(relativeTo: model)
+            modelCenter = model.convert(position: (newBounds.min + newBounds.max) * 0.5, to: nil)
+            modelPivot = model.convert(position: .zero, to: nil)
+        }
     }
 }
 
