@@ -14,12 +14,12 @@ import ARKit
 
 func createFingertip() -> ModelEntity{
     let entity = ModelEntity(
-        mesh: .generateSphere(radius: 0.01),
+        mesh: .generateSphere(radius: 0.005),
         materials: [SimpleMaterial(color: .systemBlue, isMetallic: true)],
         collisionShape: .generateSphere(radius: 0.005),
         mass: 0.0
     )
-    entity.transform.translation = SIMD3<Float>(0, 1.45, -0.25)
+    //entity.transform.translation = SIMD3<Float>(0, 1.45, -0.25)
     entity.components.set(PhysicsBodyComponent(mode: .kinematic))
     entity.components.set(OpacityComponent(opacity: 1.0))
     return entity
@@ -32,15 +32,31 @@ func createFingertip() -> ModelEntity{
     
     private var contentEntity = Entity()
     private var meshEntities = [UUID : ModelEntity]()
-    private let fingerEntities: [HandAnchor.Chirality: ModelEntity] = [
-        .left: createFingertip(),
-        .right: createFingertip()
-    ]
-    private var lastCubePlacementTime: TimeInterval = 0
     
-    func setupContentEntity() -> Entity{
-        for entity in fingerEntities.values{
-            contentEntity.addChild(entity)
+    // Dictionary to store fingertip entities for both hands
+    private var fingerEntities: [HandAnchor.Chirality: [HandSkeleton.JointName: ModelEntity]] = [
+        .left: [:],
+        .right: [:]
+    ]
+    
+    func setupContentEntity() -> Entity {
+        // Setup 21 hand points
+        let joints: [HandSkeleton.JointName] = [
+            .thumbKnuckle,          .thumbIntermediateBase,         .thumbIntermediateTip,          .thumbTip,
+            .indexFingerKnuckle,    .indexFingerIntermediateBase,   .indexFingerIntermediateTip,    .indexFingerTip,
+            .middleFingerKnuckle,   .middleFingerIntermediateBase,  .middleFingerIntermediateTip,   .middleFingerTip,
+            .ringFingerKnuckle,     .ringFingerIntermediateBase,    .ringFingerIntermediateTip,     .ringFingerTip,
+            .littleFingerKnuckle,   .littleFingerIntermediateBase,  .littleFingerIntermediateTip,   .littleFingerTip,
+            .wrist
+        ]
+        
+        for hand in [HandAnchor.Chirality.left, .right] {
+            fingerEntities[hand] = [:]
+            for joint in joints {
+                let entity = createFingertip()
+                fingerEntities[hand]?[joint] = entity
+                contentEntity.addChild(entity)
+            }
         }
         return contentEntity
     }
@@ -65,21 +81,25 @@ func createFingertip() -> ModelEntity{
         }
     }
     
-    func processHandUpdates() async{
-        for await update in handTracking.anchorUpdates{
-            //Capture Hand being tracked
-            let handAnchor = update.anchor
-            guard handAnchor.isTracked else{continue}
-            
-            //Capture Fingertip being tracked
-            let fingerTip = handAnchor.handSkeleton?.joint(.indexFingerTip)
-            guard ((fingerTip?.isTracked) != nil) else{continue}
-            let originFromWrist = handAnchor.originFromAnchorTransform
-            let wristFromIndex = fingerTip?.anchorFromJointTransform
-            let originFromIndex = originFromWrist * wristFromIndex!
-            
-            fingerEntities[handAnchor.chirality]?.setTransformMatrix(originFromIndex, relativeTo: nil)
-        }
+    func processHandUpdates() async {
+            for await update in handTracking.anchorUpdates {
+                //Capture Hand being tracked
+                let handAnchor = update.anchor
+                guard handAnchor.isTracked else { continue }
+                
+                //Capture Fingertip being tracked
+                for (fingerType, entity) in fingerEntities[handAnchor.chirality] ?? [:] {
+                    if let fingerTip = handAnchor.handSkeleton?.joint(fingerType),
+                       fingerTip.isTracked {
+                        let transform = handAnchor.originFromAnchorTransform * fingerTip.anchorFromJointTransform
+                        var offsetTransform = transform
+                        //offsetTransform.columns.3.x += 0.05
+                        //offsetTransform.columns.3.y += 0
+                        //offsetTransform.columns.3.z -= 0.15
+                        entity.setTransformMatrix(offsetTransform, relativeTo: nil)
+                    }
+                }
+            }
     }
     
     func processReconstructionUpdates() async{
@@ -113,29 +133,35 @@ func createFingertip() -> ModelEntity{
     }
     
     func placeCube() async {
-        guard let leftFingerPosition = fingerEntities[.left]?.transform.translation else {return}
-        
-        let placementLocation = leftFingerPosition + SIMD3<Float>(0, -0.05, 0)
-        let entity = ModelEntity(mesh: .generateBox(size: 0.1),
-                                 materials: [SimpleMaterial(color: .systemBlue, isMetallic: false)],
-                                 collisionShape: .generateBox(size: SIMD3<Float>(repeating: 0.1)),
-                                 mass: 1.0)
-        entity.setPosition(placementLocation, relativeTo: nil)
+        guard let indexFinger = fingerEntities[.right]?[.indexFingerTip] else { return }
+        let entity = ModelEntity(
+            mesh: .generateBox(size: 0.1),
+            materials: [SimpleMaterial(color: .systemBlue, isMetallic: true)],
+            collisionShape: .generateBox(size: SIMD3<Float>(repeating: 0.1)),
+            mass: 1.0
+        )
+        entity.transform = indexFinger.transform
+        // Add a custom component to track the base scale for this specific entity
+        struct ScaleComponent: Component {
+            var baseScale: Float = 1.0
+        }
+        entity.components.set(ScaleComponent())
         entity.components.set(InputTargetComponent(allowedInputTypes: .indirect))
         entity.components.set(GroundingShadowComponent(castsShadow: true))
-        entity.transform.translation = SIMD3<Float>(0, 1.45, -0.25)
-        
-        let material = PhysicsMaterialResource.generate(friction: 0.8, restitution: 0.0)
-        entity.components.set(PhysicsBodyComponent(shapes: entity.collision!.shapes,
-                                                   mass: 1.0,
-                                                   material: material,
-                                                   mode: .dynamic))
+        let material = PhysicsMaterialResource.generate(friction: 1, restitution: 0.0)
+        entity.components.set(PhysicsBodyComponent(
+            shapes: entity.collision!.shapes,
+            mass: 1.0,
+            material: material,
+            mode: .dynamic
+        ))
         contentEntity.addChild(entity)
     }
 }
     
 struct HandTrackingView: View {
     @StateObject private var model = HandTrackingViewModel()
+    @State private var baseScale: Float = 1.0
 
     var body: some View {
         RealityView { content in
@@ -151,12 +177,44 @@ struct HandTrackingView: View {
             await model.processReconstructionUpdates()
         }
         .gesture(
-            SpatialTapGesture().targetedToAnyEntity()
+            SpatialTapGesture()
+                .targetedToAnyEntity()
                 .onEnded({ value in
                     Task{
                         await model.placeCube()
                     }
                 })
+        )
+        // Add grab gesture
+        .gesture(
+            DragGesture()
+                .targetedToAnyEntity()
+                .onChanged { value in
+                    value.entity.position = value.convert(value.location3D, from: .local, to: value.entity.parent!)
+                }
+        )
+        // Add pinch-to-scale gesture
+        .gesture(MagnifyGesture()
+            .targetedToAnyEntity()
+            .onChanged { value in
+                // Get this specific entity's scale component
+                struct ScaleComponent: Component {
+                    var baseScale: Float = 1.0
+                }
+                var scaleComponent = value.entity.components[ScaleComponent.self] ?? ScaleComponent()
+                let scale = scaleComponent.baseScale * Float(value.magnification)
+                let clampedScale = min(max(scale, 0.5), 2.0)
+                value.entity.scale = SIMD3(repeating: clampedScale)
+            }
+            .onEnded { value in
+                // Update the base scale when gesture ends
+                struct ScaleComponent: Component {
+                    var baseScale: Float = 1.0
+                }
+                var scaleComponent = value.entity.components[ScaleComponent.self] ?? ScaleComponent()
+                scaleComponent.baseScale = length(value.entity.scale)
+                value.entity.components.set(scaleComponent)
+            }
         )
     }
 }

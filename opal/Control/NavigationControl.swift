@@ -8,9 +8,38 @@
 import SwiftUI
 import RealityKit
 
+class NavigationData: ObservableObject {
+    @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
+    @Published var cameraRotation: Float = 0
+    
+    // New properties for immersive view
+    @Published var cameraEntity = Entity()
+    @Published var spotlightEntity = Entity()
+    @Published var lightSource = ModelEntity()
+    @Published var isCameraVisible: Bool = false
+    @Published var isSpotLightVisible: Bool = false
+    
+    // New properties for splat
+    @Published var splatRotationAxis = SIMD3<Float>(0, 1, 0)    // X is pitch, Y is yaw, Z is roll
+    @Published var splatRotationAmount = Angle(degrees: 0)
+    @Published var splatRotationPerSecond = Angle(degrees: 0)
+    @Published var splatScale: Float = 1
+    
+    // New properties for model placement
+    @Published var rootEntity: Entity? = nil
+    @Published var loadedEntity: Entity? = nil
+    @Published var gridEntity = Entity()
+    @Published var modelToPlace: (model: ModelInfo, category: ModelCategory)? = nil
+    @Published var placementPosition: SIMD3<Float>? = nil
+}
+
 struct NavigationControl: View {
     // Access shared data
     @ObservedObject var navigationData: NavigationData
+    @ObservedObject var tabSelection: TabSelection
+    
+    //State variables
+    @State private var isBuildReady = false
     
     // Environment Variables
     @Environment(\.openWindow) private var openWindow
@@ -18,9 +47,6 @@ struct NavigationControl: View {
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
     func moveForward(_ meters: Float) async {
-        let stepSize: Float = 0.05
-        let steps = Int(meters / stepSize)
-        
         // (0,0,1) represents moving moveForward vector
         let baseVector = SIMD3<Float>(0, 0, 1)
         let c = cos(navigationData.cameraRotation)
@@ -30,16 +56,10 @@ struct NavigationControl: View {
             baseVector.y,
             baseVector.x * s + baseVector.z * c
         )
-        for _ in 0..<steps {
-            navigationData.cameraPosition += rotatedVector * stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
+        navigationData.cameraPosition += rotatedVector * meters
     }
 
     func moveBackward(_ meters: Float) async {
-        let stepSize: Float = 0.05
-        let steps = Int(meters / stepSize)
-        
         // (0,0,1) represents moving moveForward vector, but since we are subtracting in below for() loop we moveBackward
         let baseVector = SIMD3<Float>(0, 0, 1)
         let c = cos(navigationData.cameraRotation)
@@ -49,18 +69,12 @@ struct NavigationControl: View {
              baseVector.y,
              baseVector.x * s + baseVector.z * c
         )
-        for _ in 0..<steps {
-            navigationData.cameraPosition -= rotatedVector * stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
+        navigationData.cameraPosition -= rotatedVector * meters
     }
     
     func moveLeft(_ meters: Float) async {
-        let stepSize: Float = 0.05
-        let steps = Int(meters / stepSize)
-        let baseVector = SIMD3<Float>(1, 0, 0)
-        
         // (1,0,0) represents moving moveLeft vector
+        let baseVector = SIMD3<Float>(1, 0, 0)
         let c = cos(navigationData.cameraRotation)
         let s = sin(navigationData.cameraRotation)
         let rotatedVector = SIMD3<Float>(
@@ -68,18 +82,12 @@ struct NavigationControl: View {
             baseVector.y,
             baseVector.x * s + baseVector.z * c
         )
-        for _ in 0..<steps {
-            navigationData.cameraPosition += rotatedVector * stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
+        navigationData.cameraPosition += rotatedVector * meters
     }
 
     func moveRight(_ meters: Float) async {
-        let stepSize: Float = 0.05
-        let steps = Int(meters / stepSize)
-        let baseVector = SIMD3<Float>(1, 0, 0)
-        
         // (1,0,0) represents moving moveLeft vector, but since we are subtracting in for() loop we moveRight
+        let baseVector = SIMD3<Float>(1, 0, 0)
         let c = cos(navigationData.cameraRotation)
         let s = sin(navigationData.cameraRotation)
         let rotatedVector = SIMD3<Float>(
@@ -87,72 +95,26 @@ struct NavigationControl: View {
             baseVector.y,
             baseVector.x * s + baseVector.z * c
         )
-        
-        for _ in 0..<steps {
-            navigationData.cameraPosition -= rotatedVector * stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
+        navigationData.cameraPosition -= rotatedVector * meters
     }
-    
-    func turnLeft(degrees: Float) async {
-        let stepSize: Float = degrees * .pi / 180 // 45 degrees at a time
-        let steps = Int(degrees / 45)
-        var newRotation = navigationData.cameraRotation - stepSize
-        
-        // Normalize between 0 and 2π
-        newRotation = newRotation.truncatingRemainder(dividingBy: 2 * .pi)
-        if newRotation < 0 {
-            newRotation += 2 * .pi
-        }
-        for _ in 0..<steps {
-            navigationData.cameraRotation = newRotation
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
-        /*
-        print("Turning Left")
-        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
-         */
+
+    func turnLeft() async {
+        let modelRotationStep = Float(45) * .pi / 180
+        navigationData.cameraRotation -= modelRotationStep
     }
-    
-    func turnRight(degrees: Float) async {
-        let stepSize: Float = degrees * .pi / 180 // 45 degrees at a time
-        let steps = Int(degrees / 45)
-        var newRotation = navigationData.cameraRotation + stepSize
-        
-        // Normalize between 0 and 2π
-        newRotation = newRotation.truncatingRemainder(dividingBy: 2 * .pi)
-        if newRotation < 0 {
-            newRotation += 2 * .pi
-        }
-        
-        for _ in 0..<steps {
-            navigationData.cameraRotation = newRotation
-            try? await Task.sleep(nanoseconds: 16_666_667)
-        }
-        /*
-        print("Turn Right")
-        print("Camera Rotation: \(round(navigationData.cameraRotation * 180 / .pi))°")
-        */
-         
+     
+    func turnRight() async {
+        let modelRotationStep = Float(45) * .pi / 180
+        navigationData.cameraRotation += modelRotationStep
     }
     
     func moveHigher(_ meters: Float) async {
-        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
-        let steps = Int(meters / stepSize)
-        for _ in 0..<steps {
-            navigationData.cameraPosition.y -= stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
-        }
+        navigationData.cameraPosition.y -= meters
     }
     
     // Helper function to move down a specific distance
     func moveLower(_ meters: Float) async {
-        let stepSize: Float = 0.05 // Move in smaller increments for smoothness
-        let steps = Int(meters / stepSize)
-        for _ in 0..<steps {
-            navigationData.cameraPosition.y += stepSize
-            try? await Task.sleep(nanoseconds: 16_666_667) // ~60fps
-        }
+        navigationData.cameraPosition.y += meters
     }
             
     var body: some View {
@@ -160,24 +122,12 @@ struct NavigationControl: View {
             Text("Navigate 3D space")
                 .font(.headline)
                 .padding()
-            
-            // Debug Camera Coordinates
-            /*
-            VStack {
-                Text("Camera Position:")
-                    .font(.subheadline)
-                HStack {
-                    Text("X: \(String(format: "%.f", modelControlData.cameraPosition.x))")
-                    Text("Y: \(String(format: "%.f", modelControlData.cameraPosition.y))")
-                    Text("Z: \(String(format: "%.f", modelControlData.cameraPosition.z))")
-                }
-            }
-             */
 
-            // Home, Origin, and Camera controls
+            // Home, Origin, and Build controls
             HStack {
                 Button {
                     dismissWindow(id: "NavigationControl")
+                    dismissWindow(id: "Menu")
                 } label: {
                     Label("", systemImage: "house.fill")
                 }
@@ -201,13 +151,27 @@ struct NavigationControl: View {
                     Label("", systemImage: "light.beacon.max")
                         .foregroundColor(navigationData.isSpotLightVisible ? .yellow : .primary)
                 }
+                
+                Button {
+                    isBuildReady.toggle()
+                    if isBuildReady {
+                        openWindow(id: "Menu")
+                        tabSelection.selectedTab = 1
+                        navigationData.gridEntity.isEnabled = true
+                    } else {
+                        dismissWindow(id: "Menu")
+                        navigationData.gridEntity.isEnabled = false
+                    }
+                } label: {
+                    Label("", systemImage: "plus.circle.fill")
+                }
             }
             
             HStack {
                 // Action for Rotate Left
                 Button {
                     Task {
-                        await turnLeft(degrees: 45)
+                        await turnLeft()
                     }
                 } label: {
                     Label("", systemImage: "rotate.left")
@@ -216,7 +180,7 @@ struct NavigationControl: View {
                 // Action for Move Forward
                 Button {
                     Task {
-                        await moveForward(1)
+                        await moveForward(0.5)
                     }
                 } label: {
                     Label("", systemImage: "arrow.up")
@@ -225,7 +189,7 @@ struct NavigationControl: View {
                 // Action for Rotate Right
                 Button {
                     Task {
-                        await turnRight(degrees: 45)
+                        await turnRight()
                     }
                 } label: {
                     Label("", systemImage: "rotate.right")
@@ -266,7 +230,7 @@ struct NavigationControl: View {
                 // Action for Move Backward
                 Button {
                     Task {
-                        await moveBackward(1)
+                        await moveBackward(0.5)
                     }
                 } label: {
                     Label("", systemImage: "arrow.down")
@@ -289,6 +253,8 @@ struct NavigationControl: View {
         }
         .onDisappear{
             openWindow(id: "Menu")
+            dismissWindow(id: "ModelRealityView")
+            tabSelection.selectedTab = 1
             Task {
                 await dismissImmersiveSpace()
             }
@@ -298,7 +264,10 @@ struct NavigationControl: View {
     }
 }
 
-#Preview {
-    NavigationControl(navigationData: NavigationData())
-}
 
+#Preview {
+    NavigationControl(
+        navigationData: NavigationData(),
+        tabSelection: TabSelection()
+        )
+}

@@ -9,7 +9,7 @@ import SwiftUI
 enum Team : String, Identifiable, CaseIterable, Equatable
 {
     //Current teammates
-    case kris, vik, jason
+    case kris, vik, jason, pablo
     var id: Self{self}
     var name: String{rawValue.lowercased()}
     
@@ -21,59 +21,71 @@ enum Team : String, Identifiable, CaseIterable, Equatable
             "Vik Parth"
         case.jason:
             "Jason Wong"
+        case.pablo:
+            "Pablo Vela"
         }
     }
     
     var about: String{
         switch self{
         case.kris:
-            "Spatial experience designer and creative director building uncharted virtual worlds"
+            "Spatial designer and creative director building uncharted virtual worlds"
         case.vik:
-            "Engineer and physicist exploring the intersection of light and matter"
+            "Hologram specialist exploring the intersection of light and matter"
         case.jason:
-            "Software architect specialized in gaming and reality distortion fields"
+            "Software architect specializing in gaming and reality distortion fields"
+        case.pablo:
+            "Computer Vision engineer exploring the nature of Gaussian splats"
         }
     }
 }
  
-
 struct TeamMenu: View {
     var body: some View {
-        //Spacer()
-        VStack{
-            //Render Team Overview
-            Text("Meet the team")
-                .monospaced()
-                .font(.system(size: 30, weight: .bold))
-                .padding(.top, 250)
+        ZStack{
+            VStack{
+                Text("Meet the team")
+                    .monospaced()
+                    .font(.system(size: 30, weight: .bold))
+                    .padding()
+                VStack {
+                    HStack {
+                        TeamCard(team: .kris)
+                        TeamCard(team: .vik)
+                    }
+                    HStack {
+                        TeamCard(team: .jason)
+                        TeamCard(team: .pablo)
+                    }
+                }
+            }
             
             //Render Opals
             BubbleView()
-            
-            //Render Team information
-            HStack{
-                ForEach(Team.allCases){ team in
-                    VStack(alignment: .leading) {
-                        Image("\(team.name)")
-                            .resizable()
-                            .clipShape(RoundedRectangle(cornerRadius: 25))
-                            .frame(width: 200, height: 200)
-                        Text(team.fullname)
-                            .font(.system(size: 25, weight: .bold))
-                        Text(team.about)
-                            .font(.system(size: 14))
-                    }
-                    .frame(width: 250, height: 300)
-                    .padding(20)
-                    .glassBackgroundEffect()
-                    
-                }
-            }
         }
         .padding()
         .background(){
             Image("interior-shot-02")
         }
+    }
+}
+
+struct TeamCard: View {
+    let team: Team
+    var body: some View {
+        VStack(alignment: .leading) {
+            Image(team.name)
+                .resizable()
+                .clipShape(RoundedRectangle(cornerRadius: 25))
+                .frame(width: 200, height: 200)
+            Text(team.fullname)
+                .font(.system(size: 24, weight: .bold))
+            Text(team.about)
+                .font(.system(size: 16))
+        }
+        .frame(width: 300, height: 300)
+        .padding()
+        .glassBackgroundEffect()
     }
 }
 

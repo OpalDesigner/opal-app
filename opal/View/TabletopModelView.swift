@@ -12,7 +12,6 @@ import RealityKitContent
 struct TabletopModelView: View {
     // Function parameters
     let modelName: String
-    let initialScale: Float
     
     // Environment variables
     @Environment(\.realityKitScene) var scene
@@ -31,7 +30,7 @@ struct TabletopModelView: View {
     @State private var isCameraEnabled: Bool = false
     @State private var isLightingEnabled = false
     @State private var lightSourceEntity = Entity()
-    @State private var lightSourcePosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0.4)
+    @State private var lightSourcePosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0.35)
     
     // Notifications setup
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
@@ -42,38 +41,58 @@ struct TabletopModelView: View {
         do {
             return try await Entity(named: modelName, in: realityKitContentBundle)
         } catch {
-            // If bundle fails, try loading from app's document directories
+            // If bundle fails, try loading from documents directory
             let fileManager = FileManager.default
             guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
                 print("Error accessing documents directory")
                 return nil
             }
-            // Check all three directories in order
-            let directories = ["uploads", "decor", "scans"]
-            for directory in directories {
-                let modelURL = documentsDirectory.appendingPathComponent("\(directory)/\(modelName).usdz")
+            // Check all categories defined in ModelCategory
+            for category in ModelCategory.allCases {
+                let categoryPath = category.rawValue.lowercased()
+                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
                 if fileManager.fileExists(atPath: modelURL.path) {
                     do {
+                        print("Loading model from \(categoryPath): \(modelName)")
                         return try await Entity.load(contentsOf: modelURL)
                     } catch {
-                        print("Error loading model from \(directory): \(error.localizedDescription)")
-                        continue // Try next directory if this one fails
+                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
+                        continue // Try next category if this one fails
                     }
                 }
             }
-            print("Model not found in any directory: \(modelName)")
+            print("Model not found in any category: \(modelName)")
             return nil
         }
+    }
+    
+    private func getAutoScale(_ model: Entity) -> Float {
+        let bounds = model.visualBounds(relativeTo: model)
+        let size = bounds.max - bounds.min
+        let maxWidth: Float = 0.8
+        let maxHeight: Float = 0.533
+        let maxDepth: Float = 0.533
+        // Calculate scale needed for each dimension
+        let scaleX = maxWidth / size.x
+        let scaleY = maxHeight / size.y
+        let scaleZ = maxDepth / size.z
+        // Use the smallest scale to ensure all dimensions fit within limits
+        let autoScale = min(scaleX, min(scaleY, scaleZ))
+        // Print resulting dimensions
+        let scaledWidth = size.x * autoScale
+        let scaledHeight = size.y * autoScale
+        let scaledDepth = size.z * autoScale
+        print("\n\(modelName) Auto-Scaling Details:")
+        print("Original dimensions:     width=\(size.x)m, height=\(size.y)m, depth=\(size.z)m")
+        print("Scale factors:           width=\(scaleX), height=\(scaleY), depth=\(scaleZ)")
+        print("Resulting dimensions:    width=\(scaledWidth)m, height=\(scaledHeight)m, depth=\(scaledDepth)m")
+        print("Autoscale: \(autoScale)")
+        return autoScale
     }
     
     private func centerModelAroundPivot(_ model: Entity) {
         let bounds = model.visualBounds(relativeTo: model)
         let size = bounds.max - bounds.min
-        print("\n\(modelName) Bounds:")
-        print("Minimum bounds: \(bounds.min)")  // Shows lowest x,y,z coordinates
-        print("Maximum bounds: \(bounds.max)")  // Shows highest x,y,z coordinates
-        print("Model dimensions: \(size)")  // Shows width, height, depth
-
         modelCenter = model.convert(position: (bounds.min + bounds.max) * 0.5, to: nil)
         modelPivot = model.convert(position: .zero, to: nil)
         if modelCenter != modelPivot {
@@ -94,21 +113,11 @@ struct TabletopModelView: View {
             }
             content.add(model)
             
-            print("\n\(modelName) Model Parameters:")
-            for child in model.children {
-                print("Child:       \(child.name)")
-                print("Position:    \(child.position),       Scale: \(child.scale)")
-                // Print grandchildren if any
-                for grandchild in child.children {
-                    print("Grandchild:  \(grandchild.name)")
-                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
-                }
-            }
-            
-            // Set initial transform and center model
+            // Set initial scale and center model
             modelCurrent = model
-            modelCurrent.transform.scale = SIMD3<Float>(repeating: initialScale)
-            currentScale = initialScale
+            let autoScale = getAutoScale(model)
+            modelCurrent.transform.scale = SIMD3<Float>(repeating: autoScale)
+            currentScale = autoScale
             centerModelAroundPivot(modelCurrent)
             
             // Enable input gestures
@@ -154,6 +163,19 @@ struct TabletopModelView: View {
                 modelChildEntity = modelChild
             }
             
+            /*
+            print("\n\(modelName) Model Parameters:")
+            for child in model.children {
+                print("Child:       \(child.name)")
+                print("Position:    \(child.position),       Scale: \(child.scale)")
+                // Print grandchildren if any
+                for grandchild in child.children {
+                    print("Grandchild:  \(grandchild.name)")
+                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
+                }
+            }
+             */
+            
         } update: { content in
             if(isLightingEnabled){
                 content.add(lightSourceEntity)
@@ -196,20 +218,20 @@ struct TabletopModelView: View {
                 .onChanged { value in
                     // Calculate new scale based on current gesture value
                     let newScale = currentScale * Float(value)
-                    let minScale = initialScale * 0.5
-                    let maxScale = initialScale * 1.5
+                    let minScale = currentScale * 0.5
+                    let maxScale = currentScale * 1.5
                     let clampedScale = max(minScale, min(newScale, maxScale))
                     modelCurrent.scale = SIMD3<Float>(repeating: clampedScale)
                     
                     // Print scale percentage
-                    let scalePercentage = Int((clampedScale / initialScale) * 100)
+                    let scalePercentage = Int((clampedScale / currentScale) * 100)
                     print("\(modelName) Scale: \(scalePercentage)%")
                 }
                 .onEnded { value in
                     // Save the new scale
                     let newScale = currentScale * Float(value)
-                    let minScale = initialScale  * 0.5
-                    let maxScale = initialScale  * 1.5
+                    let minScale = currentScale  * 0.5
+                    let maxScale = currentScale  * 1.5
                     currentScale = max(minScale, min(newScale, maxScale))
                     modelCurrent.scale = SIMD3<Float>(repeating: currentScale)
                 }
@@ -297,7 +319,6 @@ struct TabletopModelView: View {
 //Test Sample Preview on Xcode Preview Window
 #Preview {
     TabletopModelView(
-        modelName: "Coffee_Shop",
-        initialScale: 0.001
+        modelName: "Coffee_Shop"
     )
 }

@@ -8,14 +8,20 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct PluginMenu: View {
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.dismissWindow) private var dismissWindow
+    @Environment(\.openImmersiveSpace) private var openImmersiveSpace
+    @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
+    
     @State private var isPickingFile: Bool = false
+    @State private var isImmersiveOpen = false
     
     var body: some View {
         NavigationStack {
             Text("Choose your tool to import from")
-                .font(.largeTitle)
-                .padding(20)
-                .glassBackgroundEffect()
+                .monospaced()
+                .font(.system(size: 30, weight: .bold))
+                .padding()
             HStack{
                 // Unreal Engine
                 VStack(alignment: .leading) {
@@ -78,12 +84,16 @@ struct PluginMenu: View {
                     .fileImporter(isPresented: $isPickingFile, allowedContentTypes: [UTType(filenameExtension: "ply")!, UTType(filenameExtension: "splat")!]) { result in
                         isPickingFile = false
                         if let url = try? result.get() {
-                            _ = url.startAccessingSecurityScopedResource()
+                            isImmersiveOpen.toggle()
                             Task {
-                                try await Task.sleep(for: .seconds(10))
-                                url.stopAccessingSecurityScopedResource()
+                                if isImmersiveOpen {
+                                    await openImmersiveSpace(id: "GaussianSplatView", value: url)
+                                    openWindow(id: "NavigationControl")
+                                } else {
+                                    await dismissImmersiveSpace()
+                                    dismissWindow(id: "NavigationControl")
+                                }
                             }
-                            //openWindow(value: ModelIdentifier.gaussianSplat(url))
                         }
                     }
                 }

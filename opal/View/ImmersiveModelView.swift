@@ -8,53 +8,11 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
-class NavigationData: ObservableObject {
-    @Published var cameraPosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0)
-    @Published var cameraRotation: Float = 0
-    @Published var cameraEntity = Entity()
-    @Published var spotlightEntity = Entity()
-    @Published var lightSource = ModelEntity()
-    @Published var isCameraVisible: Bool = false
-    @Published var isSpotLightVisible: Bool = false
-}
-
 //This code creates an immersive view of your set
 struct ImmersiveModelView: View {
     // Function parameters
     @ObservedObject var navigationData: NavigationData
     let modelName: String
-    
-    // Helper Function
-    private func loadRootEntity() async -> Entity? {
-        // Try loading from the realityKitContentBundle first
-        do {
-            return try await Entity(named: modelName, in: realityKitContentBundle)
-        } catch {
-            // If bundle fails, try loading from app's document directories
-            let fileManager = FileManager.default
-            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-                print("Error accessing documents directory")
-                return nil
-            }
-            
-            // Check all three directories in order
-            let directories = ["uploads", "decor", "scans"]
-            for directory in directories {
-                let modelURL = documentsDirectory.appendingPathComponent("\(directory)/\(modelName).usdz")
-                if fileManager.fileExists(atPath: modelURL.path) {
-                    do {
-                        return try await Entity.load(contentsOf: modelURL)
-                    } catch {
-                        print("Error loading model from \(directory): \(error.localizedDescription)")
-                        continue // Try next directory if this one fails
-                    }
-                }
-            }
-            
-            print("Model not found in any directory: \(modelName)")
-            return nil
-        }
-    }
     
     var body: some View {
         RealityView{ content in
@@ -63,18 +21,6 @@ struct ImmersiveModelView: View {
                 return
             }
             content.add(model)
-
-            print("\n\(modelName) Debug Information:")
-            for child in model.children {
-                print("Child:       \(child.name)")
-                print("Position:    \(child.position),       Scale: \(child.scale)")
-                
-                // Print grandchildren if any
-                for grandchild in child.children {
-                    print("Grandchild:  \(grandchild.name)")
-                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
-                }
-            }
             
             // Add Animation to the 3D model
             if(model.availableAnimations.count > 0){
@@ -82,31 +28,30 @@ struct ImmersiveModelView: View {
                 model.playAnimation(anim.repeat())
             }
             
-            // Load DSLR Camera model USDZ
+            // Add Skybox
+            guard let resource = try? await TextureResource(named: "Starfield") else {
+                fatalError("Unable to load starfield texture.")
+            }
+            var material = UnlitMaterial()
+            material.color = .init(texture: .init(resource))
+            let skyboxEntity = Entity()
+            skyboxEntity.components.set(ModelComponent(
+                mesh: .generateSphere(radius: 1000),
+                materials: [material]
+            ))
+            skyboxEntity.scale *= .init(x: -1, y: 1, z: 1)
+            content.add(skyboxEntity)
+            
+            // Add DSLR Camera USDZ
             guard let camera = try? await Entity(named: "Camera", in: realityKitContentBundle)
             else { fatalError("Unable to load Camera)") }
-            let boxSize = SIMD3<Float>(0.2, 0.5, 0.2)
-            //let debugMesh = ModelComponent(mesh: .generateBox(size: boxSize), materials: [UnlitMaterial(color: .red)])
-            //camera.components.set(debugMesh)
-            let collisionComponent = CollisionComponent(
-                shapes: [.generateBox(size: boxSize)],
-                mode: .default,
-                filter: .init(group: .default, mask: .all)
-            )
-            camera.components.set(collisionComponent)
             camera.scale = SIMD3<Float>(repeating: 0.5)
             camera.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(0, 1, 0))
             camera.transform.translation = SIMD3<Float>(0.2, 1.35, -0.5)
             navigationData.cameraEntity = camera
             content.add(camera)
-            content.subscribe(to: CollisionEvents.Began.self) { event in
-                let modelBoundary = model.children.first?.children.first
-                let hasCollision = (event.entityA == camera && event.entityB == modelBoundary) ||
-                                  (event.entityA == modelBoundary && event.entityB == camera)
-                print(hasCollision ? "Collision began between perspective camera and model" : "No Collision detected")
-            }
             
-            // Spotlight USDZ
+            // Add Spotlight USDZ
             guard let spotlight = try? await Entity(named: "StudioSpotlight", in: realityKitContentBundle)
             else { fatalError("Unable to load Spotlight)") }
             spotlight.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(0, 1, 0))
@@ -127,30 +72,27 @@ struct ImmersiveModelView: View {
             lightSourceEntity.transform.translation = SIMD3<Float>(-0.2, 1.40, -0.75)
             navigationData.lightSource = lightSourceEntity
             content.add(lightSourceEntity)
-                        
-            /*
-            // Add PointLight
-            // Default intensity value is 26963.76 lumens.
-            // Default attenuation is 10 meters
-            let pointLightComponent = PointLightComponent(
-                color: .red,
-                intensity: 100000,
-                attenuationRadius: 1000
-             )
-            testSphere.components.set(pointLightComponent)
-            */
-
-            /*
-            // Add DirectionalLight:
-            // Default intensity (lumens per square meter = lux) is 2145 lux
-            let directionalLightComponent = DirectionalLightComponent(
-               color: .red,
-               intensity: 10000
-            )
-            let lightShadowComponent = DirectionalLightComponent.Shadow()
-            testSphere.components.set([directionalLightComponent, lightShadowComponent])
-            */
             
+            // Add the grid as a child of Root
+            let rootEntity = model.findEntity(named: "Root")
+            navigationData.rootEntity = rootEntity
+            navigationData.gridEntity = createFloorGrid(attachedTo: model)
+            navigationData.gridEntity.isEnabled = false
+            rootEntity?.addChild(navigationData.gridEntity)
+            
+            /*
+            print("\n\(modelName) Debug Information:")
+            for child in model.children {
+                print("Child:       \(child.name)")
+                print("Position:    \(child.position),       Scale: \(child.scale)")
+                
+                // Print grandchildren if any
+                for grandchild in child.children {
+                    print("Grandchild:  \(grandchild.name)")
+                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
+                }
+            }
+             */
             
         } update: { content in
             // Update position, orientation in scene
@@ -173,8 +115,125 @@ struct ImmersiveModelView: View {
                 navigationData.spotlightEntity.components.set(OpacityComponent(opacity: 0))
                 navigationData.lightSource.components[SpotLightComponent.self]?.intensity = 0
             }
+            
+            // Place the loaded entity
+            if let loadedEntity = navigationData.loadedEntity,
+               let position = navigationData.placementPosition,
+               let rootEntity = navigationData.rootEntity {
+                loadedEntity.position = position
+                loadedEntity.scale = SIMD3<Float>(repeating: 1)
+                rootEntity.addChild(loadedEntity)
+                navigationData.loadedEntity = nil
+            }
+        }
+        
+        .gesture(
+            SpatialTapGesture()
+                .targetedToAnyEntity()
+                .onEnded { value in
+                    handleTap(on: value.entity)
+                }
+        )
+    }
+    
+    // Helper Function
+    private func loadRootEntity() async -> Entity? {
+        // Try loading from the realityKitContentBundle first
+        do {
+            return try await Entity(named: modelName, in: realityKitContentBundle)
+        } catch {
+            // If bundle fails, try loading from documents directory
+            let fileManager = FileManager.default
+            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                print("Error accessing documents directory")
+                return nil
+            }
+            // Check all categories defined in ModelCategory
+            for category in ModelCategory.allCases {
+                let categoryPath = category.rawValue.lowercased()
+                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
+                if fileManager.fileExists(atPath: modelURL.path) {
+                    do {
+                        print("Loading model from \(categoryPath): \(modelName)")
+                        return try await Entity.load(contentsOf: modelURL)
+                    } catch {
+                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
+                        continue // Try next category if this one fails
+                    }
+                }
+            }
+            print("Model not found in any category: \(modelName)")
+            return nil
         }
     }
+    
+    private func createFloorGrid(attachedTo modelEntity: Entity) -> Entity {
+        let gridEntity = Entity()
+        let gridSize = 5                    // 5x5 grid
+        let tileSize: Float = 1             // 2 meters per tile
+        
+        // Print model bounds using visualBounds
+        let bounds = modelEntity.visualBounds(relativeTo: modelEntity)
+        let size = bounds.max - bounds.min
+        print("\nModel Visual Bounds:")
+        print("Min Y: \(bounds.min.y)")
+        print("Max Y: \(bounds.max.y)")
+        print("Height: \(size.y)")
+        
+        for x in -gridSize...gridSize {
+            for z in -gridSize...gridSize {
+                let tileEntity = ModelEntity(
+                    mesh: .generatePlane(width: tileSize, depth: tileSize),
+                    materials: [UnlitMaterial(color: .lightGray)]
+                )
+                // Position each tile at the floor level of the model
+                tileEntity.position = SIMD3<Float>(
+                    Float(x) * tileSize,
+                    -0.01,
+                    Float(z) * tileSize
+                )
+                let placementPoint = ModelEntity(
+                     mesh: .generateCone(height: 0.3, radius: 0.05),
+                     materials: [SimpleMaterial(color: .lightGray, isMetallic: true)]
+                 )
+                placementPoint.components.set(InputTargetComponent(allowedInputTypes: .indirect))
+                placementPoint.generateCollisionShapes(recursive: true)
+                
+                // Add label and Rotate the cone 180 degrees around the X-axis to point downward
+                placementPoint.name = "placementPoint_\(x)_\(z)"
+                placementPoint.transform.rotation = simd_quatf(angle: .pi, axis: SIMD3<Float>(1, 0, 0))
+                placementPoint.position = SIMD3<Float>(0, 0.5, 0)
+                
+                tileEntity.addChild(placementPoint)
+                gridEntity.addChild(tileEntity)
+            }
+        }
+        return gridEntity
+    }
+    
+    private func handleTap(on entity: Entity) {
+         guard entity.name.starts(with: "placementPoint_"),
+               let modelEntity = entity as? ModelEntity else { return }
+         let coordinates = entity.name.split(separator: "_")
+         guard coordinates.count == 3,
+               let x = Int(coordinates[1]),
+               let z = Int(coordinates[2]) else { return }
+         navigationData.placementPosition = [Float(x), 0.5, Float(z)]
+         // Load model if one is selected
+         if let modelToPlace = navigationData.modelToPlace {
+             let modelURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                 .appendingPathComponent("\(modelToPlace.category.rawValue.lowercased())/\(modelToPlace.model.modelName).usdz")
+             Task {
+                 navigationData.loadedEntity = try? await Entity.load(contentsOf: modelURL)
+             }
+         }
+         // Highlight the tapped point temporarily
+         modelEntity.model?.materials = [SimpleMaterial(color: .orange, isMetallic: true)]
+         Task {
+             try? await Task.sleep(nanoseconds: 500_000_000)
+             modelEntity.model?.materials = [SimpleMaterial(color: .lightGray, isMetallic: true)]
+         }
+     }
     
     private func updateCameraTransform(_ scene: Entity) {
         let c = cos(navigationData.cameraRotation)
