@@ -11,7 +11,7 @@ enum ModelCategory: String, CaseIterable {
     case scenes     =   "Scenes"
     case scans      =   "Scans"
     case decor      =   "Decor"
-    case rocks      =   "Rocks"
+    //case rocks      =   "Rocks"
     case anatomy    =   "Anatomy"
 }
 
@@ -187,7 +187,7 @@ struct CatalogItemView: View {
         }
         .overlay(alignment: .bottomTrailing) {
             Button {
-                if(category == .decor || category == .rocks || category == .anatomy){
+                if(category == .decor || category == .anatomy){
                     navigationData.modelToPlace = (model: model, category: category)
                 }
                 isWindowOpen.toggle()

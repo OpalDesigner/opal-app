@@ -47,20 +47,8 @@ struct opalApp: App {
         .task {
             print("Fetching S3 files...")
             await fetchS3Files()
-            //setupPeriodicFetch()
         }
          */
-    }
-
-    private func setupPeriodicFetch() {
-        fetchTimer?.invalidate()
-        
-        fetchTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
-            Task {
-                print("Fetching S3 files...")
-                await fetchS3Files()
-            }
-        }
     }
     
     private func fetchS3Files() async {
