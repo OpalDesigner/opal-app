@@ -1,15 +1,12 @@
 # Opal
 
 About:
-
-Opal builds virtual simulation software that enables anyone to build, navigate, and collaborate in 3D seamlessly.
+Opal builds immersive experiences and pre-visualization tools leveraging spatial computing and generative AI.
 
 Website: 
-
 https://www.opaldesigner.com/
 
 Contributors: 
-
 Vik Parth, Jason Wong, Kris Layng, Ashley Lee
 
 ![opal-home](https://github.com/user-attachments/assets/182e77d6-2226-4a08-a9b6-29ec7aaef82d)
