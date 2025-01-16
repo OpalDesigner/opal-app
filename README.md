@@ -2,7 +2,7 @@
 
 About:
 
-Opal Designer enables set designers, cinematographers, and production studios to visualize, design, and navigate 3D spaces.
+Opal builds virtual simulation software that enables anyone to build, navigate, and collaborate in 3D seamlessly.
 
 Website: 
 
@@ -10,13 +10,7 @@ https://www.opaldesigner.com/
 
 Contributors: 
 
-Vik Parth, Kris Layng, Ashley Lee, Rodrigo Vierira
-
-Workflow:
-- Step 1: Import 3D model from Unreal Engine or Blender. Model syncs with Opal.
-- Step 2: Place Waypoints to the 3D model
-- Step 3: Run Camera Flythough. 
-- Step 4: Export flythrough. Film Director and Producer will use this to better understand the set
+Vik Parth, Jason Wong, Kris Layng, Ashley Lee
 
 ![opal-home](https://github.com/user-attachments/assets/182e77d6-2226-4a08-a9b6-29ec7aaef82d)
 ![opal-coffee](https://github.com/user-attachments/assets/b57d75a9-b06d-469b-9700-c029d6ed3edb)
