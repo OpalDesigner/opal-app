@@ -8,6 +8,10 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
+struct PointOfInterestRuntimeComponent: Component {
+    let attachmentTag: ObjectIdentifier
+}
+
 //This code creates the a small tabletop view of your set
 struct TabletopModelView: View {
     // Function parameters
@@ -32,12 +36,16 @@ struct TabletopModelView: View {
     @State private var lightSourceEntity = Entity()
     @State private var lightSourcePosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0.35)
     
-    // Notifications setup
+    // Handle Attachments
+    @State private var subscriptions = [EventSubscription]()
+    @State private var attachmentsProvider = AttachmentsProvider()
+    
+    // Handle Notifications
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
 
     var body: some View {
         Spacer()
-        RealityView { content in
+        RealityView { content, attachments in
             guard let model = await loadRootEntity() else {
                 print("Failed to load model: \(modelName)")
                 return
@@ -94,25 +102,54 @@ struct TabletopModelView: View {
                 modelChildEntity = modelChild
             }
             
-            /*
+            // Find all POI entities and create their attachment SwiftUI views
+            subscriptions.append(content.subscribe(to: ComponentEvents.DidAdd.self, componentType: PointOfInterestComponent.self, { event in
+                createPoiAttachment(for: event.entity)
+            }))
+            
             print("\n\(modelName) Model Parameters:")
             for child in model.children {
                 print("Child:       \(child.name)")
                 print("Position:    \(child.position),       Scale: \(child.scale)")
                 // Print grandchildren if any
                 for grandchild in child.children {
-                    print("Grandchild:  \(grandchild.name)")
-                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
+                    print("   Grandchild:  \(grandchild.name)")
+                    print("   Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
                 }
             }
-             */
             
-        } update: { content in
+        } update: { content, attachments in
             if(isLightingEnabled){
                 content.add(lightSourceEntity)
                 lightSourceEntity.transform.translation = lightSourcePosition
             } else {
                 content.remove(lightSourceEntity)
+            }
+        
+            // Add POI attachments to their entities
+            if let poiEntities = scene?.performQuery(EntityQuery(where: .has(PointOfInterestComponent.self))) {
+                for entity in poiEntities {
+                    if let component = entity.components[PointOfInterestRuntimeComponent.self],
+                       let attachmentEntity = attachments.entity(for: component.attachmentTag) {
+                        if attachmentEntity.parent == nil {
+                            attachmentEntity.components.set(BillboardComponent())
+                            attachmentEntity.components.set(OpacityComponent(opacity: 1.0))
+                            //entity.addChild(attachmentEntity)
+                            content.add(attachmentEntity)
+                            attachmentEntity.setPosition([0.0, 0.4, 0.0], relativeTo: entity)
+                            print("✅ Successfully attached POI to: \(entity.name)")
+                        }
+                    }
+                }
+            }
+            
+            
+        } attachments: {
+            // Add all attachments
+            ForEach(attachmentsProvider.sortedTagViewPairs, id: \.tag) { pair in
+                Attachment(id: pair.tag) {
+                    pair.view
+                }
             }
         }
         .onReceive(notificationPublisher) { output in
@@ -280,9 +317,9 @@ struct TabletopModelView: View {
     private func getAutoScale(_ model: Entity) -> Float {
         let bounds = model.visualBounds(relativeTo: model)
         let size = bounds.max - bounds.min
-        let maxWidth: Float = 0.8
-        let maxHeight: Float = 0.533
-        let maxDepth: Float = 0.533
+        let maxWidth: Float = 0.6
+        let maxHeight: Float = 0.6
+        let maxDepth: Float = 0.6
         // Calculate scale needed for each dimension
         let scaleX = maxWidth / size.x
         let scaleY = maxHeight / size.y
@@ -294,10 +331,10 @@ struct TabletopModelView: View {
         let scaledHeight = size.y * autoScale
         let scaledDepth = size.z * autoScale
         print("\n\(modelName) Auto-Scaling Details:")
-        print("Original dimensions:     width=\(size.x)m, height=\(size.y)m, depth=\(size.z)m")
-        print("Scale factors:           width=\(scaleX), height=\(scaleY), depth=\(scaleZ)")
-        print("Resulting dimensions:    width=\(scaledWidth)m, height=\(scaledHeight)m, depth=\(scaledDepth)m")
-        print("Autoscale: \(autoScale)")
+        print("   Original dimensions:     width=\(size.x)m, height=\(size.y)m, depth=\(size.z)m")
+        print("   Scale factors:           width=\(scaleX), height=\(scaleY), depth=\(scaleZ)")
+        print("   Resulting dimensions:    width=\(scaledWidth)m, height=\(scaledHeight)m, depth=\(scaledDepth)m")
+        print("   Autoscale: \(autoScale)")
         return autoScale
     }
     
@@ -313,6 +350,43 @@ struct TabletopModelView: View {
             modelCenter = model.convert(position: (newBounds.min + newBounds.max) * 0.5, to: nil)
             modelPivot = model.convert(position: .zero, to: nil)
         }
+    }
+    
+    private func createPoiAttachment(for entity: Entity) {
+        guard let poi = entity.components[PointOfInterestComponent.self] else {return}
+        let tag: ObjectIdentifier = entity.id
+        let view = AnyView(VStack {
+            Button {
+                // Add your button action here
+            } label: {
+                Label("", systemImage: "plus.circle.fill")
+            }
+            
+            Text(poi.title)
+                .font(.headline)
+                .padding(.bottom, 2)
+            
+            if let description = poi.description {
+                Text(description)
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .padding()
+        .background(.regularMaterial)
+        .cornerRadius(8))
+        
+        // Set RuntimeComponent
+        entity.components[PointOfInterestRuntimeComponent.self] = PointOfInterestRuntimeComponent(attachmentTag: tag)
+        
+        // Add to attachments
+        attachmentsProvider.attachments[tag] = AnyView(view)
+        
+        // Debug logging
+        print("📦 Attachments Provider Status:")
+        print("   Total Attachments: \(attachmentsProvider.attachments.count)")
+        print("   Current Attachment Tag: \(tag)")
+        print("   Attachment Added: \(attachmentsProvider.attachments.keys.contains(tag))")
     }
 }
 

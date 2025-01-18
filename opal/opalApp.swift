@@ -8,6 +8,7 @@
 import SwiftUI
 import AWSS3
 import CompositorServices
+import RealityKitContent
 
 class TabSelection: ObservableObject {
     @Published var selectedTab = 0
@@ -22,6 +23,10 @@ struct opalApp: App {
     // Private variables
     @State private var s3Files: [String] = []
     @State private var fetchTimer: Timer?
+    
+    init() {
+        PointOfInterestComponent.registerComponent()
+    }
 
     var body: some Scene {
         // ----------------- DEFINE WINDOW SPACES ---------------
@@ -62,7 +67,7 @@ struct opalApp: App {
         }
         .volumeWorldAlignment(.gravityAligned)
         .windowStyle(.volumetric)
-        .defaultSize(width: 1.5, height: 0.75, depth: 0.75, in: .meters)
+        .defaultSize(width: 0.75, height: 0.75, depth: 0.75, in: .meters)
         .defaultWindowPlacement { content, context in
             let size = content.sizeThatFits(.unspecified)
             let mainWindow = context.windows.first { window in

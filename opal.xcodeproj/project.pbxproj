@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		652A87A22D3C06FD00CB4113 /* AttachmentsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 652A87A12D3C06FD00CB4113 /* AttachmentsProvider.swift */; };
 		6573DF492D16BEA100D7917A /* MetalSplatter in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF482D16BEA100D7917A /* MetalSplatter */; };
 		6573DF4B2D16BEA100D7917A /* PLYIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF4A2D16BEA100D7917A /* PLYIO */; };
 		6573DF4D2D16BEA100D7917A /* SampleBoxRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF4C2D16BEA100D7917A /* SampleBoxRenderer */; };
@@ -42,6 +43,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		652A87A12D3C06FD00CB4113 /* AttachmentsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentsProvider.swift; sourceTree = "<group>"; };
 		659AD4982CCB0B2500F834E0 /* opal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = opal.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		659AD49C2CCB0B2500F834E0 /* RealityKitContent */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = RealityKitContent; sourceTree = "<group>"; };
 		659AD49F2CCB0B2500F834E0 /* opalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = opalApp.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 			children = (
 				659AD4CB2CCB0D3C00F834E0 /* TabletopModelView.swift */,
 				659AD4CA2CCB0D3C00F834E0 /* ImmersiveModelView.swift */,
+				652A87A12D3C06FD00CB4113 /* AttachmentsProvider.swift */,
 				65BE9B462D0D2BDF00F6A0FA /* HandTrackingView.swift */,
 				659AD4C82CCB0D3C00F834E0 /* BubbleView.swift */,
 			);
@@ -319,6 +322,7 @@
 				659AD4C32CCB0D1D00F834E0 /* HomeMenu.swift in Sources */,
 				659AD4D02CCB0D3C00F834E0 /* TabletopModelView.swift in Sources */,
 				65B7ABFB2CCB38F00068ED3D /* PluginMenu.swift in Sources */,
+				652A87A22D3C06FD00CB4113 /* AttachmentsProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
