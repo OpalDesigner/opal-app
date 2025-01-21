@@ -22,7 +22,6 @@ struct TabletopModelView: View {
 
     // State variables
     @State private var modelCurrent = Entity()
-    @State private var modelChildEntity = Entity()
     @State private var weatherEntity = Entity()
     @State private var modelCenter: SIMD3<Float> = .zero
     @State private var modelPivot: SIMD3<Float> = .zero
@@ -46,15 +45,15 @@ struct TabletopModelView: View {
     var body: some View {
         Spacer()
         RealityView { content, attachments in
-            guard let model = await loadRootEntity() else {
+            guard let entity = await loadRootEntity() else {
                 print("Failed to load model: \(modelName)")
                 return
             }
-            content.add(model)
+            content.add(entity)
             
             // Set initial scale and center model
-            modelCurrent = model
-            let autoScale = getAutoScale(model)
+            modelCurrent = entity
+            let autoScale = getAutoScale(entity)
             modelCurrent.transform.scale = SIMD3<Float>(repeating: autoScale)
             currentScale = autoScale
             centerModelAroundPivot(modelCurrent)
@@ -97,18 +96,13 @@ struct TabletopModelView: View {
             )
             lightSourceEntity.addChild(debugSphere)
             
-            // Find and store model's child entity specifically
-            if let modelChild = modelCurrent.findEntity(named: modelName) {
-                modelChildEntity = modelChild
-            }
-            
             // Find all POI entities and create their attachment SwiftUI views
             subscriptions.append(content.subscribe(to: ComponentEvents.DidAdd.self, componentType: PointOfInterestComponent.self, { event in
                 createPoiAttachment(for: event.entity)
             }))
             
             print("\n\(modelName) Model Parameters:")
-            for child in model.children {
+            for child in entity.children {
                 print("Child:       \(child.name)")
                 print("Position:    \(child.position),       Scale: \(child.scale)")
                 // Print grandchildren if any
@@ -119,33 +113,55 @@ struct TabletopModelView: View {
             }
             
         } update: { content, attachments in
+            // Update weather entity
+            // (.snow, .fireworks, .rain, .sparks, .impact, .magic)
+            if(isSnowing){
+                var emitter = ParticleEmitterComponent.Presets.snow
+                emitter.mainEmitter.birthRate = 100
+                weatherEntity.components.set(emitter)
+            } else {
+                var emitter = ParticleEmitterComponent.Presets.snow
+                emitter.mainEmitter.birthRate = 0
+                weatherEntity.components.set(emitter)
+            }
+            
+            // Update lighting entity
             if(isLightingEnabled){
                 content.add(lightSourceEntity)
                 lightSourceEntity.transform.translation = lightSourcePosition
             } else {
                 content.remove(lightSourceEntity)
             }
+            
+            // Update opacity of model entity if camera is Animating
+            if isCameraEnabled {
+                if let modelChild = modelCurrent.findEntity(named: modelName) {
+                    if isAnimating {
+                        modelChild.components.set(OpacityComponent(opacity: 0.65))
+                    } else {
+                        modelChild.components.set(OpacityComponent(opacity: 1.0))
+                    }
+                }
+            }
         
-            // Add POI attachments to their entities
-            if let poiEntities = scene?.performQuery(EntityQuery(where: .has(PointOfInterestComponent.self))) {
+            // Update Point of Interest entities
+            if let poiEntities = scene?.performQuery(EntityQuery(where: .has(PointOfInterestComponent.self))){
                 for entity in poiEntities {
-                    if let component = entity.components[PointOfInterestRuntimeComponent.self],
-                       let attachmentEntity = attachments.entity(for: component.attachmentTag) {
-                        if attachmentEntity.parent == nil {
-                            attachmentEntity.components.set(BillboardComponent())
-                            attachmentEntity.components.set(OpacityComponent(opacity: 1.0))
-                            //entity.addChild(attachmentEntity)
-                            content.add(attachmentEntity)
-                            attachmentEntity.setPosition([0.0, 0.4, 0.0], relativeTo: entity)
+                    if let poi = entity.components[PointOfInterestRuntimeComponent.self],
+                       let poiEntity = attachments.entity(for: poi.attachmentTag) {
+                        if poiEntity.parent == nil {
+                            poiEntity.components.set(BillboardComponent())
+                            poiEntity.components.set(OpacityComponent(opacity: 1.0))
+                            content.add(poiEntity)
+                            poiEntity.setPosition([0.0, 2.0, 0.0], relativeTo: entity)
                             print("✅ Successfully attached POI to: \(entity.name)")
                         }
                     }
                 }
             }
             
-            
         } attachments: {
-            // Add all attachments
+            // Add all Attachment SwiftUI views to the tagged entity
             ForEach(attachmentsProvider.sortedTagViewPairs, id: \.tag) { pair in
                 Attachment(id: pair.tag) {
                     pair.view
@@ -155,12 +171,10 @@ struct TabletopModelView: View {
         .onReceive(notificationPublisher) { output in
             guard let notificationName = output.userInfo?["RealityKit.NotificationTrigger.Identifier"] as? String
             else {return}
-            
             switch notificationName {
                 case "cameraFlythroughComplete":
                     print("\n\(modelName) Camera Animation Finished")
                     isAnimating.toggle()
-                    modelChildEntity.components.set(OpacityComponent(opacity: 1.0))
                 default:
                     return
             }
@@ -224,19 +238,9 @@ struct TabletopModelView: View {
             }
             
             // Toolbar button for changing the Weather
-            // (.snow, .fireworks, .rain, .sparks, .impact, .magic)
             ToolbarItem(placement: .bottomOrnament) {
                 Button {
                     isSnowing.toggle()
-                    if(isSnowing){
-                        var emitter = ParticleEmitterComponent.Presets.snow
-                        emitter.mainEmitter.birthRate = 100
-                        weatherEntity.components.set(emitter)
-                    } else {
-                        var emitter = ParticleEmitterComponent.Presets.snow
-                        emitter.mainEmitter.birthRate = 0
-                        weatherEntity.components.set(emitter)
-                    }
                 } label: {
                     Label("", systemImage: isSnowing ? "cloud.snow.fill" : "cloud.snow")
                         .foregroundColor(isSnowing ? .green : .primary)
@@ -267,10 +271,6 @@ struct TabletopModelView: View {
                                     "RealityKit.NotificationTrigger.Identifier": "startCameraFlythrough"
                                 ]
                             )
-                            print("\n\(modelName) Camera Animation Started")
-                            
-                            // Adjust opacity of scene to see the Camera better
-                            modelChildEntity.components.set(OpacityComponent(opacity: 0.65))
                         }
                     } label: {
                         Label("",systemImage: isAnimating ? "video.fill" : "video")
@@ -356,12 +356,6 @@ struct TabletopModelView: View {
         guard let poi = entity.components[PointOfInterestComponent.self] else {return}
         let tag: ObjectIdentifier = entity.id
         let view = AnyView(VStack {
-            Button {
-                // Add your button action here
-            } label: {
-                Label("", systemImage: "plus.circle.fill")
-            }
-            
             Text(poi.title)
                 .font(.headline)
                 .padding(.bottom, 2)
@@ -371,17 +365,19 @@ struct TabletopModelView: View {
                     .font(.caption)
                     .multilineTextAlignment(.center)
             }
+            Button {
+                // Add your button action here
+            } label: {
+                Label("", systemImage: "plus.circle.fill")
+            }
         }
         .padding()
         .background(.regularMaterial)
         .cornerRadius(8))
-        
         // Set RuntimeComponent
         entity.components[PointOfInterestRuntimeComponent.self] = PointOfInterestRuntimeComponent(attachmentTag: tag)
-        
         // Add to attachments
         attachmentsProvider.attachments[tag] = AnyView(view)
-        
         // Debug logging
         print("📦 Attachments Provider Status:")
         print("   Total Attachments: \(attachmentsProvider.attachments.count)")

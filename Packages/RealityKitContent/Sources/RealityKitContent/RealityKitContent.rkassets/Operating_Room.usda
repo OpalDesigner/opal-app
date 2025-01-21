@@ -10,13 +10,78 @@
 
 def Xform "Root"
 {
+    reorder nameChildren = ["Operating_Room", "Surgery_Table", "Medical_Display", "Anesthesia", "ECG"]
+    float3 xformOp:translate = (0, 0, 0)
+    uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
     def "Operating_Room" (
         active = true
-        prepend references = @Operating_Room.usdz@
+        references = @Operating_Room.usdz@
     )
     {
         float3 xformOp:scale = (0.01, 0.01, 0.01)
+        float3 xformOp:translate = (0, 0, 0)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Xform "Surgery_Table" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (-0.015087247, 1.0615314, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = "STERIS 5085 SRT"
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "Surgery Table"
+        }
+    }
+
+    def Xform "Medical_Display" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (2.3961506, 1.2672915, 1.3912735)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = 'Stryker WISE 26" Medical Display'
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "Display"
+        }
+    }
+
+    def Xform "Anesthesia" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (-2.2485256, 1.2673486, 1.5718648)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = "GE Healthcare Aisys CS2"
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "Anesthesia Machine"
+        }
+    }
+
+    def Xform "ECG" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (2.1883953, 1.0102203, -1.0722303)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = "GE CARESCAPE B450"
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "ECG/EKG machine"
+        }
     }
 }
 
