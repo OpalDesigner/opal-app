@@ -8,6 +8,10 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
+struct PointOfInterestRuntimeComponent: Component {
+    let attachmentTag: ObjectIdentifier
+}
+
 //This code creates the a small tabletop view of your set
 struct TabletopModelView: View {
     // Function parameters
@@ -18,7 +22,6 @@ struct TabletopModelView: View {
 
     // State variables
     @State private var modelCurrent = Entity()
-    @State private var modelChildEntity = Entity()
     @State private var weatherEntity = Entity()
     @State private var modelCenter: SIMD3<Float> = .zero
     @State private var modelPivot: SIMD3<Float> = .zero
@@ -32,90 +35,25 @@ struct TabletopModelView: View {
     @State private var lightSourceEntity = Entity()
     @State private var lightSourcePosition: SIMD3<Float> = SIMD3<Float>(0, 0, 0.35)
     
-    // Notifications setup
+    // Handle Attachments
+    @State private var subscriptions = [EventSubscription]()
+    @State private var attachmentsProvider = AttachmentsProvider()
+    
+    // Handle Notifications
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
 
-    // Helper Function
-    private func loadRootEntity() async -> Entity? {
-        // Try loading from the realityKitContentBundle first
-        do {
-            return try await Entity(named: modelName, in: realityKitContentBundle)
-        } catch {
-            // If bundle fails, try loading from documents directory
-            let fileManager = FileManager.default
-            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-                print("Error accessing documents directory")
-                return nil
-            }
-            // Check all categories defined in ModelCategory
-            for category in ModelCategory.allCases {
-                let categoryPath = category.rawValue.lowercased()
-                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
-                if fileManager.fileExists(atPath: modelURL.path) {
-                    do {
-                        print("Loading model from \(categoryPath): \(modelName)")
-                        return try await Entity.load(contentsOf: modelURL)
-                    } catch {
-                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
-                        continue // Try next category if this one fails
-                    }
-                }
-            }
-            print("Model not found in any category: \(modelName)")
-            return nil
-        }
-    }
-    
-    private func getAutoScale(_ model: Entity) -> Float {
-        let bounds = model.visualBounds(relativeTo: model)
-        let size = bounds.max - bounds.min
-        let maxWidth: Float = 0.8
-        let maxHeight: Float = 0.533
-        let maxDepth: Float = 0.533
-        // Calculate scale needed for each dimension
-        let scaleX = maxWidth / size.x
-        let scaleY = maxHeight / size.y
-        let scaleZ = maxDepth / size.z
-        // Use the smallest scale to ensure all dimensions fit within limits
-        let autoScale = min(scaleX, min(scaleY, scaleZ))
-        // Print resulting dimensions
-        let scaledWidth = size.x * autoScale
-        let scaledHeight = size.y * autoScale
-        let scaledDepth = size.z * autoScale
-        print("\n\(modelName) Auto-Scaling Details:")
-        print("Original dimensions:     width=\(size.x)m, height=\(size.y)m, depth=\(size.z)m")
-        print("Scale factors:           width=\(scaleX), height=\(scaleY), depth=\(scaleZ)")
-        print("Resulting dimensions:    width=\(scaledWidth)m, height=\(scaledHeight)m, depth=\(scaledDepth)m")
-        print("Autoscale: \(autoScale)")
-        return autoScale
-    }
-    
-    private func centerModelAroundPivot(_ model: Entity) {
-        let bounds = model.visualBounds(relativeTo: model)
-        let size = bounds.max - bounds.min
-        modelCenter = model.convert(position: (bounds.min + bounds.max) * 0.5, to: nil)
-        modelPivot = model.convert(position: .zero, to: nil)
-        if modelCenter != modelPivot {
-            model.transform.translation = modelPivot - modelCenter
-            // Update center and pivot after transform
-            let newBounds = model.visualBounds(relativeTo: model)
-            modelCenter = model.convert(position: (newBounds.min + newBounds.max) * 0.5, to: nil)
-            modelPivot = model.convert(position: .zero, to: nil)
-        }
-    }
-    
     var body: some View {
         Spacer()
-        RealityView { content in
-            guard let model = await loadRootEntity() else {
+        RealityView { content, attachments in
+            guard let entity = await loadRootEntity() else {
                 print("Failed to load model: \(modelName)")
                 return
             }
-            content.add(model)
+            content.add(entity)
             
             // Set initial scale and center model
-            modelCurrent = model
-            let autoScale = getAutoScale(model)
+            modelCurrent = entity
+            let autoScale = getAutoScale(entity)
             modelCurrent.transform.scale = SIMD3<Float>(repeating: autoScale)
             currentScale = autoScale
             centerModelAroundPivot(modelCurrent)
@@ -158,41 +96,85 @@ struct TabletopModelView: View {
             )
             lightSourceEntity.addChild(debugSphere)
             
-            // Find and store model's child entity specifically
-            if let modelChild = modelCurrent.findEntity(named: modelName) {
-                modelChildEntity = modelChild
-            }
+            // Find all POI entities and create their attachment SwiftUI views
+            subscriptions.append(content.subscribe(to: ComponentEvents.DidAdd.self, componentType: PointOfInterestComponent.self, { event in
+                createPoiAttachment(for: event.entity)
+            }))
             
-            /*
             print("\n\(modelName) Model Parameters:")
-            for child in model.children {
+            for child in entity.children {
                 print("Child:       \(child.name)")
                 print("Position:    \(child.position),       Scale: \(child.scale)")
                 // Print grandchildren if any
                 for grandchild in child.children {
-                    print("Grandchild:  \(grandchild.name)")
-                    print("Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
+                    print("   Grandchild:  \(grandchild.name)")
+                    print("   Position:    \(grandchild.position),  Scale: \(grandchild.scale)")
                 }
             }
-             */
             
-        } update: { content in
+        } update: { content, attachments in
+            // Update weather entity
+            // (.snow, .fireworks, .rain, .sparks, .impact, .magic)
+            if(isSnowing){
+                var emitter = ParticleEmitterComponent.Presets.snow
+                emitter.mainEmitter.birthRate = 100
+                weatherEntity.components.set(emitter)
+            } else {
+                var emitter = ParticleEmitterComponent.Presets.snow
+                emitter.mainEmitter.birthRate = 0
+                weatherEntity.components.set(emitter)
+            }
+            
+            // Update lighting entity
             if(isLightingEnabled){
                 content.add(lightSourceEntity)
                 lightSourceEntity.transform.translation = lightSourcePosition
             } else {
                 content.remove(lightSourceEntity)
             }
+            
+            // Update opacity of model entity if camera is Animating
+            if isCameraEnabled {
+                if let modelChild = modelCurrent.findEntity(named: modelName) {
+                    if isAnimating {
+                        modelChild.components.set(OpacityComponent(opacity: 0.65))
+                    } else {
+                        modelChild.components.set(OpacityComponent(opacity: 1.0))
+                    }
+                }
+            }
+        
+            // Update Point of Interest entities
+            if let poiEntities = scene?.performQuery(EntityQuery(where: .has(PointOfInterestComponent.self))){
+                for entity in poiEntities {
+                    if let poi = entity.components[PointOfInterestRuntimeComponent.self],
+                       let poiEntity = attachments.entity(for: poi.attachmentTag) {
+                        if poiEntity.parent == nil {
+                            poiEntity.components.set(BillboardComponent())
+                            poiEntity.components.set(OpacityComponent(opacity: 1.0))
+                            content.add(poiEntity)
+                            poiEntity.setPosition([0.0, 2.0, 0.0], relativeTo: entity)
+                            print("✅ Successfully attached POI to: \(entity.name)")
+                        }
+                    }
+                }
+            }
+            
+        } attachments: {
+            // Add all Attachment SwiftUI views to the tagged entity
+            ForEach(attachmentsProvider.sortedTagViewPairs, id: \.tag) { pair in
+                Attachment(id: pair.tag) {
+                    pair.view
+                }
+            }
         }
         .onReceive(notificationPublisher) { output in
             guard let notificationName = output.userInfo?["RealityKit.NotificationTrigger.Identifier"] as? String
             else {return}
-            
             switch notificationName {
                 case "cameraFlythroughComplete":
                     print("\n\(modelName) Camera Animation Finished")
                     isAnimating.toggle()
-                    modelChildEntity.components.set(OpacityComponent(opacity: 1.0))
                 default:
                     return
             }
@@ -256,19 +238,9 @@ struct TabletopModelView: View {
             }
             
             // Toolbar button for changing the Weather
-            // (.snow, .fireworks, .rain, .sparks, .impact, .magic)
             ToolbarItem(placement: .bottomOrnament) {
                 Button {
                     isSnowing.toggle()
-                    if(isSnowing){
-                        var emitter = ParticleEmitterComponent.Presets.snow
-                        emitter.mainEmitter.birthRate = 100
-                        weatherEntity.components.set(emitter)
-                    } else {
-                        var emitter = ParticleEmitterComponent.Presets.snow
-                        emitter.mainEmitter.birthRate = 0
-                        weatherEntity.components.set(emitter)
-                    }
                 } label: {
                     Label("", systemImage: isSnowing ? "cloud.snow.fill" : "cloud.snow")
                         .foregroundColor(isSnowing ? .green : .primary)
@@ -299,10 +271,6 @@ struct TabletopModelView: View {
                                     "RealityKit.NotificationTrigger.Identifier": "startCameraFlythrough"
                                 ]
                             )
-                            print("\n\(modelName) Camera Animation Started")
-                            
-                            // Adjust opacity of scene to see the Camera better
-                            modelChildEntity.components.set(OpacityComponent(opacity: 0.65))
                         }
                     } label: {
                         Label("",systemImage: isAnimating ? "video.fill" : "video")
@@ -313,6 +281,108 @@ struct TabletopModelView: View {
             }
         }
         .frame(height: 400)
+    }
+    
+    // Helper Function
+    private func loadRootEntity() async -> Entity? {
+        // Try loading from the realityKitContentBundle first
+        do {
+            return try await Entity(named: modelName, in: realityKitContentBundle)
+        } catch {
+            // If bundle fails, try loading from documents directory
+            let fileManager = FileManager.default
+            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
+                print("Error accessing documents directory")
+                return nil
+            }
+            // Check all categories defined in ModelCategory
+            for category in ModelCategory.allCases {
+                let categoryPath = category.rawValue.lowercased()
+                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
+                if fileManager.fileExists(atPath: modelURL.path) {
+                    do {
+                        print("Loading model from \(categoryPath): \(modelName)")
+                        return try await Entity.load(contentsOf: modelURL)
+                    } catch {
+                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
+                        continue // Try next category if this one fails
+                    }
+                }
+            }
+            print("Model not found in any category: \(modelName)")
+            return nil
+        }
+    }
+    
+    private func getAutoScale(_ model: Entity) -> Float {
+        let bounds = model.visualBounds(relativeTo: model)
+        let size = bounds.max - bounds.min
+        let maxWidth: Float = 0.6
+        let maxHeight: Float = 0.6
+        let maxDepth: Float = 0.6
+        // Calculate scale needed for each dimension
+        let scaleX = maxWidth / size.x
+        let scaleY = maxHeight / size.y
+        let scaleZ = maxDepth / size.z
+        // Use the smallest scale to ensure all dimensions fit within limits
+        let autoScale = min(scaleX, min(scaleY, scaleZ))
+        // Print resulting dimensions
+        let scaledWidth = size.x * autoScale
+        let scaledHeight = size.y * autoScale
+        let scaledDepth = size.z * autoScale
+        print("\n\(modelName) Auto-Scaling Details:")
+        print("   Original dimensions:     width=\(size.x)m, height=\(size.y)m, depth=\(size.z)m")
+        print("   Scale factors:           width=\(scaleX), height=\(scaleY), depth=\(scaleZ)")
+        print("   Resulting dimensions:    width=\(scaledWidth)m, height=\(scaledHeight)m, depth=\(scaledDepth)m")
+        print("   Autoscale: \(autoScale)")
+        return autoScale
+    }
+    
+    private func centerModelAroundPivot(_ model: Entity) {
+        let bounds = model.visualBounds(relativeTo: model)
+        let size = bounds.max - bounds.min
+        modelCenter = model.convert(position: (bounds.min + bounds.max) * 0.5, to: nil)
+        modelPivot = model.convert(position: .zero, to: nil)
+        if modelCenter != modelPivot {
+            model.transform.translation = modelPivot - modelCenter
+            // Update center and pivot after transform
+            let newBounds = model.visualBounds(relativeTo: model)
+            modelCenter = model.convert(position: (newBounds.min + newBounds.max) * 0.5, to: nil)
+            modelPivot = model.convert(position: .zero, to: nil)
+        }
+    }
+    
+    private func createPoiAttachment(for entity: Entity) {
+        guard let poi = entity.components[PointOfInterestComponent.self] else {return}
+        let tag: ObjectIdentifier = entity.id
+        let view = AnyView(VStack {
+            Text(poi.title)
+                .font(.headline)
+                .padding(.bottom, 2)
+            
+            if let description = poi.description {
+                Text(description)
+                    .font(.caption)
+                    .multilineTextAlignment(.center)
+            }
+            Button {
+                // Add your button action here
+            } label: {
+                Label("", systemImage: "plus.circle.fill")
+            }
+        }
+        .padding()
+        .background(.regularMaterial)
+        .cornerRadius(8))
+        // Set RuntimeComponent
+        entity.components[PointOfInterestRuntimeComponent.self] = PointOfInterestRuntimeComponent(attachmentTag: tag)
+        // Add to attachments
+        attachmentsProvider.attachments[tag] = AnyView(view)
+        // Debug logging
+        print("📦 Attachments Provider Status:")
+        print("   Total Attachments: \(attachmentsProvider.attachments.count)")
+        print("   Current Attachment Tag: \(tag)")
+        print("   Attachment Added: \(attachmentsProvider.attachments.keys.contains(tag))")
     }
 }
 

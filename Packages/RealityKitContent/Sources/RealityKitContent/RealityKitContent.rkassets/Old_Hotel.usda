@@ -10,7 +10,7 @@
 
 def Xform "Root"
 {
-    reorder nameChildren = ["Old_Hotel", "Toy_Biplane", "RCP_BehaviorsContainer", "OnAddedToScene", "Sphere", "Orbit", "Timeline"]
+    reorder nameChildren = ["Old_Hotel", "Toy_Biplane", "RCP_BehaviorsContainer", "OnAddedToScene", "Sphere", "Orbit", "Timeline", "Bird", "Yosemite", "Riverbed", "MountainTop"]
     def "Old_Hotel" (
         active = true
         references = @Old_Hotel.usdz@
@@ -57,7 +57,7 @@ def Xform "Root"
 
     def RealityKitTimeline "Orbit"
     {
-        reorder nameChildren = ["Track", "Track2", "Track3"]
+        reorder nameChildren = ["Track", "Track2", "Track3", "Track5", "Track4"]
         def RealityKitTrack "Track"
         {
             def RealityKitAction "Orbit"
@@ -78,9 +78,58 @@ def Xform "Root"
 
         def RealityKitTrack "Track2"
         {
+            def RealityKitAction "Animation"
+            {
+                string actionKind = "animation"
+                string animation = "default scene animation"
+                int blendLayer = 500
+                double duration = 4.9666666984558105
+                uniform token info:id = "56F36BA7-B30E-4907-A01E-639C8B79A29F"
+                double loopCount = 0
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/Bird>
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
         }
 
         def RealityKitTrack "Track3"
+        {
+            def RealityKitAction "Orbit"
+            {
+                string actionKind = "orbit"
+                float3 axis = (0, 1, 0)
+                int blendLayer = 300
+                double duration = 10
+                uniform token info:id = "7B4564A4-CA52-4770-A468-BD95C629A292"
+                token orbitDirection = "clockwise"
+                bool orientToPath = 1
+                rel pivotEntity = </Root/MountainTop>
+                double startTime = 0
+                rel target = </Root/Bird>
+            }
+
+            def RealityKitAction "Orbit2"
+            {
+                string actionKind = "orbit"
+                float3 axis = (0, 1, 0)
+                int blendLayer = 300
+                double duration = 10
+                uniform token info:id = "7B4564A4-CA52-4770-A468-BD95C629A292"
+                token orbitDirection = "clockwise"
+                bool orientToPath = 1
+                rel pivotEntity = </Root/MountainTop>
+                double startTime = 10.0000000001
+                rel target = </Root/Bird>
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+            }
+        }
+
+        def RealityKitTrack "Track4"
         {
         }
     }
@@ -149,12 +198,75 @@ def Xform "Root"
             {
                 string actionKind = "timeline"
                 int blendLayer = 500
-                double duration = 20
+                double duration = inf
                 uniform token info:id = "3727AF47-65A4-4480-A060-ED23715A01C9"
                 double loopCount = 0
                 double startTime = 0
                 rel timeline = </Root/Orbit>
             }
+        }
+    }
+
+    def "Bird" (
+        active = true
+        references = @Bird.usdz@
+    )
+    {
+        reorder nameChildren = ["Forest_Sounds_wav", "raven_msh1", "root_jnt", "Looks", "AnimationLibrary", "AudioLibrary"]
+        quatf xformOp:orient = (0.99999994, 0, 0, 0)
+        float3 xformOp:scale = (0.1, 0.1, 0.1)
+        float3 xformOp:translate = (-0.7305944, 5.3929114, 13.400477)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitAnimationFile "default_scene_animation"
+            {
+                uniform bool looping = 1
+                uniform string name = "default scene animation"
+            }
+        }
+    }
+
+    def "Yosemite" (
+        active = true
+        references = @Yosemite.usdz@
+    )
+    {
+        float3 xformOp:scale = (15, 15, 15)
+        float3 xformOp:translate = (0.60148525, -10.069889, 0.32996762)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Xform "Riverbed" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (10.547432, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = "The river flows acros the full canyon"
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "Riverbed"
+        }
+    }
+
+    def Xform "MountainTop" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (-1.8856019, 5.9737787, 12.631729)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = "Peak of the Canyon mountain"
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "Mountain Top"
         }
     }
 }
