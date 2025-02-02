@@ -50,8 +50,8 @@ struct TeamMenu: View {
                     .padding()
                 VStack {
                     HStack {
-                        TeamCard(team: .kris)
                         TeamCard(team: .vik)
+                        TeamCard(team: .kris)
                     }
                     HStack {
                         TeamCard(team: .jason)
