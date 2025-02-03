@@ -10,7 +10,7 @@
 
 def Xform "Root"
 {
-    reorder nameChildren = ["Holodeck", "Material", "Test", "Final"]
+    reorder nameChildren = ["Director_Movie_Chair", "Blue_Robot", "wheeler", "ToyBiplane", "ToyRocket", "StudioSpotlight", "RCP_BehaviorsContainer", "AnimationLibrary", "Final", "OnAddedToScene", "Buster_Drone", "Planets", "SkyDome", "Stegosaurus_Sf", "Trex2022", "Triceratop", "Velociraptor_Rebuilt", "Trex_POI", "Stegosaurus_POI", "Triceratop_POI", "Velociraptor_POI"]
     def "Director_Movie_Chair" (
         active = true
         customData = {
@@ -61,6 +61,12 @@ def Xform "Root"
                 uniform bool looping = 1
                 uniform string name = "Clip 2"
             }
+
+            def RealityKitAnimationFile "default_subtree_animation"
+            {
+                uniform bool looping = 1
+                uniform string name = "default subtree animation"
+            }
         }
     }
 
@@ -92,14 +98,14 @@ def Xform "Root"
     def "ToyBiplane" (
         active = true
         customData = {
-            float3 rotationEulerHint = (0, -0.78539807, 0)
+            float3 rotationEulerHint = (0, 0, 0)
         }
         references = @ToyBiplane.usdz@
     )
     {
-        quatf xformOp:orient = (0.92387956, 0, -0.3826834, 0)
+        quatf xformOp:orient = (1, 0, 0, 0)
         float3 xformOp:scale = (3, 3, 3)
-        float3 xformOp:translate = (2.25, 0, -4)
+        float3 xformOp:translate = (-1.485949, 2.262521, -1.4703664)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 
@@ -108,8 +114,8 @@ def Xform "Root"
         references = @ToyRocket.usdz@
     )
     {
-        float3 xformOp:scale = (3, 3, 3)
-        float3 xformOp:translate = (2.5, 0, -6)
+        float3 xformOp:scale = (20, 20, 20)
+        float3 xformOp:translate = (-4.8598776, -0.1, -6.735755)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 
@@ -133,45 +139,6 @@ def Xform "Root"
         uniform token info:id = "RCP.BehaviorsContainer"
     }
 
-    def RealityKitTimeline "Test"
-    {
-        reorder nameChildren = ["Track", "Track2", "Track3"]
-        def RealityKitTrack "Track"
-        {
-            def RealityKitAction "Orbit"
-            {
-                string actionKind = "orbit"
-                int blendLayer = 300
-                double duration = 8.260355056015943
-                uniform token info:id = "34804A28-3F8C-484C-BE19-11D668447DD4"
-                bool orientToPath = 1
-                rel pivotEntity = </Root/Blue_Robot>
-                double startTime = 0
-                rel target = </Root/wheeler>
-            }
-        }
-
-        def RealityKitTrack "Track2"
-        {
-            def RealityKitAction "Animation"
-            {
-                string actionKind = "animation"
-                string animation = "Clip 2"
-                int blendLayer = 500
-                double duration = 8.251611111111112
-                uniform token info:id = "B2261EF0-BC73-4BDF-9C9A-3BE20ADF558E"
-                double loopCount = 1
-                bool separateAnimatedValue = 1
-                double startTime = 0
-                rel target = </Root/Blue_Robot>
-
-                def RealityKitStruct "handoffType"
-                {
-                }
-            }
-        }
-    }
-
     def RealityKitComponent "AnimationLibrary"
     {
         token info:id = "RealityKit.AnimationLibrary"
@@ -185,24 +152,27 @@ def Xform "Root"
 
     def RealityKitTimeline "Final"
     {
-        reorder nameChildren = ["Track", "Track2", "Track3"]
+        reorder nameChildren = ["Track3", "Track5", "Track2", "Track6", "Track", "Track4", "Track7", "Track8", "Track9"]
         def RealityKitTrack "Track"
         {
-            def RealityKitAction "Play_Timeline"
+            def RealityKitAction "ToyBiplane_Orbit"
             {
-                string actionKind = "timeline"
-                int blendLayer = 500
-                double duration = 8.260355056015943
-                uniform token info:id = "778564FC-839B-4D42-9662-D6D9C8E72F18"
-                double loopCount = 0
+                string actionKind = "orbit"
+                float3 axis = (0, 1, 0)
+                int blendLayer = 300
+                double duration = 1000
+                uniform token info:id = "EEC3F0C4-D92B-4E4F-8190-961806D0CA7E"
+                bool orientToPath = 1
+                rel pivotEntity = </Root/Planets>
+                float revolutions = 50
                 double startTime = 0
-                rel timeline = </Root/Test>
+                rel target = </Root/ToyBiplane>
             }
         }
 
         def RealityKitTrack "Track2"
         {
-            def RealityKitAction "Animation"
+            def RealityKitAction "Wheeler_Animation"
             {
                 string actionKind = "animation"
                 string animation = "default subtree animation"
@@ -222,7 +192,7 @@ def Xform "Root"
 
         def RealityKitTrack "Track3"
         {
-            def RealityKitAction "Animation"
+            def RealityKitAction "Buster_Drone_Animation"
             {
                 string actionKind = "animation"
                 string animation = "default subtree animation"
@@ -233,6 +203,129 @@ def Xform "Root"
                 bool separateAnimatedValue = 1
                 double startTime = 0
                 rel target = </Root/Buster_Drone>
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track4"
+        {
+            def RealityKitAction "Stegosaurus_Animation"
+            {
+                string actionKind = "animation"
+                string animation = "default subtree animation"
+                int blendLayer = 500
+                double duration = 9.791666984558105
+                uniform token info:id = "1B92EA68-C1D8-4260-8E5B-B291DB0C78D1"
+                double loopCount = 0
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/Stegosaurus_Sf>
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track5"
+        {
+            def RealityKitAction "Blue_Robot_Animation"
+            {
+                string actionKind = "animation"
+                string animation = "Clip 2"
+                int blendLayer = 500
+                double duration = 8.251611111111112
+                uniform token info:id = "9EB14B76-094B-4E4E-A983-583B7713DCAB"
+                double loopCount = 0
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/Blue_Robot>
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track6"
+        {
+            def RealityKitAction "Wheeler_Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 1000
+                uniform token info:id = "34804A28-3F8C-484C-BE19-11D668447DD4"
+                bool orientToPath = 1
+                rel pivotEntity = </Root/Blue_Robot>
+                double startTime = 0
+                rel target = </Root/wheeler>
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+            }
+        }
+
+        def RealityKitTrack "Track7"
+        {
+            def RealityKitAction "Trex_Animation"
+            {
+                string actionKind = "animation"
+                string animation = "default subtree animation"
+                int blendLayer = 500
+                double duration = 11.875
+                uniform token info:id = "1B92EA68-C1D8-4260-8E5B-B291DB0C78D1"
+                double loopCount = 0
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/Trex2022>
+                float2 ui:nodegraph:node:pos = (20, 20)
+                int ui:nodegraph:node:stackingOrder = 1
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track8"
+        {
+            def RealityKitAction "Triceratop_Animation"
+            {
+                string actionKind = "animation"
+                string animation = "default subtree animation"
+                int blendLayer = 500
+                double duration = 7.666666507720947
+                uniform token info:id = "1B92EA68-C1D8-4260-8E5B-B291DB0C78D1"
+                double loopCount = 0
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/Triceratop>
+                float2 ui:nodegraph:node:pos = (40, 40)
+                int ui:nodegraph:node:stackingOrder = 2
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track9"
+        {
+            def RealityKitAction "Velociraptor_Animation"
+            {
+                string actionKind = "animation"
+                string animation = "default subtree animation"
+                int blendLayer = 500
+                double duration = 10.25
+                uniform token info:id = "1B92EA68-C1D8-4260-8E5B-B291DB0C78D1"
+                double loopCount = 0
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/Velociraptor_Rebuilt>
+                float2 ui:nodegraph:node:pos = (60, 60)
+                int ui:nodegraph:node:stackingOrder = 3
 
                 def RealityKitStruct "handoffType"
                 {
@@ -304,8 +397,8 @@ def Xform "Root"
     )
     {
         quatf xformOp:orient = (0.92387956, 0, -0.3826834, 0)
-        float3 xformOp:scale = (0.5, 0.5, 0.5)
-        float3 xformOp:translate = (1, 2, -7)
+        float3 xformOp:scale = (1, 1, 1)
+        float3 xformOp:translate = (-4.871705, 2, -1.1283069)
 
         over "SkySphere" (
             active = false
@@ -316,11 +409,171 @@ def Xform "Root"
 
     def "SkyDome" (
         active = true
-        prepend references = @SkyDome.usdz@
+        references = @SkyDome.usdz@
     )
     {
-        float3 xformOp:scale = (0.01, 0.01, 0.01)
+        float3 xformOp:scale = (0.012, 0.012, 0.012)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "Stegosaurus_Sf" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, -0.52359885, 0)
+        }
+        references = @Stegosaurus_Sf.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.9659258, 0, -0.25881904, 0)
+        float3 xformOp:scale = (0.015, 0.015, 0.015)
+        float3 xformOp:translate = (3, -5.811453e-7, -4.5)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitAnimationFile "default_subtree_animation"
+            {
+                uniform bool looping = 1
+                uniform string name = "default subtree animation"
+            }
+        }
+    }
+
+    def "Trex2022" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, -0.9599312, 0)
+        }
+        references = @Trex2022.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.8870108, 0, -0.46174866, 0)
+        float3 xformOp:scale = (0.012, 0.012, 0.012)
+        float3 xformOp:translate = (6, 5.9604645e-8, -2.5)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitAnimationFile "default_subtree_animation"
+            {
+                uniform bool looping = 1
+                uniform string name = "default subtree animation"
+            }
+        }
+    }
+
+    def "Triceratop" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, -1.5707963, 0)
+        }
+        references = @Triceratop.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.70710677, 0, -0.70710677, 0)
+        float3 xformOp:scale = (0.015, 0.015, 0.015)
+        float3 xformOp:translate = (6, 0, 1.4)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitAnimationFile "default_subtree_animation"
+            {
+                uniform bool looping = 1
+                uniform string name = "default subtree animation"
+            }
+        }
+    }
+
+    def "Velociraptor_Rebuilt" (
+        active = true
+        customData = {
+            float3 rotationEulerHint = (0, -2.0943952, 0)
+        }
+        references = @Velociraptor_Rebuilt.usdz@
+    )
+    {
+        quatf xformOp:orient = (-0.49999997, 0, 0.8660254, 0)
+        float3 xformOp:scale = (0.008, 0.008, 0.008)
+        float3 xformOp:translate = (4, 0, 3.8)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitAnimationFile "default_subtree_animation"
+            {
+                uniform bool looping = 1
+                uniform string name = "default subtree animation"
+            }
+        }
+    }
+
+    def Xform "Trex_POI" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (6, 3.5, -2.5)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = ""
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "Tyrannosaurus Rex"
+        }
+    }
+
+    def Xform "Stegosaurus_POI" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (3, 3, -4.5)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = ""
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "Stegosaurus"
+        }
+    }
+
+    def Xform "Triceratop_POI" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (6, 3, 1.4)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = ""
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "Triceratop"
+        }
+    }
+
+    def Xform "Velociraptor_POI" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (4, 2, 3.8)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitCustomComponent "RealityKitContent_PointOfInterestComponent"
+        {
+            string description = ""
+            uniform token info:id = "RealityKitContent.PointOfInterestComponent"
+            string title = "Velociraptor"
+        }
     }
 }
 

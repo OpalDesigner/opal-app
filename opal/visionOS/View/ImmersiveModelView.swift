@@ -42,6 +42,27 @@ struct ImmersiveModelView: View {
             skyboxEntity.scale *= .init(x: -1, y: 1, z: 1)
             content.add(skyboxEntity)
             
+            // Add Image Based Light
+            if let environment = try? await EnvironmentResource(named: "ImageBasedLighting"){
+                model.components.set(ImageBasedLightComponent(
+                    source: .single(environment),
+                    intensityExponent: 0.001
+                ))
+                model.components.set(ImageBasedLightReceiverComponent(
+                    imageBasedLight: model
+                ))
+                print("Successfully loaded IBL")
+            } else {
+                print("Failed to load IBL resource")
+            }
+            
+            // Add Grounding Shadow
+            model.enumerateHierarchy { entity, stop in
+                if entity is ModelEntity{
+                    entity.components.set(GroundingShadowComponent(castsShadow: true))
+                }
+            }
+            
             // Add DSLR Camera USDZ
             guard let camera = try? await Entity(named: "Camera", in: realityKitContentBundle)
             else { fatalError("Unable to load Camera)") }

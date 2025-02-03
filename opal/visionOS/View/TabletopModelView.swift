@@ -8,6 +8,41 @@ import SwiftUI
 import RealityKit
 import RealityKitContent
 
+/*
+// Improving simultaneous gestures sample:
+// https://www.elkraneo.com/visionos-manipulation-gesture/
+// https://developer.apple.com/videos/play/wwdc2023/10113/?time=655
+// https://developer.apple.com/videos/play/wwdc2024/10094/
+extension SimultaneousGesture<SimultaneousGesture<DragGesture, MagnifyGesture>, RotateGesture3D>.Value {
+    func components() -> (Vector3D, Size3D, Rotation3D) {
+        let translation     = self.first?.first?.translation3D ?? .zero
+        let magnification   = self.first?.second?.magnification ?? 1
+        let size            = Size3D(width: magnification, height: magnification, depth: magnification)
+        let rotation        = self.second?.rotation ?? .identity
+        return (translation, size, rotation)
+    }
+}
+
+var manipulationGesture: some Gesture<AffineTransform3D> {
+    DragGesture()
+        .simultaneously(with: MagnifyGesture())
+        .simultaneously(with: RotateGesture3D())
+        .map { gesture in
+            let (translation, scale, rotation) = gesture.components()
+            
+            // Apply scale limits
+            let limitedScale = min(max(scale.width, 0.5), 1.5)
+            let limitedSize = Size3D(width: limitedScale, height: limitedScale, depth: limitedScale)
+            
+            return AffineTransform3D(
+                scale: limitedSize,
+                rotation: rotation,
+                translation: translation
+            )
+        }
+}
+*/
+
 struct PointOfInterestRuntimeComponent: Component {
     let attachmentTag: ObjectIdentifier
 }
@@ -61,12 +96,29 @@ struct TabletopModelView: View {
             // Enable input gestures
             modelCurrent.components.set(InputTargetComponent(allowedInputTypes: .indirect))
             modelCurrent.generateCollisionShapes(recursive: true)
-            modelCurrent.components.set(GroundingShadowComponent(castsShadow: true))
             
             // Add Animation
             if(modelCurrent.availableAnimations.count > 0){
                 let anim = modelCurrent.availableAnimations[0]
                 modelCurrent.playAnimation(anim.repeat())
+            }
+            
+            // Add Image Based Light
+            if let environment = try? await EnvironmentResource(named: "ImageBasedLighting"){
+                modelCurrent.components.set(ImageBasedLightComponent(
+                    source: .single(environment),
+                    intensityExponent: 0.001
+                ))
+                modelCurrent.components.set(ImageBasedLightReceiverComponent(
+                    imageBasedLight: modelCurrent
+                ))
+            }
+            
+            // Add Grounding Shadow
+            modelCurrent.enumerateHierarchy { entity, stop in
+                if entity is ModelEntity{
+                    entity.components.set(GroundingShadowComponent(castsShadow: true))
+                }
             }
             
             // Add Weather Entity
@@ -331,9 +383,9 @@ struct TabletopModelView: View {
         let scaledHeight = size.y * autoScale
         let scaledDepth = size.z * autoScale
         print("\n\(modelName) Auto-Scaling Details:")
-        print("   Original dimensions:     width=\(size.x)m, height=\(size.y)m, depth=\(size.z)m")
-        print("   Scale factors:           width=\(scaleX), height=\(scaleY), depth=\(scaleZ)")
-        print("   Resulting dimensions:    width=\(scaledWidth)m, height=\(scaledHeight)m, depth=\(scaledDepth)m")
+        print("   Original dimensions:     width=\(size.x)m,       height=\(size.y)m,        depth=\(size.z)m")
+        print("   Scale factors:           width=\(scaleX),        height=\(scaleY),         depth=\(scaleZ)")
+        print("   Resulting dimensions:    width=\(scaledWidth)m,  height=\(scaledHeight)m,  depth=\(scaledDepth)m")
         print("   Autoscale: \(autoScale)")
         return autoScale
     }
@@ -358,11 +410,11 @@ struct TabletopModelView: View {
         let view = AnyView(VStack {
             Text(poi.title)
                 .font(.headline)
-                .padding(.bottom, 2)
-            
+                .padding()
             if let description = poi.description {
                 Text(description)
-                    .font(.caption)
+                    .font(.subheadline)
+                    //.font(.caption)
                     .multilineTextAlignment(.center)
             }
             Button {
