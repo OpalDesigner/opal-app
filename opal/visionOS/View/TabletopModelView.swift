@@ -80,7 +80,7 @@ struct TabletopModelView: View {
     var body: some View {
         Spacer()
         RealityView { content, attachments in
-            guard let entity = await loadRootEntity() else {
+            guard let entity = await Entity.loadRootEntity(named: modelName) else {
                 print("Failed to load model: \(modelName)")
                 return
             }
@@ -103,11 +103,12 @@ struct TabletopModelView: View {
                 modelCurrent.playAnimation(anim.repeat())
             }
             
+            /*
             // Add Image Based Light
             if let environment = try? await EnvironmentResource(named: "ImageBasedLighting"){
                 modelCurrent.components.set(ImageBasedLightComponent(
                     source: .single(environment),
-                    intensityExponent: 0.001
+                    intensityExponent: 1
                 ))
                 modelCurrent.components.set(ImageBasedLightReceiverComponent(
                     imageBasedLight: modelCurrent
@@ -120,6 +121,7 @@ struct TabletopModelView: View {
                     entity.components.set(GroundingShadowComponent(castsShadow: true))
                 }
             }
+             */
             
             // Add Weather Entity
             weatherEntity = Entity()
@@ -336,36 +338,6 @@ struct TabletopModelView: View {
     }
     
     // Helper Function
-    private func loadRootEntity() async -> Entity? {
-        // Try loading from the realityKitContentBundle first
-        do {
-            return try await Entity(named: modelName, in: realityKitContentBundle)
-        } catch {
-            // If bundle fails, try loading from documents directory
-            let fileManager = FileManager.default
-            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-                print("Error accessing documents directory")
-                return nil
-            }
-            // Check all categories defined in ModelCategory
-            for category in ModelCategory.allCases {
-                let categoryPath = category.rawValue.lowercased()
-                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
-                if fileManager.fileExists(atPath: modelURL.path) {
-                    do {
-                        print("Loading model from \(categoryPath): \(modelName)")
-                        return try await Entity.load(contentsOf: modelURL)
-                    } catch {
-                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
-                        continue // Try next category if this one fails
-                    }
-                }
-            }
-            print("Model not found in any category: \(modelName)")
-            return nil
-        }
-    }
-    
     private func getAutoScale(_ model: Entity) -> Float {
         let bounds = model.visualBounds(relativeTo: model)
         let size = bounds.max - bounds.min
