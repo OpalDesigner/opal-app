@@ -142,10 +142,12 @@ struct opalApp: App {
                 Label("Import", systemImage: "square.and.arrow.down")
             }
             .tag(2)
+            /*
             TeamMenu().tabItem {
                 Label("Team", systemImage: "person")
             }
             .tag(3)
+             */
         }
         .environmentObject(navigationData)
         /*
