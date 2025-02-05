@@ -21,7 +21,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (0.70710677, 0, 0.70710677, 0)
         float3 xformOp:scale = (1, 1, 1)
-        float3 xformOp:translate = (-2.5, 0, -4)
+        float3 xformOp:translate = (-6.3551574, 0.0000022947788, 2.095433)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 
@@ -35,7 +35,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (0.92387956, 0, 0.3826834, 0)
         float3 xformOp:scale = (0.001, 0.001, 0.001)
-        float3 xformOp:translate = (-2, -2.3841858e-7, -5.5)
+        float3 xformOp:translate = (-6.0980725, -3.6135316e-7, 0.55957764)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "AnimationLibrary"
@@ -80,7 +80,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (0.92387956, 0, -0.3826834, 0)
         float3 xformOp:scale = (0.01, 0.01, 0.01)
-        float3 xformOp:translate = (-1, 0, -5)
+        float3 xformOp:translate = (-5.447038, 0, -0.5529494)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "AnimationLibrary"
@@ -105,7 +105,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (1, 0, 0, 0)
         float3 xformOp:scale = (3, 3, 3)
-        float3 xformOp:translate = (-1.485949, 2.262521, -1.4703664)
+        float3 xformOp:translate = (-2.438702, 3.3090312, -1.4703664)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 
@@ -114,8 +114,8 @@ def Xform "Root"
         references = @ToyRocket.usdz@
     )
     {
-        float3 xformOp:scale = (20, 20, 20)
-        float3 xformOp:translate = (-4.8598776, -0.1, -6.735755)
+        float3 xformOp:scale = (25, 25, 25)
+        float3 xformOp:translate = (-9.54746, -0.3498696, 2.8991928)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 
@@ -129,7 +129,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (0.92387956, 0, 0.3826834, 0)
         float3 xformOp:scale = (2, 2, 2)
-        float3 xformOp:translate = (-2, 0, -8)
+        float3 xformOp:translate = (-3.4425786, 0, -5.3798695)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 
@@ -152,7 +152,7 @@ def Xform "Root"
 
     def RealityKitTimeline "Final"
     {
-        reorder nameChildren = ["Track3", "Track5", "Track2", "Track6", "Track", "Track4", "Track7", "Track8", "Track9"]
+        reorder nameChildren = ["Track3", "Track5", "Track2", "Track6", "Track", "Track4", "Track7", "Track8", "Track9", "Track10", "Track11", "Track12"]
         def RealityKitTrack "Track"
         {
             def RealityKitAction "ToyBiplane_Orbit"
@@ -258,8 +258,10 @@ def Xform "Root"
                 int blendLayer = 300
                 double duration = 1000
                 uniform token info:id = "34804A28-3F8C-484C-BE19-11D668447DD4"
+                token orbitDirection = "counterClockwise"
                 bool orientToPath = 1
                 rel pivotEntity = </Root/Blue_Robot>
+                float revolutions = 100
                 double startTime = 0
                 rel target = </Root/wheeler>
                 float2 ui:nodegraph:node:pos = (20, 20)
@@ -332,6 +334,62 @@ def Xform "Root"
                 }
             }
         }
+
+        def RealityKitTrack "Track10"
+        {
+            def RealityKitAction "Scene_Audio"
+            {
+                string actionKind = "audio"
+                string audioResourceName = "Atmospheres_Forest_Floor"
+                bool controlPlayback = 1
+                double duration = 12.285
+                uniform token info:id = "6DA81968-0316-480D-8242-6C00876E4C50"
+                double loopCount = 0
+                double startTime = 0
+                rel target = </Root/AmbientAudio>
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
+
+        def RealityKitTrack "Track11"
+        {
+            def RealityKitAction "Bird_Orbit"
+            {
+                string actionKind = "orbit"
+                int blendLayer = 300
+                double duration = 1000
+                uniform token info:id = "45C0DB17-BB9A-48F4-AA5E-A4C58813EA4E"
+                token orbitDirection = "counterClockwise"
+                bool orientToPath = 1
+                rel pivotEntity = </Root/Transform>
+                float revolutions = 20
+                double startTime = 0
+                rel target = </Root/Bird>
+            }
+        }
+
+        def RealityKitTrack "Track12"
+        {
+            def RealityKitAction "Bird_Animation"
+            {
+                string actionKind = "animation"
+                string animation = "default scene animation"
+                int blendLayer = 500
+                double duration = 4.9666666984558105
+                uniform token info:id = "5405A672-E45B-4906-992C-2806DD05F331"
+                double loopCount = 0
+                bool separateAnimatedValue = 1
+                double startTime = 0
+                rel target = </Root/Bird>
+
+                def RealityKitStruct "handoffType"
+                {
+                }
+            }
+        }
     }
 
     def Preliminary_Behavior "OnAddedToScene"
@@ -364,7 +422,7 @@ def Xform "Root"
     )
     {
         float3 xformOp:scale = (0.01, 0.01, 0.01)
-        float3 xformOp:translate = (0, 1.3, -8)
+        float3 xformOp:translate = (-0.8209584, 1.3, -4.642415)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "AnimationLibrary"
@@ -398,7 +456,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (0.92387956, 0, -0.3826834, 0)
         float3 xformOp:scale = (1, 1, 1)
-        float3 xformOp:translate = (-4.871705, 2, -1.1283069)
+        float3 xformOp:translate = (-6.7047124, 3.5333264, -2.961307)
 
         over "SkySphere" (
             active = false
@@ -408,7 +466,7 @@ def Xform "Root"
     }
 
     def "SkyDome" (
-        active = true
+        active = false
         references = @SkyDome.usdz@
     )
     {
@@ -426,7 +484,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (0.9659258, 0, -0.25881904, 0)
         float3 xformOp:scale = (0.015, 0.015, 0.015)
-        float3 xformOp:translate = (3, -5.811453e-7, -4.5)
+        float3 xformOp:translate = (4.168461, 1.4901161e-7, -4.568141)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "AnimationLibrary"
@@ -451,7 +509,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (0.8870108, 0, -0.46174866, 0)
         float3 xformOp:scale = (0.012, 0.012, 0.012)
-        float3 xformOp:translate = (6, 5.9604645e-8, -2.5)
+        float3 xformOp:translate = (6.9359136, 5.9604645e-8, -1.1633811)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "AnimationLibrary"
@@ -476,7 +534,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (0.70710677, 0, -0.70710677, 0)
         float3 xformOp:scale = (0.015, 0.015, 0.015)
-        float3 xformOp:translate = (6, 0, 1.4)
+        float3 xformOp:translate = (6.091853, 0, 3.5127215)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "AnimationLibrary"
@@ -501,7 +559,7 @@ def Xform "Root"
     {
         quatf xformOp:orient = (-0.49999997, 0, 0.8660254, 0)
         float3 xformOp:scale = (0.008, 0.008, 0.008)
-        float3 xformOp:translate = (4, 0, 3.8)
+        float3 xformOp:translate = (3.09915, 5.811453e-7, 5.360304)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
 
         def RealityKitComponent "AnimationLibrary"
@@ -517,7 +575,7 @@ def Xform "Root"
     }
 
     def Xform "Trex_POI" (
-        active = true
+        active = false
     )
     {
         float3 xformOp:translate = (6, 3.5, -2.5)
@@ -532,7 +590,7 @@ def Xform "Root"
     }
 
     def Xform "Stegosaurus_POI" (
-        active = true
+        active = false
     )
     {
         float3 xformOp:translate = (3, 3, -4.5)
@@ -547,7 +605,7 @@ def Xform "Root"
     }
 
     def Xform "Triceratop_POI" (
-        active = true
+        active = false
     )
     {
         float3 xformOp:translate = (6, 3, 1.4)
@@ -562,7 +620,7 @@ def Xform "Root"
     }
 
     def Xform "Velociraptor_POI" (
-        active = true
+        active = false
     )
     {
         float3 xformOp:translate = (4, 2, 3.8)
@@ -574,6 +632,79 @@ def Xform "Root"
             uniform token info:id = "RealityKitContent.PointOfInterestComponent"
             string title = "Velociraptor"
         }
+    }
+
+    def Xform "AmbientAudio"
+    {
+        reorder nameChildren = ["AmbientAudio", "Atmospheres_Forest_Floor", "Atmospheres_Grasslands"]
+        def RealityKitComponent "AmbientAudio"
+        {
+            uniform token info:id = "RealityKit.AmbientAudio"
+        }
+
+        def "Atmospheres_Forest_Floor" (
+            active = true
+            references = @AtmospheresForestFloor.usdz@
+        )
+        {
+            uniform bool shouldLoop = 1
+            uniform bool shouldRandomizeStartTime = 1
+            quatf xformOp:orient = (1, 0, 0, 0)
+            float3 xformOp:scale = (1, 1, 1)
+            float3 xformOp:translate = (0, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+        }
+
+        def RealityKitComponent "AudioLibrary"
+        {
+            uniform token info:id = "RealityKit.AudioLibrary"
+
+            def RealityKitDict "resources"
+            {
+                string[] keys = ["Atmospheres_Forest_Floor"]
+                rel values = </Root/AmbientAudio/Atmospheres_Forest_Floor>
+            }
+        }
+    }
+
+    def "Bird" (
+        active = true
+        references = @Bird.usdz@
+    )
+    {
+        float3 xformOp:scale = (0.2, 0.2, 0.2)
+        float3 xformOp:translate = (-7.3810387, 7.116618, 3.8020635)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def RealityKitComponent "AnimationLibrary"
+        {
+            token info:id = "RealityKit.AnimationLibrary"
+
+            def RealityKitAnimationFile "default_scene_animation"
+            {
+                uniform bool looping = 1
+                uniform string name = "default scene animation"
+            }
+        }
+    }
+
+    def Xform "Transform" (
+        active = true
+    )
+    {
+        float3 xformOp:translate = (0, 6.790581, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def "Yosemite" (
+        active = true
+        prepend references = @Yosemite.usdz@
+    )
+    {
+        quatf xformOp:orient = (0.99999994, 0, 0, 0)
+        float3 xformOp:scale = (15, 15, 15)
+        float3 xformOp:translate = (0, -9.748059, -2.4394064)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
     }
 }
 

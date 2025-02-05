@@ -95,6 +95,9 @@
 				View/BubbleView.swift = (
 					xros,
 				);
+				"View/Entity+Extension.swift" = (
+					xros,
+				);
 				View/HandTrackingView.swift = (
 					xros,
 				);

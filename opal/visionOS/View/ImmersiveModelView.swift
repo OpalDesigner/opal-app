@@ -52,9 +52,6 @@ struct ImmersiveModelView: View {
                 model.components.set(ImageBasedLightReceiverComponent(
                     imageBasedLight: model
                 ))
-                print("Successfully loaded IBL")
-            } else {
-                print("Failed to load IBL resource")
             }
             
             // Add Grounding Shadow
