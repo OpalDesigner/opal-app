@@ -72,7 +72,7 @@ struct TabletopModelView: View {
     
     // Handle Attachments
     @State private var subscriptions = [EventSubscription]()
-    @State private var attachmentsProvider = AttachmentsProvider()
+    @State private var attachmentsProvider = AttachmentsProvider()   // AttachmentProvider.swift
     
     // Handle Notifications
     private let notificationPublisher = NotificationCenter.default.publisher(for: Notification.Name("RealityKit.NotificationTrigger"))
@@ -80,7 +80,7 @@ struct TabletopModelView: View {
     var body: some View {
         Spacer()
         RealityView { content, attachments in
-            guard let entity = await Entity.loadRootEntity(named: modelName) else {
+            guard let entity = await Entity.loadRootEntity(named: modelName) else {  // Entity+Extension.swift
                 print("Failed to load model: \(modelName)")
                 return
             }
@@ -116,6 +116,7 @@ struct TabletopModelView: View {
             }
             
             // Add Grounding Shadow
+            // Entity+Extension.swift
             modelCurrent.enumerateHierarchy { entity, stop in
                 if entity is ModelEntity{
                     entity.components.set(GroundingShadowComponent(castsShadow: true))

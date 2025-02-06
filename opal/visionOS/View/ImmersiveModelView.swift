@@ -16,7 +16,7 @@ struct ImmersiveModelView: View {
     
     var body: some View {
         RealityView{ content in
-            guard let model = await Entity.loadRootEntity(named: modelName) else {
+            guard let model = await Entity.loadRootEntity(named: modelName) else { // Entity+Extension.swift
                 print("Failed to load model: \(modelName)")
                 return
             }
@@ -55,6 +55,7 @@ struct ImmersiveModelView: View {
             }
             
             // Add Grounding Shadow
+            // Entity+Extension.swift
             model.enumerateHierarchy { entity, stop in
                 if entity is ModelEntity{
                     entity.components.set(GroundingShadowComponent(castsShadow: true))
