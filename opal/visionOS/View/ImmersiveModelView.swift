@@ -16,7 +16,7 @@ struct ImmersiveModelView: View {
     
     var body: some View {
         RealityView{ content in
-            guard let model = await loadRootEntity() else {
+            guard let model = await Entity.loadRootEntity(named: modelName) else { // Entity+Extension.swift
                 print("Failed to load model: \(modelName)")
                 return
             }
@@ -41,6 +41,27 @@ struct ImmersiveModelView: View {
             ))
             skyboxEntity.scale *= .init(x: -1, y: 1, z: 1)
             content.add(skyboxEntity)
+            
+            /*
+            // Add Image Based Light
+            if let environment = try? await EnvironmentResource(named: "ImageBasedLighting"){
+                model.components.set(ImageBasedLightComponent(
+                    source: .single(environment),
+                    intensityExponent: 1
+                ))
+                model.components.set(ImageBasedLightReceiverComponent(
+                    imageBasedLight: model
+                ))
+            }
+            
+            // Add Grounding Shadow
+            // Entity+Extension.swift
+            model.enumerateHierarchy { entity, stop in
+                if entity is ModelEntity{
+                    entity.components.set(GroundingShadowComponent(castsShadow: true))
+                }
+            }
+             */
             
             // Add DSLR Camera USDZ
             guard let camera = try? await Entity(named: "Camera", in: realityKitContentBundle)
@@ -137,36 +158,6 @@ struct ImmersiveModelView: View {
     }
     
     // Helper Function
-    private func loadRootEntity() async -> Entity? {
-        // Try loading from the realityKitContentBundle first
-        do {
-            return try await Entity(named: modelName, in: realityKitContentBundle)
-        } catch {
-            // If bundle fails, try loading from documents directory
-            let fileManager = FileManager.default
-            guard let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first else {
-                print("Error accessing documents directory")
-                return nil
-            }
-            // Check all categories defined in ModelCategory
-            for category in ModelCategory.allCases {
-                let categoryPath = category.rawValue.lowercased()
-                let modelURL = documentsDirectory.appendingPathComponent("\(categoryPath)/\(modelName).usdz")
-                if fileManager.fileExists(atPath: modelURL.path) {
-                    do {
-                        print("Loading model from \(categoryPath): \(modelName)")
-                        return try await Entity.load(contentsOf: modelURL)
-                    } catch {
-                        print("Error loading model from \(categoryPath): \(error.localizedDescription)")
-                        continue // Try next category if this one fails
-                    }
-                }
-            }
-            print("Model not found in any category: \(modelName)")
-            return nil
-        }
-    }
-    
     private func createFloorGrid(attachedTo modelEntity: Entity) -> Entity {
         let gridEntity = Entity()
         let gridSize = 5                    // 5x5 grid

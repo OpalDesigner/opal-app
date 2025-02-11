@@ -10,7 +10,7 @@
 
 def Xform "Planets"
 {
-    reorder nameChildren = ["Sun", "Mercury", "Venus", "Earth", "Moon", "Mars", "Jupiter", "Saturn", "Sun_Timeline", "Mercury_Timeline", "Venus_Timeline", "Earth_Timeline", "Moon_Timeline", "Mars_Timeline", "Jupiter_Timeline", "Saturn_Timeline"]
+    reorder nameChildren = ["Sun", "Mercury", "Venus", "Earth", "Moon", "Mars", "Jupiter", "Saturn", "Sun_Timeline", "OnAddedToScene8", "Venus_POI", "Earth_POI", "Mercury_Timeline", "OnAddedToScene4", "OnAddedToScene5", "Venus_Timeline", "Earth_Timeline", "OnAddedToScene3", "Moon_Timeline", "RCP_BehaviorsContainer", "OnAddedToScene", "Mars_Timeline", "OnAddedToScene2", "Jupiter_Timeline", "Saturn_Timeline", "OnAddedToScene6", "OnAddedToScene7"]
     quatf xformOp:orient = (1, 0, 0, 0)
     float3 xformOp:scale = (1, 1, 1)
     float3 xformOp:translate = (0, 1.5, -1)
@@ -63,6 +63,7 @@ def Xform "Planets"
         references = @Venus.usdz@
     )
     {
+        reorder nameChildren = ["geom", "Collider", "InputTarget", "Venus_POI"]
         quatf xformOp:orient = (-0.02355973, 0, 0, 0.9997224)
         float3 xformOp:scale = (0.9, 0.9, 0.9)
         float3 xformOp:translate = (0.75, 0, 0)
@@ -136,6 +137,7 @@ def Xform "Planets"
         references = @Sun.usdz@
     )
     {
+        reorder nameChildren = ["geom", "Collider", "InputTarget", "Sun_POI"]
         quatf xformOp:orient = (1, 0, 0, 0)
         float3 xformOp:scale = (4, 4, 4)
         float3 xformOp:translate = (0, 0, 0)
@@ -171,7 +173,7 @@ def Xform "Planets"
         references = @Mercury.usdz@
     )
     {
-        reorder nameChildren = ["geom", "Collider", "InputTarget"]
+        reorder nameChildren = ["geom", "Collider", "InputTarget", "Mercury_POI"]
         quatf xformOp:orient = (1, 0, 0, 0)
         float3 xformOp:scale = (0.333, 0.333, 0.333)
         float3 xformOp:translate = (0.5, 0, 0)
@@ -226,7 +228,7 @@ def Xform "Planets"
         references = @Earth.usdz@
     )
     {
-        reorder nameChildren = ["geom", "Collider", "InputTarget"]
+        reorder nameChildren = ["geom", "Collider", "InputTarget", "Earth_POI"]
         quatf xformOp:orient = (0.97922283, 0, 0, -0.20278728)
         float3 xformOp:scale = (1, 1, 1)
         float3 xformOp:translate = (1.2, 0, 0)

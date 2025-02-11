@@ -17,7 +17,7 @@ class TabSelection: ObservableObject {
 @main
 struct opalApp: App {
     // Shared variables
-    @StateObject var navigationData = NavigationData()
+    @StateObject var navigationData = NavigationData()      // NavigationControl.swift
     @StateObject var tabSelection = TabSelection()
 
     // Private variables
@@ -25,6 +25,7 @@ struct opalApp: App {
     @State private var fetchTimer: Timer?
     
     init() {
+        // Packages/RealityKitContent/Sources/RealityKitContent/PointOfInterestComponent.swift
         PointOfInterestComponent.registerComponent()
     }
 
@@ -48,6 +49,7 @@ struct opalApp: App {
         
         // WINDOW - NAVIGATION CONTROL VIEW
         WindowGroup(id: "NavigationControl") {
+            // NavigationControl.swift
             NavigationControl(navigationData: navigationData, tabSelection: tabSelection)
         }
         .defaultWindowPlacement{content, context in
@@ -58,8 +60,13 @@ struct opalApp: App {
         // WINDOW - MODEL TABLETOP VIEW
         WindowGroup(id: "ModelRealityView", for: ModelInfo.self) { modelInfo in
             if let modelInfo = modelInfo.wrappedValue {
+                // TabletopModelView.swift
                 TabletopModelView(
                     modelName: modelInfo.modelName
+                )
+                .handlesExternalEvents(
+                    preferring: ["com.example.explore-together.activity"],
+                    allowing: ["com.example.explore-together.activity"]
                 )
             } else {
                 Text("No model information available")
@@ -90,6 +97,7 @@ struct opalApp: App {
         // IMMERSIVE - MODEL IMMERSIVE VIEW
         ImmersiveSpace(id: "ModelImmersiveView", for: ModelInfo.self) { modelInfo in
             if let modelInfo = modelInfo.wrappedValue {
+                // ImmersiveModelView.swift
                 ImmersiveModelView(
                     navigationData: navigationData,
                     modelName: modelInfo.modelName
@@ -102,6 +110,7 @@ struct opalApp: App {
         
         // IMMERSIVE - SPLAT VIEW
         ImmersiveSpace(id: "GaussianSplatView", for: URL.self) { url in
+            // ContentStageConfiguration.swift, VisionSceneRenderer.swift
             CompositorLayer(configuration: ContentStageConfiguration()) { layerRenderer in
                 let renderer = VisionSceneRenderer(layerRenderer, navigationData: navigationData)
                 Task {
@@ -118,11 +127,13 @@ struct opalApp: App {
         
         // IMMERSIVE - HAND INTERACTION
         ImmersiveSpace(id: "HandTrackingView"){
+            // HandTrackingView.swift
             HandTrackingView()
         }
         
         // IMMERSIVE - BUBBLE ANIMATION
         ImmersiveSpace(id: "BubbleView") {
+            // BubbleView.swift
             BubbleView()
         }
         .immersionStyle(selection: .constant(.full), in: .full)
@@ -130,29 +141,52 @@ struct opalApp: App {
     
     private func createMainMenu() -> some View {
         TabView (selection: $tabSelection.selectedTab) {
+            // HomeMenu.swift
             HomeMenu().tabItem {
                 Label("About", systemImage: "building.2.fill")
             }
             .tag(0)
+            // CatalogMenu.swift
             CatalogMenu(defaultModels: defaultModels).tabItem {
                 Label("Build", systemImage: "hammer.fill")
             }
             .tag(1)
+            // PluginMenu.swift
             PluginMenu().tabItem {
                 Label("Import", systemImage: "square.and.arrow.down")
             }
             .tag(2)
-            TeamMenu().tabItem {
-                Label("Team", systemImage: "person")
-            }
-            .tag(3)
+            /*
+             // TeamMenu.swift
+             TeamMenu().tabItem {
+             Label("Team", systemImage: "person")
+             }
+             .tag(3)
+             */
         }
         .environmentObject(navigationData)
-        /*
-        .task {
-            print("Fetching S3 files...")
-            await fetchS3Files()
+        .toolbar {
+            ToolbarItem(placement: .bottomOrnament) {
+                Button {
+                    Task {
+                        // function located in SharePlayControl.swift
+                        await startSharePlay()
+                    }
+                } label: {
+                    Label("Collaborate", systemImage: "person.3.fill")
+                        .labelStyle(.titleAndIcon)
+                }
+            }
         }
+        .task{
+            // function located in  SharePlayControl.swift
+            await configureGroupSession()
+        }
+        /*
+         .task {
+             print("Fetching S3 files...")
+             await fetchS3Files()
+         }
          */
     }
     

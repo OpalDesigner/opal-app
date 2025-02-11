@@ -26,18 +26,18 @@ struct ModelInfo: Identifiable, Codable, Hashable {
 let defaultModels = [
     ModelInfo(modelName: "Holodeck",          imageName: "holodeck",            isImmersive: true   ),
     ModelInfo(modelName: "Operating_Room",    imageName: "operating-room",      isImmersive: true   ),
-    ModelInfo(modelName: "Coffee_Shop",       imageName: "coffee-shop",         isImmersive: true   ),
-    ModelInfo(modelName: "House_Interior",    imageName: "house-interior",      isImmersive: true   ),
-    ModelInfo(modelName: "Budapest_Hotel",    imageName: "budapest-hotel",      isImmersive: true   ),
+    ModelInfo(modelName: "Old_Hotel",         imageName: "old-hotel",           isImmersive: true   ),
     ModelInfo(modelName: "SpaceStation_Hall", imageName: "space-corridor",      isImmersive: true   ),
     ModelInfo(modelName: "Old_Classroom",     imageName: "classroom",           isImmersive: true   ),
+    ModelInfo(modelName: "Coffee_Shop",       imageName: "coffee-shop",         isImmersive: true   ),
+    ModelInfo(modelName: "Convenience_Store", imageName: "convenience-store",   isImmersive: true   ),
+    ModelInfo(modelName: "Planets",           imageName: "solar-system",        isImmersive: true   ),
     ModelInfo(modelName: "Bedroom",           imageName: "bedroom",             isImmersive: true   ),
     ModelInfo(modelName: "Potions_Store",     imageName: "potions-store",       isImmersive: true   ),
-    ModelInfo(modelName: "Convenience_Store", imageName: "convenience-store",   isImmersive: true   ),
-    ModelInfo(modelName: "Old_Hotel",         imageName: "old-hotel",           isImmersive: true   ),
+    ModelInfo(modelName: "Budapest_Hotel",    imageName: "budapest-hotel",      isImmersive: true   ),
+    ModelInfo(modelName: "House_Interior",    imageName: "house-interior",      isImmersive: true   ),
     ModelInfo(modelName: "Mech_Drone",        imageName: "mech-drone",          isImmersive: false  ),
-    ModelInfo(modelName: "Buster_Drone",      imageName: "buster-drone",        isImmersive: false  ),
-    ModelInfo(modelName: "Planets",           imageName: "solar-system",        isImmersive: true   )
+    ModelInfo(modelName: "Buster_Drone",      imageName: "buster-drone",        isImmersive: false  )
 ]
 
 struct CatalogMenu: View {
