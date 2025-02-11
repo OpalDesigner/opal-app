@@ -10,7 +10,7 @@
 
 def Xform "Root"
 {
-    reorder nameChildren = ["Director_Movie_Chair", "Blue_Robot", "wheeler", "ToyBiplane", "ToyRocket", "StudioSpotlight", "RCP_BehaviorsContainer", "AnimationLibrary", "Final", "OnAddedToScene", "Buster_Drone", "Planets", "SkyDome", "Stegosaurus_Sf", "Trex2022", "Triceratop", "Velociraptor_Rebuilt", "Trex_POI", "Stegosaurus_POI", "Triceratop_POI", "Velociraptor_POI"]
+    reorder nameChildren = ["Director_Movie_Chair", "Blue_Robot", "wheeler", "ToyBiplane", "ToyRocket", "StudioSpotlight", "RCP_BehaviorsContainer", "AnimationLibrary", "Final", "OnAddedToScene", "Buster_Drone", "Planets", "SkyDome", "Stegosaurus_Sf", "Trex2022", "Triceratop", "Velociraptor_Rebuilt", "Trex_POI", "Stegosaurus_POI", "Triceratop_POI", "Velociraptor_POI", "AmbientAudio", "Bird", "Transform", "Yosemite", "Sphere", "Sphere_1", "Sphere_2", "Sphere_3", "fogMaterial"]
     def "Director_Movie_Chair" (
         active = true
         customData = {
@@ -637,6 +637,9 @@ def Xform "Root"
     def Xform "AmbientAudio"
     {
         reorder nameChildren = ["AmbientAudio", "Atmospheres_Forest_Floor", "Atmospheres_Grasslands"]
+        float3 xformOp:translate = (0, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
         def RealityKitComponent "AmbientAudio"
         {
             uniform token info:id = "RealityKit.AmbientAudio"
@@ -698,13 +701,235 @@ def Xform "Root"
 
     def "Yosemite" (
         active = true
-        prepend references = @Yosemite.usdz@
+        references = @Yosemite.usdz@
     )
     {
         quatf xformOp:orient = (0.99999994, 0, 0, 0)
         float3 xformOp:scale = (15, 15, 15)
         float3 xformOp:translate = (0, -9.748059, -2.4394064)
         uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+    }
+
+    def Sphere "Sphere" (
+        active = false
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Root/fogMaterial> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        double radius = 0.1
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (7, 7, 7)
+        float3 xformOp:translate = (4.6473947, 0, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Material "DefaultMaterial"
+        {
+            prepend token outputs:surface.connect = </Root/Sphere/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
+
+            def Shader "DefaultSurfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 1, 1)
+                float inputs:roughness = 0.75
+                token outputs:surface
+            }
+        }
+    }
+
+    def Sphere "Sphere_1" (
+        active = false
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Root/fogMaterial> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        double radius = 0.1
+        float2 ui:nodegraph:node:pos = (20, 20)
+        int ui:nodegraph:node:stackingOrder = 1
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (5, 5, 5)
+        float3 xformOp:translate = (4.7214136, 0.89189434, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Material "DefaultMaterial"
+        {
+            token outputs:surface.connect = </Root/Sphere_1/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
+
+            def Shader "DefaultSurfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 1, 1)
+                float inputs:roughness = 0.75
+                token outputs:surface
+            }
+        }
+    }
+
+    def Sphere "Sphere_2" (
+        active = false
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Root/fogMaterial> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        double radius = 0.1
+        float2 ui:nodegraph:node:pos = (20, 20)
+        int ui:nodegraph:node:stackingOrder = 1
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (5, 5, 5)
+        float3 xformOp:translate = (4.702096, 0, 1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Material "DefaultMaterial"
+        {
+            token outputs:surface.connect = </Root/Sphere_2/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
+
+            def Shader "DefaultSurfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 1, 1)
+                float inputs:roughness = 0.75
+                token outputs:surface
+            }
+        }
+    }
+
+    def Sphere "Sphere_3" (
+        active = false
+        prepend apiSchemas = ["MaterialBindingAPI"]
+    )
+    {
+        rel material:binding = </Root/fogMaterial> (
+            bindMaterialAs = "weakerThanDescendants"
+        )
+        double radius = 0.1
+        float2 ui:nodegraph:node:pos = (20, 20)
+        int ui:nodegraph:node:stackingOrder = 1
+        quatf xformOp:orient = (1, 0, 0, 0)
+        float3 xformOp:scale = (5, 5, 5)
+        float3 xformOp:translate = (4.726488, 0, -1)
+        uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:orient", "xformOp:scale"]
+
+        def Material "DefaultMaterial"
+        {
+            token outputs:surface.connect = </Root/Sphere_3/DefaultMaterial/DefaultSurfaceShader.outputs:surface>
+
+            def Shader "DefaultSurfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (1, 1, 1)
+                float inputs:roughness = 0.75
+                token outputs:surface
+            }
+        }
+    }
+
+    def Material "fogMaterial" (
+        active = false
+    )
+    {
+        token outputs:mtlx:surface.connect = </Root/fogMaterial/UnlitSurface.outputs:out>
+        token outputs:realitykit:vertex
+        float2 ui:nodegraph:realitykit:subgraphOutputs:pos = (335.25, 100.5)
+
+        def Shader "UnlitSurface"
+        {
+            uniform token info:id = "ND_realitykit_unlit_surfaceshader"
+            bool inputs:applyPostProcessToneMap
+            color3f inputs:color.connect = </Root/fogMaterial/Mix.outputs:out>
+            bool inputs:hasPremultipliedAlpha
+            float inputs:opacity = 0.3
+            float inputs:opacityThreshold
+            token outputs:out
+            float2 ui:nodegraph:node:pos = (56.628906, 110.65234)
+            int ui:nodegraph:node:stackingOrder = 176
+        }
+
+        def Shader "ConstantColor3"
+        {
+            uniform token info:id = "ND_constant_color3"
+            color3f inputs:value = (0.52264833, 0.52264833, 0.52264833) (
+                colorSpace = "srgb_displayp3"
+            )
+            color3f outputs:out
+            float2 ui:nodegraph:node:pos = (-383.21707, 128.79333)
+            int ui:nodegraph:node:stackingOrder = 178
+        }
+
+        def Shader "ConstantColor3_1"
+        {
+            uniform token info:id = "ND_constant_color3"
+            color3f inputs:value = (0.47005326, 0.46032637, 0.47064394) (
+                colorSpace = "srgb_displayp3"
+            )
+            color3f outputs:out
+            float2 ui:nodegraph:node:pos = (-372.56854, 53.601337)
+            int ui:nodegraph:node:stackingOrder = 171
+        }
+
+        def Shader "Mix"
+        {
+            uniform token info:id = "ND_mix_color3"
+            color3f inputs:bg.connect = </Root/fogMaterial/ConstantColor3.outputs:out>
+            color3f inputs:fg.connect = </Root/fogMaterial/ConstantColor3_1.outputs:out>
+            float inputs:mix = 0
+            float inputs:mix.connect = </Root/fogMaterial/Clamp.outputs:out>
+            color3f outputs:out
+            float2 ui:nodegraph:node:pos = (-145.94531, 121.75)
+            int ui:nodegraph:node:stackingOrder = 159
+        }
+
+        def Shader "Position"
+        {
+            uniform token info:id = "ND_position_vector3"
+            string inputs:space = "world"
+            float3 outputs:out
+            float2 ui:nodegraph:node:pos = (-1145.3899, 93.11299)
+            int ui:nodegraph:node:stackingOrder = 164
+        }
+
+        def Shader "CameraPosition"
+        {
+            uniform token info:id = "ND_realitykit_cameraposition_vector3"
+            float3 outputs:out
+            float2 ui:nodegraph:node:pos = (-1186.3217, 168.7349)
+            int ui:nodegraph:node:stackingOrder = 166
+        }
+
+        def Shader "Clamp"
+        {
+            uniform token info:id = "ND_clamp_float"
+            float inputs:high = 1
+            float inputs:in.connect = </Root/fogMaterial/Multiply.outputs:out>
+            float inputs:low = 0
+            float outputs:out
+            float2 ui:nodegraph:node:pos = (-575.68713, 242.32164)
+            int ui:nodegraph:node:stackingOrder = 150
+        }
+
+        def Shader "MTLDistance"
+        {
+            uniform token info:id = "ND_MTL_distance_vector3_float"
+            float3 inputs:x.connect = </Root/fogMaterial/Position.outputs:out>
+            float3 inputs:y.connect = </Root/fogMaterial/CameraPosition.outputs:out>
+            float outputs:out
+            float2 ui:nodegraph:node:pos = (-911.1473, 137.95421)
+            int ui:nodegraph:node:stackingOrder = 149
+        }
+
+        def Shader "Multiply"
+        {
+            uniform token info:id = "ND_multiply_float"
+            float inputs:in1.connect = </Root/fogMaterial/MTLDistance.outputs:out>
+            float inputs:in2 = 0.1
+            float outputs:out
+            float2 ui:nodegraph:node:pos = (-747.8406, 213.02611)
+            int ui:nodegraph:node:stackingOrder = 180
+        }
     }
 }
 

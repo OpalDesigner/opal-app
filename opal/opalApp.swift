@@ -184,8 +184,8 @@ struct opalApp: App {
         }
         /*
          .task {
-         print("Fetching S3 files...")
-         await fetchS3Files()
+             print("Fetching S3 files...")
+             await fetchS3Files()
          }
          */
     }
