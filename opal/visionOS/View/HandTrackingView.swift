@@ -28,7 +28,9 @@ func createFingertip() -> ModelEntity{
 @MainActor class HandTrackingViewModel: ObservableObject {
     private let session = ARKitSession()
     private let handTracking = HandTrackingProvider()
-    private let sceneReconstruction = SceneReconstructionProvider()
+    private let sceneReconstruction = SceneReconstructionProvider(
+        modes: [.classification]
+    )
     
     private var contentEntity = Entity()
     private var meshEntities = [UUID : ModelEntity]()
@@ -102,32 +104,87 @@ func createFingertip() -> ModelEntity{
             }
     }
     
+    // Function to determine color based on classification
+    func colorForClassification(_ classification: MeshAnchor.MeshClassification) -> UIColor {
+        switch classification {
+        case .wall:
+            return .systemGray
+        case .floor:
+            return .systemBrown
+        case .ceiling:
+            return .systemGray6
+        case .table:
+            return .systemOrange
+        case .seat:
+            return .systemBlue
+        case .window:
+            return .systemCyan.withAlphaComponent(0.5)
+        case .door:
+            return .systemRed
+        case .stairs:
+            return .systemYellow
+        case .bed:
+            return .systemPurple
+        case .cabinet:
+            return .systemGreen
+        case .homeAppliance:
+            return .systemGray2
+        case .tv:
+            return .black
+        case .plant:
+            return .systemGreen
+        default:
+            return .systemGray4
+        }
+    }
+    
+    // Print Mesh classification details
+    // sample code from visionOS: https://developer.apple.com/documentation/visionos/incorporating-real-world-surroundings-in-an-immersive-experience
+    // sample code from iOS:      https://developer.apple.com/documentation/arkit/visualizing-and-interacting-with-a-reconstructed-scene
     func processReconstructionUpdates() async{
-        // Each update contains info about surfaces the AR system has found
         for await update in sceneReconstruction.anchorUpdates {
-            // Create a 3D mesh from the detected surface
-            guard let shape = try? await ShapeResource.generateStaticMesh(from: update.anchor) else {continue}
-            
+            let meshAnchor = update.anchor
+            guard let shape = try? await ShapeResource.generateStaticMesh(from: meshAnchor) else {continue}
+            if let classifications = meshAnchor.geometry.classifications {
+                var classificationCounts: [MeshAnchor.MeshClassification: Int] = [:]
+                for faceIndex in 0..<meshAnchor.geometry.faces.count {
+                    let classificationPointer = classifications.buffer.contents()
+                        .advanced(by: classifications.offset + (classifications.stride * faceIndex))
+                    let classificationValue = Int(classificationPointer
+                        .assumingMemoryBound(to: CUnsignedChar.self).pointee)
+                    let classification = MeshAnchor.MeshClassification(rawValue: classificationValue) ?? .none
+                    classificationCounts[classification, default: 0] += 1
+                    // Create material with corresponding color
+                    let color = colorForClassification(classification)
+                }
+                print("\n=== Mesh Update ===")
+                for (classification, count) in classificationCounts.sorted(by: { $0.value > $1.value }) {
+                    let percentage = Double(count) / Double(meshAnchor.geometry.faces.count) * 100
+                    let color = colorForClassification(classification)
+                    let colorName = (color.description.split(separator: "=").last ?? "")
+                        .trimmingCharacters(in: CharacterSet(charactersIn: " >"))
+                    print("\(classification), \(colorName), \(count) faces (\(String(format: "%.1f", percentage))%)")
+                }
+            }
             switch update.event {
             // New Surface Detected
             case .added:
                 let entity = ModelEntity()
-                entity.transform = Transform(matrix: update.anchor.originFromAnchorTransform)
+                entity.transform = Transform(matrix: meshAnchor.originFromAnchorTransform)
                 entity.collision = CollisionComponent(shapes: [shape], isStatic: true)
-                entity.physicsBody = PhysicsBodyComponent()
                 entity.components.set(InputTargetComponent())
-                
-                meshEntities[update.anchor.id] = entity
+                entity.physicsBody = PhysicsBodyComponent(mode: .static)
+                meshEntities[meshAnchor.id] = entity
                 contentEntity.addChild(entity)
             // Existing Surface Changed (to match changes in the real world scene)
             case .updated:
-                guard let entity = meshEntities[update.anchor.id] else {fatalError("Fatal Error")}
-                entity.transform = Transform(matrix: update.anchor.originFromAnchorTransform)
+                guard let entity = meshEntities[meshAnchor.id] else {fatalError("Fatal Error")}
+                entity.transform = Transform(matrix: meshAnchor.originFromAnchorTransform)
                 entity.collision?.shapes = [shape]
             // Surface Not Detected
             case .removed:
-                meshEntities[update.anchor.id]?.removeFromParent()
-                meshEntities.removeValue(forKey: update.anchor.id)
+                meshEntities[meshAnchor.id]?.removeFromParent()
+                meshEntities.removeValue(forKey: meshAnchor.id)
             }
         }
     }

@@ -71,6 +71,9 @@
 				Control/NavigationControl.swift = (
 					xros,
 				);
+				Control/SharePlayControl.swift = (
+					xros,
+				);
 				Menu/CatalogMenu.swift = (
 					xros,
 				);
@@ -237,6 +240,7 @@
 				6573DF4C2D16BEA100D7917A /* SampleBoxRenderer */,
 				6573DF4E2D16BEA100D7917A /* SplatIO */,
 				6573DF502D16BEA100D7917A /* SplatConverter */,
+				658C7E1B2D62E7E40099C39A /* AWSCognitoIdentity */,
 			);
 			productName = opal;
 			productReference = 659AD4982CCB0B2500F834E0 /* opal.app */;
@@ -651,6 +655,11 @@
 		6573DF502D16BEA100D7917A /* SplatConverter */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SplatConverter;
+		};
+		658C7E1B2D62E7E40099C39A /* AWSCognitoIdentity */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A58EA5262CFFB412009E4EB4 /* XCRemoteSwiftPackageReference "aws-sdk-swift" */;
+			productName = AWSCognitoIdentity;
 		};
 		65EBB7AD2D10C44500782661 /* RealityKitContent */ = {
 			isa = XCSwiftPackageProductDependency;

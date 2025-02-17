@@ -1,7 +1,7 @@
-import SwiftUI
 import AWSS3
 import QuickLook
 import SceneKit
+import SwiftUI
 
 struct ScanCard: View {
     let title: String
