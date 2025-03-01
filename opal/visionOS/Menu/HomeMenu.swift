@@ -13,8 +13,8 @@ struct HomeMenu: View {
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
     @State private var titleText: String = ""
-    @State private var finalTitle: String = "Welcome to Scene Designer"
-    @State private var descriptionText: String = "Scene Designer is an immersive simulation tool that combines realistic graphics with playful animation."
+    @State private var finalTitle: String = "Welcome to Opal"
+    @State private var descriptionText: String = "Opal is an immersive simulation tool that combines realistic graphics with playful animation."
     @State private var isTypingFinished: Bool = false
     @State private var isPressed = false
     @State private var modelRotation: Double = 0

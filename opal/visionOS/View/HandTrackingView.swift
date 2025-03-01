@@ -10,7 +10,19 @@ import RealityKit
 import RealityKitContent
 import ARKit
 
-//This code is not yet complete. This is to allow you to place objects on real world surfaces using ARkit and SceneReconstruction (detect planes, surfaces)
+// This code is not yet complete. This is to allow you to place objects on real world surfaces using ARkit and SceneReconstruction (detect planes, surfaces)
+extension GeometrySource {
+    func asArray<T>(ofType: T.Type) -> [T] {
+        assert(MemoryLayout<T>.stride == stride, "Invalid stride \(MemoryLayout<T>.stride); expected \(stride)")
+        return (0..<self.count).map {
+            buffer.contents().advanced(by: offset + stride * Int($0)).assumingMemoryBound(to: T.self).pointee
+        }
+    }
+
+    func asSIMD3<T>(ofType: T.Type) -> [SIMD3<T>] {
+        return asArray(ofType: (T, T, T).self).map { .init($0.0, $0.1, $0.2) }
+    }
+}
 
 func createFingertip() -> ModelEntity{
     let entity = ModelEntity(
@@ -169,7 +181,8 @@ func createFingertip() -> ModelEntity{
             switch update.event {
             // New Surface Detected
             case .added:
-                let entity = ModelEntity()
+                //let entity = ModelEntity()
+                let entity = try! await generateModelEntity(geometry: meshAnchor.geometry)
                 entity.transform = Transform(matrix: meshAnchor.originFromAnchorTransform)
                 entity.collision = CollisionComponent(shapes: [shape], isStatic: true)
                 entity.components.set(InputTargetComponent())
@@ -187,6 +200,31 @@ func createFingertip() -> ModelEntity{
                 meshEntities.removeValue(forKey: meshAnchor.id)
             }
         }
+    }
+    
+    // This function converts ARKit's MeshAnchor.Geometry data into a RealityKit ModelEntity. Convert 3D mesh data that ARKit detects from the real world into green wireframe outlines of detected surfaces like tables, floors, and walls.
+    // Reference from https://github.com/satoshi0212/visionOS_30Days/tree/main
+    func generateModelEntity(geometry: MeshAnchor.Geometry) async throws -> ModelEntity {
+        var desc = MeshDescriptor()
+        let posValues = geometry.vertices.asSIMD3(ofType: Float.self)
+        desc.positions = .init(posValues)
+        let normalValues = geometry.normals.asSIMD3(ofType: Float.self)
+        desc.normals = .init(normalValues)
+        do {
+            desc.primitives = .polygons(
+                (0..<geometry.faces.count).map { _ in UInt8(3) },
+                (0..<geometry.faces.count * 3).map {
+                    geometry.faces.buffer.contents()
+                        .advanced(by: $0 * geometry.faces.bytesPerIndex)
+                        .assumingMemoryBound(to: UInt32.self).pointee
+                }
+            )
+        }
+        let meshResource = try MeshResource.generate(from: [desc])
+        var material = SimpleMaterial(color: .green.withAlphaComponent(0.8), isMetallic: false)
+        material.triangleFillMode = .lines
+        let modelEntity = ModelEntity(mesh: meshResource, materials: [material])
+        return modelEntity
     }
     
     func placeCube() async {
