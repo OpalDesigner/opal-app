@@ -14,7 +14,7 @@ struct HomeMenu: View {
     
     @State private var titleText: String = ""
     @State private var finalTitle: String = "Welcome to Opal"
-    @State private var descriptionText: String = "Opal is an immersive simulation tool that combines realistic graphics with playful animation."
+    @State private var descriptionText: String = "Opal is an advanced simulation tool for 3D visualization and collaboration."
     @State private var isTypingFinished: Bool = false
     @State private var isPressed = false
     @State private var modelRotation: Double = 0

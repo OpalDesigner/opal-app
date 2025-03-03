@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		65533BA72D766F3000005A4B /* AWSCognitoIdentity in Frameworks */ = {isa = PBXBuildFile; productRef = 658C7E1B2D62E7E40099C39A /* AWSCognitoIdentity */; };
 		6573DF492D16BEA100D7917A /* MetalSplatter in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF482D16BEA100D7917A /* MetalSplatter */; };
 		6573DF4B2D16BEA100D7917A /* PLYIO in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF4A2D16BEA100D7917A /* PLYIO */; };
 		6573DF4D2D16BEA100D7917A /* SampleBoxRenderer in Frameworks */ = {isa = PBXBuildFile; productRef = 6573DF4C2D16BEA100D7917A /* SampleBoxRenderer */; };
@@ -125,6 +126,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				65533BA72D766F3000005A4B /* AWSCognitoIdentity in Frameworks */,
 				65EBB7AE2D10C44500782661 /* RealityKitContent in Frameworks */,
 				A58EA5282CFFB4C1009E4EB4 /* AWSS3 in Frameworks */,
 				6573DF4B2D16BEA100D7917A /* PLYIO in Frameworks */,
@@ -482,7 +484,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = opal/opal.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"opal/Preview Content\"";
 				DEVELOPMENT_TEAM = 49PG29W6M8;
 				ENABLE_PREVIEWS = YES;
@@ -514,7 +516,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = opal/opal.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "\"opal/Preview Content\"";
 				DEVELOPMENT_TEAM = 49PG29W6M8;
 				ENABLE_PREVIEWS = YES;
