@@ -182,12 +182,10 @@ struct opalApp: App {
             // function located in  SharePlayControl.swift
             await configureGroupSession()
         }
-        /*
-         .task {
-             print("Fetching S3 files...")
-             await fetchS3Files()
-         }
-         */
+        .task {
+            print("Fetching S3 files...")
+            await fetchS3Files()
+        }
     }
     
     private func fetchS3Files() async {
@@ -199,6 +197,10 @@ struct opalApp: App {
                 for object in objects {
                     guard let key = object.key else { continue }
                     let localURL = getDocumentsDirectory().appendingPathComponent(key)
+                    guard !FileManager.default.fileExists(atPath: localURL.path) else {
+                        print("Already exists: \(key) at \(localURL.path)")
+                        continue
+                    }
                     try? FileManager.default.createDirectory(at: localURL.deletingLastPathComponent(),
                                                           withIntermediateDirectories: true)
                     if let data = try await s3Client.getObject(input: GetObjectInput(bucket: "opal-designer", key: key)).body?.readData() {
