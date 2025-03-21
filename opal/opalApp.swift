@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AWSS3
+import AWSSDKIdentity
 import CompositorServices
 import RealityKitContent
 
@@ -188,10 +189,33 @@ struct opalApp: App {
         }
     }
     
+    // Unsafe to let hard coded credentials - Should use a safer way later if app goes into production
+    // https://docs.aws.amazon.com/fr_fr/sdk-for-swift/latest/developer-guide/using-identity.html
+    private let awsAccessKey = "AKIAYXWBNWGYUGSZIYNW"
+    private let awsSecret = "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"
+    private let awsRegion = "us-east-1"
+    // If set to true, make sure environment variables are checked in scheme
+    // Note: environment variables are not built into archived build
+    private let useEnvironmentCredentials = false
+    
     private func fetchS3Files() async {
         print("\nDownloading S3 files to: \(getDocumentsDirectory().path)\n")
         do {
-            let s3Client = try S3Client(region: "us-east-1")
+            var s3Client: S3Client
+            if useEnvironmentCredentials {
+                s3Client = try S3Client(region: "us-east-1")
+            } else {
+                let credentials = AWSCredentialIdentity(
+                    accessKey: awsAccessKey,
+                    secret: awsSecret
+                )
+                let identityResolver = try StaticAWSCredentialIdentityResolver(credentials)
+                let s3Configuration = try await S3Client.S3ClientConfiguration(
+                    awsCredentialIdentityResolver: identityResolver,
+                    region: awsRegion
+                )
+                s3Client = S3Client(config: s3Configuration)
+            }
             let output = try await s3Client.listObjectsV2(input: ListObjectsV2Input(bucket: "opal-designer"))
             if let objects = output.contents {
                 for object in objects {
@@ -202,10 +226,14 @@ struct opalApp: App {
                         continue
                     }
                     try? FileManager.default.createDirectory(at: localURL.deletingLastPathComponent(),
-                                                          withIntermediateDirectories: true)
-                    if let data = try await s3Client.getObject(input: GetObjectInput(bucket: "opal-designer", key: key)).body?.readData() {
-                        try data.write(to: localURL)
-                        print("Downloaded: \(key) to \(localURL.path)")
+                                                             withIntermediateDirectories: true)
+                    do {
+                        if let data = try await s3Client.getObject(input: GetObjectInput(bucket: "opal-designer", key: key)).body?.readData() {
+                            try data.write(to: localURL)
+                            print("Downloaded: \(key) to \(localURL.path)")
+                        }
+                    } catch {
+                        print("Error getting S3 object: \(key) -", error)
                     }
                 }
             }
