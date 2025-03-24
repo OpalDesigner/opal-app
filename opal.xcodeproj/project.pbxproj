@@ -119,6 +119,7 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		650511992D4A991B004D1A2E /* iOS */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6505119A2D4A9926004D1A2E /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = iOS; sourceTree = "<group>"; };
 		6581E68B2D4F0E1E00A6A862 /* visionOS */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6581E6A82D4F107200A6A862 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = visionOS; sourceTree = "<group>"; };
+		D409E20F2D8D893400527835 /* Models */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Models; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -173,6 +174,7 @@
 				65DE84EA2D487FB30010FD90 /* opal.entitlements */,
 				6581E65B2D4EDB7800A6A862 /* opalApp.swift */,
 				65E3C0132CEF12650037A68C /* tv_retro.usdz */,
+				D409E20F2D8D893400527835 /* Models */,
 				650511992D4A991B004D1A2E /* iOS */,
 				6581E68B2D4F0E1E00A6A862 /* visionOS */,
 				659AD4A52CCB0B2500F834E0 /* ImageBasedLighting.skybox */,
@@ -232,6 +234,7 @@
 			fileSystemSynchronizedGroups = (
 				650511992D4A991B004D1A2E /* iOS */,
 				6581E68B2D4F0E1E00A6A862 /* visionOS */,
+				D409E20F2D8D893400527835 /* Models */,
 			);
 			name = opal;
 			packageProductDependencies = (

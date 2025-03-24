@@ -143,6 +143,8 @@ struct CatalogItemView: View {
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
+    @Environment(AppModel.self) var appModel
+    
     @State private var isWindowOpen = false
     @State private var isImmersiveOpen = false
     
@@ -171,9 +173,14 @@ struct CatalogItemView: View {
                     if isImmersiveOpen {
                         await openImmersiveSpace(id: "ModelImmersiveView", value: model)
                         openWindow(id: "NavigationControl")
+                        try? await appModel.sessionController?.messenger.send(ImmersiveSpaceUpdate(isOpen: true,
+                                                                                                   immersiveSpaceId: "ModelImmersiveView",
+                                                                                                   modelInfo: model))
                     } else {
                         await dismissImmersiveSpace()
                         dismissWindow(id: "NavigationControl")
+                        try? await appModel.sessionController?.messenger.send(ImmersiveSpaceUpdate(isOpen: false,
+                                                                                                   immersiveSpaceId: "ModelImmersiveView"))
                     }
                 }
             } label: {

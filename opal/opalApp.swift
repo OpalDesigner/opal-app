@@ -19,10 +19,15 @@ struct opalApp: App {
     // Shared variables
     @StateObject var navigationData = NavigationData()      // NavigationControl.swift
     @StateObject var tabSelection = TabSelection()
+    
+    @State var appModel = AppModel()
 
     // Private variables
     @State private var s3Files: [String] = []
     @State private var fetchTimer: Timer?
+    
+    @Environment(\.openImmersiveSpace) private var openImmersiveSpace
+    @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
     init() {
         // Packages/RealityKitContent/Sources/RealityKitContent/PointOfInterestComponent.swift
@@ -34,6 +39,7 @@ struct opalApp: App {
         // WINDOW - MENU
         WindowGroup(id: "Menu") {
             createMainMenu()
+                .environment(appModel)
         }
         .defaultSize(CGSize(width: 1000, height: 880))
         .defaultWindowPlacement { content, context in
@@ -102,11 +108,18 @@ struct opalApp: App {
                     navigationData: navigationData,
                     modelName: modelInfo.modelName
                 )
+                .onAppear {
+                    appModel.isImmersiveSpaceOpen = true
+                }
+                .onDisappear {
+                    appModel.isImmersiveSpaceOpen = false
+                }
             } else {
                 Text("No model information available")
             }
         }
-        .immersionStyle(selection: .constant(.full), in: .full)
+        .immersionStyle(selection: $appModel.immersionStyle, in: .full, .mixed)
+        .onChange(of: appModel.sessionController?.immersiveSpaceUpdate, updateImmersiveSpaceState)
         
         // IMMERSIVE - SPLAT VIEW
         ImmersiveSpace(id: "GaussianSplatView", for: URL.self) { url in
@@ -137,6 +150,28 @@ struct opalApp: App {
             BubbleView()
         }
         .immersionStyle(selection: .constant(.full), in: .full)
+    }
+    
+    func updateImmersiveSpaceState(
+        oldActivityStage: ImmersiveSpaceUpdate?,
+        newActivityStage: ImmersiveSpaceUpdate?
+    ) {
+        guard let newActivityStage else { return }
+        let wasOpen = oldActivityStage?.isOpen ?? false
+        let isOpen = newActivityStage.isOpen
+        
+        guard wasOpen != isOpen else {
+            return
+        }
+        
+        Task {
+            if isOpen && !appModel.isImmersiveSpaceOpen {
+                await openImmersiveSpace(id: newActivityStage.immersiveSpaceId,
+                                         value: newActivityStage.modelInfo)
+            } else if appModel.isImmersiveSpaceOpen {
+                await dismissImmersiveSpace()
+            }
+        }
     }
     
     private func createMainMenu() -> some View {
@@ -178,13 +213,44 @@ struct opalApp: App {
                 }
             }
         }
+        /*
         .task{
             // function located in  SharePlayControl.swift
             await configureGroupSession()
         }
+        */
+        .task(observeGroupSessions)
         .task {
+        #if !targetEnvironment(simulator)
             print("Fetching S3 files...")
             await fetchS3Files()
+        #endif
+        }
+    }
+    
+    @Sendable
+    func observeGroupSessions() async {
+        for await session in ExploreActivity.sessions() {
+            let sessionController = await SessionController(session, appModel: appModel)
+            guard let sessionController else {
+                continue
+            }
+            appModel.sessionController = sessionController
+            
+            // Create a task to observe the group session state and clear the
+            // session controller when the group session invalidates.
+            Task {
+                for await state in session.$state.values {
+                    guard appModel.sessionController?.session.id == session.id else {
+                        return
+                    }
+                    
+                    if case .invalidated = state {
+                        appModel.sessionController = nil
+                        return
+                    }
+                }
+            }
         }
     }
     
