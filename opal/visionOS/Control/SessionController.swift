@@ -20,6 +20,7 @@ final class SessionController {
     
     var message: SharePlayMessage?
     var immersiveSpaceUpdate: ImmersiveSpaceUpdate?
+    var interactiveTVUpdate: InteractiveTVUpdate?
     
     init?(_ groupSession: GroupSession<ExploreActivity>, appModel: AppModel) async {
         guard let groupSystemCoordinator = await groupSession.systemCoordinator else {
@@ -67,7 +68,13 @@ final class SessionController {
         Task {
             for await (message, context) in messenger.messages(of: ImmersiveSpaceUpdate.self) {
 //                let senderID = context.source.id
+                print(#function, message)
                 immersiveSpaceUpdate = message
+            }
+            
+            for await (message, context) in messenger.messages(of: InteractiveTVUpdate.self) {
+                print(#function, message)
+                interactiveTVUpdate = message
             }
         }
     }

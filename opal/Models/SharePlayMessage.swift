@@ -25,6 +25,10 @@ struct ImmersiveSpaceUpdate: Codable, Equatable {
     var modelInfo: ModelInfo?
 }
 
+struct InteractiveTVUpdate: Codable, Equatable {
+    var modelRotation: Double
+}
+
 class SharePlayMessageHandler {
     
     func handle(_ message: SharePlayMessage) {

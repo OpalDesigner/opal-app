@@ -12,6 +12,8 @@ struct HomeMenu: View {
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
     
+    @Environment(AppModel.self) var appModel
+    
     @State private var titleText: String = ""
     @State private var finalTitle: String = "Welcome to Opal"
     @State private var descriptionText: String = "Opal is an advanced simulation tool for 3D visualization and collaboration."
@@ -64,6 +66,7 @@ struct HomeMenu: View {
                                 VStack{
                                     Button{
                                         modelRotation += 90
+                                        sendModelRotationUpdate()
                                     }label: {
                                         Label("", systemImage: "arrow.triangle.2.circlepath.circle")
                                     }
@@ -79,7 +82,20 @@ struct HomeMenu: View {
                 Image("interior-shot")
             }
         }
+        .onChange(of: appModel.sessionController?.interactiveTVUpdate, { _, newValue in
+            if let newValue {
+                modelRotation = newValue.modelRotation
+            }
+        })
     }
+    
+    private func sendModelRotationUpdate() {
+        Task {
+            print(#function)
+            try? await appModel.sessionController?.messenger.send(InteractiveTVUpdate(modelRotation: modelRotation))
+        }
+    }
+    
 }
 
 #Preview {
