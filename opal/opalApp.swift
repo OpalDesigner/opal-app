@@ -38,10 +38,19 @@ struct opalApp: App {
         // ----------------- DEFINE WINDOW SPACES ---------------
         // WINDOW - MENU
         WindowGroup(id: "Menu") {
-            createMainMenu()
+            MainView()
                 .environment(appModel)
+                .environmentObject(navigationData)
+                .environmentObject(tabSelection)
+                .task(observeGroupSessions)
+                .task {
+                    print("Fetching S3 files...")
+                    #if !targetEnvironment(simulator)
+                    await fetchS3Files()
+                    #endif
+                }
         }
-        .defaultSize(CGSize(width: 1000, height: 880))
+        .windowResizability(.contentSize)
         .defaultWindowPlacement { content, context in
             let size = content.sizeThatFits(.unspecified)
             let navigationWindow = context.windows.first { window in
@@ -109,10 +118,14 @@ struct opalApp: App {
                     modelName: modelInfo.modelName
                 )
                 .onAppear {
-                    appModel.isImmersiveSpaceOpen = true
+                    withAnimation {
+                        appModel.isImmersiveSpaceOpen = true
+                    }
                 }
                 .onDisappear {
-                    appModel.isImmersiveSpaceOpen = false
+                    withAnimation {
+                        appModel.isImmersiveSpaceOpen = false
+                    }
                 }
             } else {
                 Text("No model information available")
@@ -171,60 +184,6 @@ struct opalApp: App {
             } else if appModel.isImmersiveSpaceOpen {
                 await dismissImmersiveSpace()
             }
-        }
-    }
-    
-    private func createMainMenu() -> some View {
-        TabView (selection: $tabSelection.selectedTab) {
-            // HomeMenu.swift
-            HomeMenu().tabItem {
-                Label("About", systemImage: "building.2.fill")
-            }
-            .tag(0)
-            // CatalogMenu.swift
-            CatalogMenu(defaultModels: defaultModels).tabItem {
-                Label("Build", systemImage: "hammer.fill")
-            }
-            .tag(1)
-            // PluginMenu.swift
-            PluginMenu().tabItem {
-                Label("Import", systemImage: "square.and.arrow.down")
-            }
-            .tag(2)
-            /*
-             // TeamMenu.swift
-             TeamMenu().tabItem {
-             Label("Team", systemImage: "person")
-             }
-             .tag(3)
-             */
-        }
-        .environmentObject(navigationData)
-        .toolbar {
-            ToolbarItem(placement: .bottomOrnament) {
-                Button {
-                    Task {
-                        // function located in SharePlayControl.swift
-                        await startSharePlay()
-                    }
-                } label: {
-                    Label("Collaborate", systemImage: "person.3.fill")
-                        .labelStyle(.titleAndIcon)
-                }
-            }
-        }
-        /*
-        .task{
-            // function located in  SharePlayControl.swift
-            await configureGroupSession()
-        }
-        */
-        .task(observeGroupSessions)
-        .task {
-        #if !targetEnvironment(simulator)
-            print("Fetching S3 files...")
-            await fetchS3Files()
-        #endif
         }
     }
     

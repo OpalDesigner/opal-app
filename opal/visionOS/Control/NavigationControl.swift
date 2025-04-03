@@ -127,7 +127,7 @@ struct NavigationControl: View {
             HStack {
                 Button {
                     dismissWindow(id: "NavigationControl")
-                    dismissWindow(id: "Menu")
+//                    dismissWindow(id: "Menu")
                 } label: {
                     Label("", systemImage: "house.fill")
                 }
@@ -155,11 +155,11 @@ struct NavigationControl: View {
                 Button {
                     isBuildReady.toggle()
                     if isBuildReady {
-                        openWindow(id: "Menu")
+//                        openWindow(id: "Menu")
                         tabSelection.selectedTab = 1
                         navigationData.gridEntity.isEnabled = true
                     } else {
-                        dismissWindow(id: "Menu")
+//                        dismissWindow(id: "Menu")
                         navigationData.gridEntity.isEnabled = false
                     }
                 } label: {
@@ -247,12 +247,13 @@ struct NavigationControl: View {
             }
         }
         .onAppear{
-            dismissWindow(id: "Menu")
+            // Avoid dismissing the Menu window as it is essential to SharePlay session
+//            dismissWindow(id: "Menu")
             navigationData.cameraPosition = SIMD3<Float>(0, 0, 0)
             navigationData.cameraRotation = 0
         }
         .onDisappear{
-            openWindow(id: "Menu")
+//            openWindow(id: "Menu")
             dismissWindow(id: "ModelRealityView")
             tabSelection.selectedTab = 1
             Task {
@@ -260,7 +261,6 @@ struct NavigationControl: View {
             }
         }
         .padding()
-        .glassBackgroundEffect()
     }
 }
 
