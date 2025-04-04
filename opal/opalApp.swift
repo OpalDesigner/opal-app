@@ -66,6 +66,7 @@ struct opalApp: App {
         WindowGroup(id: "NavigationControl") {
             // NavigationControl.swift
             NavigationControl(navigationData: navigationData, tabSelection: tabSelection)
+                .environment(appModel)
         }
         .defaultWindowPlacement{content, context in
             return WindowPlacement(.utilityPanel)

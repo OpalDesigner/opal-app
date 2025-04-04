@@ -38,6 +38,8 @@ struct NavigationControl: View {
     @ObservedObject var navigationData: NavigationData
     @ObservedObject var tabSelection: TabSelection
     
+    @Environment(AppModel.self) var appModel
+    
     //State variables
     @State private var isBuildReady = false
     
@@ -127,7 +129,6 @@ struct NavigationControl: View {
             HStack {
                 Button {
                     dismissWindow(id: "NavigationControl")
-//                    dismissWindow(id: "Menu")
                 } label: {
                     Label("", systemImage: "house.fill")
                 }
@@ -155,11 +156,11 @@ struct NavigationControl: View {
                 Button {
                     isBuildReady.toggle()
                     if isBuildReady {
-//                        openWindow(id: "Menu")
+                        appModel.setMainMenuState(.standard)
                         tabSelection.selectedTab = 1
                         navigationData.gridEntity.isEnabled = true
                     } else {
-//                        dismissWindow(id: "Menu")
+                        appModel.setMainMenuState(.minimized)
                         navigationData.gridEntity.isEnabled = false
                     }
                 } label: {
@@ -246,14 +247,13 @@ struct NavigationControl: View {
                 }
             }
         }
-        .onAppear{
-            // Avoid dismissing the Menu window as it is essential to SharePlay session
-//            dismissWindow(id: "Menu")
+        .onAppear {
+            appModel.setMainMenuState(.minimized)
             navigationData.cameraPosition = SIMD3<Float>(0, 0, 0)
             navigationData.cameraRotation = 0
         }
-        .onDisappear{
-//            openWindow(id: "Menu")
+        .onDisappear {
+            appModel.setMainMenuState(.standard)
             dismissWindow(id: "ModelRealityView")
             tabSelection.selectedTab = 1
             Task {

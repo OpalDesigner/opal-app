@@ -12,7 +12,7 @@ struct MainView: View {
     @Environment(AppModel.self) var appModel
     
     var body: some View {
-        if appModel.isImmersiveSpaceOpen {
+        if appModel.isImmersiveSpaceOpen && appModel.mainMenuState == .minimized {
             Text("Exploring...")
                 .frame(maxWidth: 200, maxHeight: 200)
         } else {

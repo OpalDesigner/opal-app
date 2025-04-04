@@ -14,6 +14,19 @@ import Observation
 final class AppModel {
     var sessionController: SessionController?
     
+    var mainMenuState: MainMenuState = .standard
+    
     var isImmersiveSpaceOpen = false
     var immersionStyle: ImmersionStyle = .full
+    
+    func setMainMenuState(_ state: MainMenuState) {
+        withAnimation {
+            mainMenuState = state
+        }
+    }
+    
+    enum MainMenuState {
+        case standard
+        case minimized
+    }
 }
