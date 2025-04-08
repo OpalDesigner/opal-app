@@ -24,6 +24,7 @@ final class SessionController {
     var immersiveSpaceUpdate: ImmersiveSpaceUpdate?
     var interactiveTVUpdate: InteractiveTVUpdate?
     var appStateUpdate: AppStateUpdate?
+    var interactiveObjectUpdate: InteractiveObjectUpdate?
     
     private var subscriptions = Set<AnyCancellable>()
     
@@ -108,6 +109,17 @@ final class SessionController {
             }
         }
         subscriptions.insert(.init { appStateUpdateTask.cancel() })
+        
+        let interactiveObjectUpdateTask = Task.detached { [weak self] in
+            guard let self else { return }
+            for await (message, _) in self.messenger.messages(of: InteractiveObjectUpdate.self) {
+                print(#function, message)
+                await MainActor.run {
+                    self.interactiveObjectUpdate = message
+                }
+            }
+        }
+        subscriptions.insert(.init { interactiveObjectUpdateTask.cancel() })
         
     }
     

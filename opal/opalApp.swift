@@ -117,6 +117,7 @@ struct opalApp: App {
                     navigationData: navigationData,
                     modelName: modelInfo.modelName
                 )
+                .environment(appModel)
                 .onAppear {
                     withAnimation {
                         appModel.isImmersiveSpaceOpen = true

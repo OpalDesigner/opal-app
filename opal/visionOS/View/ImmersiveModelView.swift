@@ -12,15 +12,22 @@ import RealityKitContent
 struct ImmersiveModelView: View {
     // Function parameters
     @ObservedObject var navigationData: NavigationData
+    @Environment(AppModel.self) var appModel
+    @Environment(\.realityKitScene) var scene
     let modelName: String
     
     var body: some View {
-        RealityView{ content in
+        RealityView { content in
             guard let model = await Entity.loadRootEntity(named: modelName) else { // Entity+Extension.swift
                 print("Failed to load model: \(modelName)")
                 return
             }
             content.add(model)
+            
+            #warning("Should use custom components instead of entity names")
+            let tools = model.findEntity(named: "Tools")
+            tools?.generateCollisionShapes(recursive: true)
+            tools?.components.set(InputTargetComponent())
             
             // Add Animation to the 3D model
             if(model.availableAnimations.count > 0){
@@ -40,6 +47,7 @@ struct ImmersiveModelView: View {
                 materials: [material]
             ))
             skyboxEntity.scale *= .init(x: -1, y: 1, z: 1)
+            skyboxEntity.name = "Skybox"
             content.add(skyboxEntity)
             
             /*
@@ -147,6 +155,12 @@ struct ImmersiveModelView: View {
                 navigationData.loadedEntity = nil
             }
         }
+        .onImmersionChange { _, context in
+            #warning("Should use custom components instead of entity names")
+            scene?.findEntity(named: "Operating_Room")?.isEnabled = context.amount == 1
+            scene?.findEntity(named: "Skybox")?.isEnabled = context.amount == 1
+        }
+        .gesture(translationGesture)
         
         .gesture(
             SpatialTapGesture()
@@ -155,6 +169,49 @@ struct ImmersiveModelView: View {
                     handleTap(on: value.entity)
                 }
         )
+        .onChange(of: appModel.sessionController?.interactiveObjectUpdate, updateInteractiveObject)
+    }
+    
+    func updateInteractiveObject(
+        oldActivityStage: InteractiveObjectUpdate?,
+        newActivityStage: InteractiveObjectUpdate?
+    ) {
+        guard let newActivityStage else { return }
+        scene?.findEntity(named: newActivityStage.entityName)?.setPosition(newActivityStage.position, relativeTo: nil)
+    }
+    
+    /// The initial position of the entity.
+    @State var initialPosition: SIMD3<Float>? = nil
+    
+    /// The gesture checks whether there is a root component and adjusts the postion of the entity.
+    var translationGesture: some Gesture {
+        /// The gesture to move an entity.
+        DragGesture()
+            .targetedToAnyEntity()
+            .onChanged({ value in
+                /// The entity that the drag gesture targets.
+                let rootEntity = value.entity
+                
+                // Set `initialPosition` to the position of the entity if it is `nil`.
+                if initialPosition == nil {
+                    initialPosition = rootEntity.position(relativeTo: nil)
+                }
+                
+                /// The movement that converts a global world space to the scene world space of the entity.
+                let movement = value.convert(value.translation3D, from: .global, to: .scene)
+                
+                // Apply the entity position to match the drag gesture,
+                // and set the movement to stay at the ground level.
+                let newPosition = (initialPosition ?? .zero) + movement
+                rootEntity.setPosition(newPosition, relativeTo: nil)
+                Task {
+                    try? await appModel.sessionController?.messenger.send(InteractiveObjectUpdate(entityName: rootEntity.name, position: newPosition))
+                }
+            })
+            .onEnded({ _ in
+                // Reset the `initialPosition` back to `nil` when the gesture ends.
+                initialPosition = nil
+            })
     }
     
     // Helper Function

@@ -25,7 +25,7 @@ struct ModelInfo: Identifiable, Codable, Hashable {
 // Default Models array
 let defaultModels = [
     ModelInfo(modelName: "Holodeck",          imageName: "holodeck",            isImmersive: true   ),
-    ModelInfo(modelName: "Operating_Room",    imageName: "operating-room",      isImmersive: true   ),
+    ModelInfo(modelName: "Operating_RoomInteractive",    imageName: "operating-room",      isImmersive: true   ),
     ModelInfo(modelName: "Old_Hotel",         imageName: "old-hotel",           isImmersive: true   ),
     ModelInfo(modelName: "SpaceStation_Hall", imageName: "space-corridor",      isImmersive: true   ),
     ModelInfo(modelName: "Old_Classroom",     imageName: "classroom",           isImmersive: true   ),

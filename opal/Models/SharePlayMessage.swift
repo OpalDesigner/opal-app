@@ -31,6 +31,11 @@ struct AppStateUpdate: Codable, Equatable {
     var selectedCategory: ModelCategory
 }
 
+struct InteractiveObjectUpdate: Codable, Equatable {
+    var entityName: String
+    var position: SIMD3<Float>
+}
+
 struct InteractiveTVUpdate: Codable, Equatable {
     var modelRotation: Double
 }
