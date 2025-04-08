@@ -14,6 +14,8 @@ import Observation
 final class AppModel {
     var sessionController: SessionController?
     
+    var selectedTab = 0
+    var selectedCategory: ModelCategory = .scenes
     var mainMenuState: MainMenuState = .standard
     
     var isImmersiveSpaceOpen = false
@@ -25,8 +27,44 @@ final class AppModel {
         }
     }
     
-    enum MainMenuState {
-        case standard
-        case minimized
+    func toggleImmersionStyle() {
+        switch immersionStyle {
+        case is FullImmersionStyle:
+            immersionStyle = .mixed
+        case is MixedImmersionStyle:
+            immersionStyle = .full
+        default:
+            break
+        }
     }
+    
+    var appStateUpdate: AppStateUpdate {
+        .init(mainMenuState: mainMenuState,
+              selectedTab: selectedTab,
+              selectedCategory: selectedCategory)
+    }
+    
+    /*
+    var timer: Timer?
+    /// Test method
+    func shuffle() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true, block: { _ in
+            Task {
+                await MainActor.run {
+//                    self.selectedTab = Int.random(in: 0...2)
+//                    print(self.selectedTab)
+                    
+//                    self.selectedCategory = ModelCategory.allCases.randomElement() ?? .scenes
+                }
+            }
+        })
+    }
+    */
+    
+    
+}
+
+enum MainMenuState: Codable {
+    case standard
+    case minimized
 }

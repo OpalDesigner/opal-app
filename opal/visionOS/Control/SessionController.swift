@@ -8,6 +8,8 @@
 
 import GroupActivities
 import Observation
+import Combine
+import SwiftUI
 
 @Observable @MainActor
 final class SessionController {
@@ -21,6 +23,9 @@ final class SessionController {
     var message: SharePlayMessage?
     var immersiveSpaceUpdate: ImmersiveSpaceUpdate?
     var interactiveTVUpdate: InteractiveTVUpdate?
+    var appStateUpdate: AppStateUpdate?
+    
+    private var subscriptions = Set<AnyCancellable>()
     
     init?(_ groupSession: GroupSession<ExploreActivity>, appModel: AppModel) async {
         guard let groupSystemCoordinator = await groupSession.systemCoordinator else {
@@ -51,13 +56,17 @@ final class SessionController {
             }
         }
         
-        Task {
-            for await immersionStyle in systemCoordinator.groupImmersionStyle {
+        let immersionStyleTask = Task.detached { [weak self] in
+            guard let self else { return }
+            for await immersionStyle in self.systemCoordinator.groupImmersionStyle {
                 if let immersionStyle {
-                    appModel.immersionStyle = immersionStyle
+                    await MainActor.run {
+                        self.appModel.immersionStyle = immersionStyle
+                    }
                 }
             }
         }
+        subscriptions.insert(.init { immersionStyleTask.cancel() })
     }
     
     func observeRemoteParticipantUpdates() {
@@ -65,18 +74,41 @@ final class SessionController {
     }
     
     func observeSharePlayMessageUpdates() {
-        Task {
-            for await (message, context) in messenger.messages(of: ImmersiveSpaceUpdate.self) {
-//                let senderID = context.source.id
+        
+        let immersiveSpaceTask = Task.detached { [weak self] in
+            guard let self else { return }
+            for await (message, context) in self.messenger.messages(of: ImmersiveSpaceUpdate.self) {
                 print(#function, message)
-                immersiveSpaceUpdate = message
-            }
-            
-            for await (message, context) in messenger.messages(of: InteractiveTVUpdate.self) {
-                print(#function, message)
-                interactiveTVUpdate = message
+                await MainActor.run {
+                    self.immersiveSpaceUpdate = message
+                }
             }
         }
+        subscriptions.insert(.init { immersiveSpaceTask.cancel() })
+        
+        
+        let tvUpdateTask = Task.detached { [weak self] in
+            guard let self else { return }
+            for await (message, context) in self.messenger.messages(of: InteractiveTVUpdate.self) {
+                print(#function, message)
+                await MainActor.run {
+                    self.interactiveTVUpdate = message
+                }
+            }
+        }
+        subscriptions.insert(.init { tvUpdateTask.cancel() })
+        
+        let appStateUpdateTask = Task.detached { [weak self] in
+            guard let self else { return }
+            for await (message, _) in self.messenger.messages(of: AppStateUpdate.self) {
+                print(#function, message)
+                await MainActor.run {
+                    self.appStateUpdate = message
+                }
+            }
+        }
+        subscriptions.insert(.init { appStateUpdateTask.cancel() })
+        
     }
     
 }

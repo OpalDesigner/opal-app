@@ -22,7 +22,13 @@ struct SharePlayMessage: Codable {
 struct ImmersiveSpaceUpdate: Codable, Equatable {
     var isOpen: Bool
     var immersiveSpaceId: String
-    var modelInfo: ModelInfo?
+    var modelInfo: ModelInfo
+}
+
+struct AppStateUpdate: Codable, Equatable {
+    var mainMenuState: MainMenuState
+    var selectedTab: Int
+    var selectedCategory: ModelCategory
 }
 
 struct InteractiveTVUpdate: Codable, Equatable {

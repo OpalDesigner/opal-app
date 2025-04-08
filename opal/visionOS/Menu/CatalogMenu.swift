@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum ModelCategory: String, CaseIterable {
+enum ModelCategory: String, CaseIterable, Codable {
     case scenes     =   "Scenes"
     case scans      =   "Scans"
     case decor      =   "Decor"
@@ -43,7 +43,7 @@ let defaultModels = [
 struct CatalogMenu: View {
     let defaultModels: [ModelInfo]
     
-    @State private var selectedCategory: ModelCategory = .scenes
+    @Environment(AppModel.self) var appModel
     @State private var modelFiles: [ModelInfo] = []
     
     private func updateModels() {
@@ -59,7 +59,7 @@ struct CatalogMenu: View {
         }
         
         // Load models from selected category
-        let categoryPath = documentsPath.appendingPathComponent(selectedCategory.rawValue.lowercased())
+        let categoryPath = documentsPath.appendingPathComponent(appModel.selectedCategory.rawValue.lowercased())
         print("\nCurrently loading from: \(categoryPath.path)")
         do {
             let files = try fileManager.contentsOfDirectory(at: categoryPath, includingPropertiesForKeys: nil)
@@ -79,7 +79,7 @@ struct CatalogMenu: View {
             }
             
             // Combine default models with local models for Scenes category
-            if selectedCategory == .scenes {
+            if appModel.selectedCategory == .scenes {
                 modelFiles = localModels + defaultModels
             } else {
                 modelFiles = localModels
@@ -97,15 +97,16 @@ struct CatalogMenu: View {
     
     var body: some View {
         VStack {
+            @Bindable var appModel = appModel
             // Category Picker Menu
-            Picker("Category", selection: $selectedCategory) {
+            Picker("Category", selection: $appModel.selectedCategory) {
                 ForEach(ModelCategory.allCases, id: \.self) { category in
                     Text(category.rawValue).tag(category)
                 }
             }
             .pickerStyle(.segmented)
             .padding()
-            .onChange(of: selectedCategory) { _ in
+            .onChange(of: appModel.selectedCategory) { _, _ in
                 updateModels()
             }
             // Model Grid
@@ -116,7 +117,7 @@ struct CatalogMenu: View {
                     ForEach(modelFiles) { model in
                         CatalogItemView(
                             model: model,
-                            category: selectedCategory
+                            category: appModel.selectedCategory
                         )
                     }
                 }
@@ -180,7 +181,8 @@ struct CatalogItemView: View {
                         await dismissImmersiveSpace()
                         dismissWindow(id: "NavigationControl")
                         try? await appModel.sessionController?.messenger.send(ImmersiveSpaceUpdate(isOpen: false,
-                                                                                                   immersiveSpaceId: "ModelImmersiveView"))
+                                                                                                   immersiveSpaceId: "ModelImmersiveView",
+                                                                                                   modelInfo: model))
                     }
                 }
             } label: {

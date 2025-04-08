@@ -38,6 +38,7 @@ func startSharePlay() async {
     }
 }
 
+/*
 // Documentation: https://developer.apple.com/videos/play/wwdc2023/10087
 func configureGroupSession() async {
     // Sets up SharePlay virtual room configuration
@@ -97,3 +98,4 @@ func configureGroupSession() async {
         }
     }
 }
+*/

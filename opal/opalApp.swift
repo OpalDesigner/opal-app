@@ -18,7 +18,6 @@ class TabSelection: ObservableObject {
 struct opalApp: App {
     // Shared variables
     @StateObject var navigationData = NavigationData()      // NavigationControl.swift
-    @StateObject var tabSelection = TabSelection()
     
     @State var appModel = AppModel()
 
@@ -28,6 +27,7 @@ struct opalApp: App {
     
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) private var dismissImmersiveSpace
+    @Environment(\.openWindow) private var openWindow
     
     init() {
         // Packages/RealityKitContent/Sources/RealityKitContent/PointOfInterestComponent.swift
@@ -41,7 +41,6 @@ struct opalApp: App {
             MainView()
                 .environment(appModel)
                 .environmentObject(navigationData)
-                .environmentObject(tabSelection)
                 .task(observeGroupSessions)
                 .task {
                     print("Fetching S3 files...")
@@ -65,7 +64,7 @@ struct opalApp: App {
         // WINDOW - NAVIGATION CONTROL VIEW
         WindowGroup(id: "NavigationControl") {
             // NavigationControl.swift
-            NavigationControl(navigationData: navigationData, tabSelection: tabSelection)
+            NavigationControl(navigationData: navigationData)
                 .environment(appModel)
         }
         .defaultWindowPlacement{content, context in
@@ -174,14 +173,15 @@ struct opalApp: App {
         let wasOpen = oldActivityStage?.isOpen ?? false
         let isOpen = newActivityStage.isOpen
         
-        guard wasOpen != isOpen else {
-            return
-        }
+//        guard wasOpen != isOpen else {
+//            return
+//        }
         
         Task {
             if isOpen && !appModel.isImmersiveSpaceOpen {
                 await openImmersiveSpace(id: newActivityStage.immersiveSpaceId,
                                          value: newActivityStage.modelInfo)
+                openWindow(id: "NavigationControl")
             } else if appModel.isImmersiveSpaceOpen {
                 await dismissImmersiveSpace()
             }

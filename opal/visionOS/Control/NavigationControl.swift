@@ -36,7 +36,6 @@ class NavigationData: ObservableObject {
 struct NavigationControl: View {
     // Access shared data
     @ObservedObject var navigationData: NavigationData
-    @ObservedObject var tabSelection: TabSelection
     
     @Environment(AppModel.self) var appModel
     
@@ -157,7 +156,7 @@ struct NavigationControl: View {
                     isBuildReady.toggle()
                     if isBuildReady {
                         appModel.setMainMenuState(.standard)
-                        tabSelection.selectedTab = 1
+                        appModel.selectedTab = 1
                         navigationData.gridEntity.isEnabled = true
                     } else {
                         appModel.setMainMenuState(.minimized)
@@ -246,6 +245,17 @@ struct NavigationControl: View {
                     Label("", systemImage: "arrow.down.to.line")
                 }
             }
+            
+            Button(action: {
+                appModel.toggleImmersionStyle()
+            }, label: {
+                switch appModel.immersionStyle {
+                case is FullImmersionStyle:
+                    Image(systemName:"pano.fill")
+                default:
+                    Image(systemName: "pano")
+                }
+            })
         }
         .onAppear {
             appModel.setMainMenuState(.minimized)
@@ -255,8 +265,13 @@ struct NavigationControl: View {
         .onDisappear {
             appModel.setMainMenuState(.standard)
             dismissWindow(id: "ModelRealityView")
-            tabSelection.selectedTab = 1
+            appModel.selectedTab = 1
             Task {
+                if let modelInfo = appModel.sessionController?.immersiveSpaceUpdate?.modelInfo {
+                    try? await appModel.sessionController?.messenger.send(ImmersiveSpaceUpdate(isOpen: false,
+                                                                                               immersiveSpaceId: "ModelImmersiveView",
+                                                                                               modelInfo: modelInfo))
+                }
                 await dismissImmersiveSpace()
             }
         }
@@ -264,10 +279,11 @@ struct NavigationControl: View {
     }
 }
 
-
+/*
 #Preview {
     NavigationControl(
         navigationData: NavigationData(),
         tabSelection: TabSelection()
         )
 }
+*/
