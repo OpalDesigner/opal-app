@@ -17,6 +17,9 @@ final class AppModel {
     var selectedTab = 0
     var selectedCategory: ModelCategory = .scenes
     var mainMenuState: MainMenuState = .standard
+    var openMenu: Bool = false
+    var openMenuB: Bool = false
+    var modelInfo: ModelInfo?
     
     var isImmersiveSpaceOpen = false
     var immersionStyle: ImmersionStyle = .full

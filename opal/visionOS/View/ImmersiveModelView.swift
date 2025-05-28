@@ -14,15 +14,27 @@ struct ImmersiveModelView: View {
     @ObservedObject var navigationData: NavigationData
     @Environment(AppModel.self) var appModel
     @Environment(\.realityKitScene) var scene
-    let modelName: String
+    var modelName: String { appModel.modelInfo?.modelName ?? "Model"}
+    @State var handTrackingManager: HandTrackingManager
+    @Environment(\.scenePhase) var scenePhase
     
     var body: some View {
-        RealityView { content in
+        RealityView { content, attachments in
             guard let model = await Entity.loadRootEntity(named: modelName) else { // Entity+Extension.swift
                 print("Failed to load model: \(modelName)")
                 return
             }
+            model.name = modelName
             content.add(model)
+            
+            // Hand menu
+            content.add(handTrackingManager.rootEntity)
+            if let menu = attachments.entity(for: "Menu") {
+                handTrackingManager.addMenuEntity(menu)
+            }
+            if let menu = attachments.entity(for: "MenuB") {
+                handTrackingManager.addMenuBEntity(menu)
+            }
             
             #warning("Should use custom components instead of entity names")
             let tools = model.findEntity(named: "Tools")
@@ -123,9 +135,9 @@ struct ImmersiveModelView: View {
             }
              */
             
-        } update: { content in
+        } update: { content, attachments in
             // Update position, orientation in scene
-            if let scene = content.entities.first {
+            if let scene = content.entities.first(where: { $0.name == modelName }) {
                 updateCameraTransform(scene)
             }
             
@@ -154,9 +166,37 @@ struct ImmersiveModelView: View {
                 rootEntity.addChild(loadedEntity)
                 navigationData.loadedEntity = nil
             }
+            
+            handTrackingManager.wristAccessoryEntity.children.first?.position.z = appModel.openMenu ? 0 : -0.1
+            handTrackingManager.littleFingerAccessoryEntity.children.first?.position.z = appModel.openMenuB ? 0 : -0.05
+            
+        } attachments: {
+            
+            Attachment(id: "Menu") {
+                NavigationControlMenu(isOpen: appModel.openMenu, navigationData: navigationData)
+            }
+            Attachment(id: "MenuB") {
+                NavigationControlMenu(isOpen: appModel.openMenuB, navigationData: navigationData)
+            }
+            
+        }
+        .task {
+            await handTrackingManager.runARKitSession()
+        }
+        .task {
+            await handTrackingManager.processHandUpdates()
+        }
+        .onChange(of: scenePhase) { _, newValue in
+            if scenePhase == .background {
+                handTrackingManager.reset()
+                navigationData.cameraPosition = SIMD3<Float>(0, 0, 0)
+                navigationData.cameraRotation = 0
+                appModel.immersionStyle = .full
+            }
         }
         .onImmersionChange { _, context in
             #warning("Should use custom components instead of entity names")
+            guard [0, 1].contains(context.amount) else { return }
             scene?.findEntity(named: "Operating_Room")?.isEnabled = context.amount == 1
             scene?.findEntity(named: "Skybox")?.isEnabled = context.amount == 1
         }
@@ -312,6 +352,7 @@ struct ImmersiveModelView: View {
     }
 }
 
+/*
 //Test Sample Preview on Xcode Preview Window
 #Preview {
     ImmersiveModelView(
@@ -319,3 +360,4 @@ struct ImmersiveModelView: View {
         modelName: "Planets"
     )
 }
+*/

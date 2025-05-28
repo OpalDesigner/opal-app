@@ -147,7 +147,9 @@ struct CatalogItemView: View {
     @Environment(AppModel.self) var appModel
     
     @State private var isWindowOpen = false
-    @State private var isImmersiveOpen = false
+    var isImmersiveOpen: Bool {
+        appModel.isImmersiveSpaceOpen
+    }
     
     private func loadImage() -> Image {
         // Load image from asset catalog
@@ -169,17 +171,17 @@ struct CatalogItemView: View {
                 if (!(category == .scenes || category == .scans) || !model.isImmersive) {
                     return
                 }
-                isImmersiveOpen.toggle()
                 Task {
-                    if isImmersiveOpen {
-                        await openImmersiveSpace(id: "ModelImmersiveView", value: model)
-                        openWindow(id: "NavigationControl")
+                    if !appModel.isImmersiveSpaceOpen {
+                        appModel.modelInfo = model
+                        await openImmersiveSpace(id: "ModelImmersiveView")
+//                        openWindow(id: "NavigationControl")
                         try? await appModel.sessionController?.messenger.send(ImmersiveSpaceUpdate(isOpen: true,
                                                                                                    immersiveSpaceId: "ModelImmersiveView",
                                                                                                    modelInfo: model))
                     } else {
                         await dismissImmersiveSpace()
-                        dismissWindow(id: "NavigationControl")
+//                        dismissWindow(id: "NavigationControl")
                         try? await appModel.sessionController?.messenger.send(ImmersiveSpaceUpdate(isOpen: false,
                                                                                                    immersiveSpaceId: "ModelImmersiveView",
                                                                                                    modelInfo: model))
@@ -191,8 +193,10 @@ struct CatalogItemView: View {
                     .scaledToFill()
                     .frame(width: 275, height: 200)
                     .clipped()
+                    .contentShape(.hoverEffect, .rect)
                     .hoverEffect(.highlight)
             }
+            .buttonStyle(.plain)
         }
         .overlay(alignment: .bottomTrailing) {
             Button {

@@ -86,7 +86,7 @@ struct MainMenuView: View {
     ) {
         guard let newActivityStage else { return }
         appModel.selectedTab = newActivityStage.selectedTab
-        appModel.mainMenuState = newActivityStage.mainMenuState
+        appModel.setMainMenuState(newActivityStage.mainMenuState)
         appModel.selectedCategory = newActivityStage.selectedCategory
     }
 }

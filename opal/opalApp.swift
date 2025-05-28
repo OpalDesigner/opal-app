@@ -62,6 +62,7 @@ struct opalApp: App {
             return WindowPlacement(size: size)
         }
         
+        /*
         // WINDOW - NAVIGATION CONTROL VIEW
         WindowGroup(id: "NavigationControl") {
             // NavigationControl.swift
@@ -72,6 +73,7 @@ struct opalApp: App {
             return WindowPlacement(.utilityPanel)
         }
         .defaultSize(CGSize(width: 300, height: 350))
+        */
         
         // WINDOW - MODEL TABLETOP VIEW
         WindowGroup(id: "ModelRealityView", for: ModelInfo.self) { modelInfo in
@@ -111,27 +113,32 @@ struct opalApp: App {
         
         // ----------------- DEFINE IMMERSIVE SPACES ---------------
         // IMMERSIVE - MODEL IMMERSIVE VIEW
-        ImmersiveSpace(id: "ModelImmersiveView", for: ModelInfo.self) { modelInfo in
-            if let modelInfo = modelInfo.wrappedValue {
-                // ImmersiveModelView.swift
+        ImmersiveSpace(id: "ModelImmersiveView") {
                 ImmersiveModelView(
                     navigationData: navigationData,
-                    modelName: modelInfo.modelName
+                    handTrackingManager: .init(appModel: appModel)
                 )
                 .environment(appModel)
                 .onAppear {
                     withAnimation {
                         appModel.isImmersiveSpaceOpen = true
                     }
+                    appModel.setMainMenuState(.minimized)
                 }
                 .onDisappear {
                     withAnimation {
                         appModel.isImmersiveSpaceOpen = false
                     }
+                    appModel.setMainMenuState(.standard)
+                    Task {
+                        if let modelInfo = appModel.modelInfo {
+                            try? await appModel.sessionController?.messenger
+                                .send(ImmersiveSpaceUpdate(isOpen: false,
+                                                           immersiveSpaceId: "ModelImmersiveView",
+                                                           modelInfo: modelInfo))
+                        }
+                    }
                 }
-            } else {
-                Text("No model information available")
-            }
         }
         .immersionStyle(selection: $appModel.immersionStyle, in: .full, .mixed)
         .onChange(of: appModel.sessionController?.immersiveSpaceUpdate, updateImmersiveSpaceState)
@@ -181,9 +188,9 @@ struct opalApp: App {
         
         Task {
             if isOpen && !appModel.isImmersiveSpaceOpen {
-                await openImmersiveSpace(id: newActivityStage.immersiveSpaceId,
-                                         value: newActivityStage.modelInfo)
-                openWindow(id: "NavigationControl")
+                appModel.modelInfo = newActivityStage.modelInfo
+                await openImmersiveSpace(id: newActivityStage.immersiveSpaceId)
+//                openWindow(id: "NavigationControl")
             } else if appModel.isImmersiveSpaceOpen {
                 await dismissImmersiveSpace()
             }

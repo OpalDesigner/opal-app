@@ -39,8 +39,12 @@ struct NavigationControl: View {
     
     @Environment(AppModel.self) var appModel
     
+    var controlSize: ControlSize = .regular
+    
     //State variables
-    @State private var isBuildReady = false
+    private var isBuildReady: Bool {
+        appModel.mainMenuState == .minimized
+    }
     
     // Environment Variables
     @Environment(\.openWindow) private var openWindow
@@ -122,18 +126,37 @@ struct NavigationControl: View {
         VStack {
             Text("Navigate 3D space")
                 .font(.headline)
-                .padding()
+                .padding(.bottom)
 
             // Home, Origin, and Build controls
             HStack {
                 Button {
-                    dismissWindow(id: "NavigationControl")
+                    Task {
+                        await dismissImmersiveSpace()
+                    }
                 } label: {
                     Label("", systemImage: "house.fill")
                 }
                 
                 Button {
+//                    isBuildReady.toggle()
+                    if isBuildReady {
+                        appModel.setMainMenuState(.standard)
+                        appModel.selectedTab = 1
+                        navigationData.gridEntity.isEnabled = true
+                    } else {
+                        appModel.setMainMenuState(.minimized)
+                        navigationData.gridEntity.isEnabled = false
+                    }
+                } label: {
+                    Label("", systemImage: "plus.circle.fill")
+                }
+            }
+                
+            HStack {
+                Button {
                     navigationData.cameraPosition = SIMD3<Float>(0, 0, 0)
+                    navigationData.cameraRotation = 0
                 } label: {
                     Label("", systemImage: "location")
                 }
@@ -152,19 +175,6 @@ struct NavigationControl: View {
                         .foregroundColor(navigationData.isSpotLightVisible ? .yellow : .primary)
                 }
                 
-                Button {
-                    isBuildReady.toggle()
-                    if isBuildReady {
-                        appModel.setMainMenuState(.standard)
-                        appModel.selectedTab = 1
-                        navigationData.gridEntity.isEnabled = true
-                    } else {
-                        appModel.setMainMenuState(.minimized)
-                        navigationData.gridEntity.isEnabled = false
-                    }
-                } label: {
-                    Label("", systemImage: "plus.circle.fill")
-                }
             }
             
             HStack {
@@ -257,6 +267,8 @@ struct NavigationControl: View {
                 }
             })
         }
+        .controlSize(controlSize)
+        /*
         .onAppear {
             appModel.setMainMenuState(.minimized)
             navigationData.cameraPosition = SIMD3<Float>(0, 0, 0)
@@ -267,14 +279,10 @@ struct NavigationControl: View {
             dismissWindow(id: "ModelRealityView")
             appModel.selectedTab = 1
             Task {
-                if let modelInfo = appModel.sessionController?.immersiveSpaceUpdate?.modelInfo {
-                    try? await appModel.sessionController?.messenger.send(ImmersiveSpaceUpdate(isOpen: false,
-                                                                                               immersiveSpaceId: "ModelImmersiveView",
-                                                                                               modelInfo: modelInfo))
-                }
                 await dismissImmersiveSpace()
             }
         }
+        */
         .padding()
     }
 }
