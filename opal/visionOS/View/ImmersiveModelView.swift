@@ -33,6 +33,7 @@ struct ImmersiveModelView: View {
                 handTrackingManager.addMenuEntity(menu)
             }
             if let menu = attachments.entity(for: "MenuB") {
+                menu.scale = .init(repeating: 0.8)
                 handTrackingManager.addMenuBEntity(menu)
             }
             
@@ -172,9 +173,9 @@ struct ImmersiveModelView: View {
             
         } attachments: {
             
-            Attachment(id: "Menu") {
-                NavigationControlMenu(isOpen: appModel.openMenu, navigationData: navigationData)
-            }
+//            Attachment(id: "Menu") {
+//                NavigationControlMenu(isOpen: appModel.openMenu, navigationData: navigationData)
+//            }
             Attachment(id: "MenuB") {
                 NavigationControlMenu(isOpen: appModel.openMenuB, navigationData: navigationData)
             }

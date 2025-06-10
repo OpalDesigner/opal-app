@@ -44,7 +44,7 @@ class HandTrackingManager {
         wristAccessoryEntity.position.z = 0.15
         wristEntity.addChild(wristAccessoryEntity)
         
-        littleFingerAccessoryEntity.position.z = 0.1
+        littleFingerAccessoryEntity.position.z = 0.09
         littleFingerEntity.addChild(littleFingerAccessoryEntity)
         
         rootEntity.addChild(wristEntity)
@@ -80,6 +80,7 @@ class HandTrackingManager {
             
             guard handAnchor.isTracked else { continue }
             
+            /*
             processHandAnchorUpdate(handAnchor: handAnchor,
                                     chirality: .left,
                                     jointName: .wrist,
@@ -87,6 +88,7 @@ class HandTrackingManager {
                                     jointAccessoryEntity: wristAccessoryEntity,
                                     previousMatrix: &previousWristMatrix,
                                     checkIsLookingAt: checkIsLookingAtWrist)
+            */
             processHandAnchorUpdate(handAnchor: handAnchor,
                                     chirality: .left,
                                     jointName: .littleFingerKnuckle,
