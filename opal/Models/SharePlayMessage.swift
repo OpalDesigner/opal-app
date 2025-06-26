@@ -36,6 +36,11 @@ struct InteractiveObjectUpdate: Codable, Equatable {
     var position: SIMD3<Float>
 }
 
+struct SceneCameraUpdate: Codable, Equatable {
+    var position: SIMD3<Float>
+    var rotationY: Float
+}
+
 struct InteractiveTVUpdate: Codable, Equatable {
     var modelRotation: Double
 }

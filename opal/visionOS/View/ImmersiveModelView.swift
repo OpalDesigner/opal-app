@@ -136,9 +136,12 @@ struct ImmersiveModelView: View {
             }
              */
             
+            let collidingFloorEntity = makeCollidingFloor()
+            content.add(collidingFloorEntity)
+            
         } update: { content, attachments in
             // Update position, orientation in scene
-            if let scene = content.entities.first(where: { $0.name == modelName }) {
+            if let scene = scene?.findEntity(named: modelName) {
                 updateCameraTransform(scene)
             }
             
@@ -182,7 +185,9 @@ struct ImmersiveModelView: View {
             
         }
         .task {
+            #if !targetEnvironment(simulator)
             await handTrackingManager.runARKitSession()
+            #endif
         }
         .task {
             await handTrackingManager.processHandUpdates()
@@ -208,9 +213,55 @@ struct ImmersiveModelView: View {
                 .targetedToAnyEntity()
                 .onEnded { value in
                     handleTap(on: value.entity)
+                    movePositionInScene(value: value)
                 }
         )
         .onChange(of: appModel.sessionController?.interactiveObjectUpdate, updateInteractiveObject)
+        .onChange(of: appModel.sessionController?.sceneCameraUpdate, updateSceneCamera)
+    }
+    
+    private func makeCollidingFloor() -> Entity {
+        let shape = ShapeResource.generateBox(width: 10, height: 0.01, depth: 10)
+        let collisionComponent = CollisionComponent(shapes: [shape])
+        let entity = Entity()
+        entity.components.set(collisionComponent)
+        entity.components.set(InputTargetComponent(allowedInputTypes: .indirect))
+        entity.name = "Floor"
+        return entity
+    }
+    
+    func updateSceneCamera(
+        oldActivityStage: SceneCameraUpdate?,
+        newActivityStage: SceneCameraUpdate?
+    ) {
+        guard let newActivityStage else { return }
+        if newActivityStage.position != navigationData.cameraPosition {
+            navigationData.cameraPosition = newActivityStage.position
+        }
+        if newActivityStage.rotationY != navigationData.cameraRotation {
+            navigationData.cameraRotation = newActivityStage.rotationY
+        }
+    }
+    
+    private func movePositionInScene(value: EntityTargetValue<SpatialTapGesture.Value>) {
+        let position = value.convert(value.location3D,
+                                     from: .local, to: .scene)
+        let visualFeedbackEntity = ModelEntity(mesh: .generatePlane(width: 0.3, depth: 0.3, cornerRadius: 0.15),
+                                               materials: [UnlitMaterial(color: .orange)])
+        visualFeedbackEntity.components.set(OpacityComponent(opacity: 0.1))
+        visualFeedbackEntity.setPosition(position, relativeTo: nil)
+        scene?.findEntity(named: "Floor")?.addChild(visualFeedbackEntity)
+        Task {
+            try? await Task.sleep(for: .seconds(0.2))
+            visualFeedbackEntity.removeFromParent()
+            guard let immersiveScene = scene?.findEntity(named: modelName) else { return }
+            let tapPositionInScene = value.convert(value.location3D, from: .local, to: immersiveScene)
+            var newPosition = -tapPositionInScene
+            newPosition.y = immersiveScene.position(relativeTo: nil).y
+            if let newLocalPos = immersiveScene.parent?.convert(position: newPosition, from: nil) {
+                navigationData.cameraPosition = newLocalPos
+            }
+        }
     }
     
     func updateInteractiveObject(
@@ -350,6 +401,11 @@ struct ImmersiveModelView: View {
         
         // Apply the combined transform
         scene.transform.matrix = transform
+        
+        Task {
+            try? await appModel.sessionController?.messenger.send(SceneCameraUpdate(position: navigationData.cameraPosition,
+                                                                                    rotationY: navigationData.cameraRotation))
+        }
     }
 }
 

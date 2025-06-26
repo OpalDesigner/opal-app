@@ -25,6 +25,7 @@ final class SessionController {
     var interactiveTVUpdate: InteractiveTVUpdate?
     var appStateUpdate: AppStateUpdate?
     var interactiveObjectUpdate: InteractiveObjectUpdate?
+    var sceneCameraUpdate: SceneCameraUpdate?
     
     private var subscriptions = Set<AnyCancellable>()
     
@@ -120,6 +121,17 @@ final class SessionController {
             }
         }
         subscriptions.insert(.init { interactiveObjectUpdateTask.cancel() })
+        
+        let sceneCameraUpdateTask = Task.detached { [weak self] in
+            guard let self else { return }
+            for await (message, _) in self.messenger.messages(of: SceneCameraUpdate.self) {
+                print(#function, message)
+                await MainActor.run {
+                    self.sceneCameraUpdate = message
+                }
+            }
+        }
+        subscriptions.insert(.init { sceneCameraUpdateTask.cancel() })
         
     }
     

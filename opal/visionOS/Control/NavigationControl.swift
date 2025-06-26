@@ -187,6 +187,7 @@ struct NavigationControl: View {
                     Label("", systemImage: "rotate.left")
                 }
                 
+                /*
                 // Action for Move Forward
                 Button {
                     Task {
@@ -195,6 +196,7 @@ struct NavigationControl: View {
                 } label: {
                     Label("", systemImage: "arrow.up")
                 }
+                */
                 
                 // Action for Rotate Right
                 Button {
@@ -206,6 +208,7 @@ struct NavigationControl: View {
                 }
             }
             
+            /*
             //Strafing left and right can cause nausea
             HStack {
                 // Action for Move Left
@@ -226,6 +229,7 @@ struct NavigationControl: View {
                     Label("", systemImage: "arrow.right")
                 }
             }
+            */
             
             HStack {
                 // Action for Elevate Up
@@ -237,6 +241,7 @@ struct NavigationControl: View {
                     Label("", systemImage: "arrow.up.to.line")
                 }
                 
+                /*
                 // Action for Move Backward
                 Button {
                     Task {
@@ -245,6 +250,7 @@ struct NavigationControl: View {
                 } label: {
                     Label("", systemImage: "arrow.down")
                 }
+                */
                 
                 // Action for Elevate Down
                 Button {
