@@ -18,6 +18,13 @@ struct ImmersiveModelView: View {
     @State var handTrackingManager: HandTrackingManager
     @Environment(\.scenePhase) var scenePhase
     
+    init(navigationData: NavigationData, handTrackingManager: HandTrackingManager) {
+        self.navigationData = navigationData
+        self.handTrackingManager = handTrackingManager
+        ScenePositionPresetComponent.registerComponent()
+        DraggableComponent.registerComponent()
+    }
+    
     var body: some View {
         RealityView { content, attachments in
             guard let model = await Entity.loadRootEntity(named: modelName) else { // Entity+Extension.swift
@@ -36,11 +43,6 @@ struct ImmersiveModelView: View {
                 menu.scale = .init(repeating: 0.8)
                 handTrackingManager.addMenuBEntity(menu)
             }
-            
-            #warning("Should use custom components instead of entity names")
-            let tools = model.findEntity(named: "Tools")
-            tools?.generateCollisionShapes(recursive: true)
-            tools?.components.set(InputTargetComponent())
             
             // Add Animation to the 3D model
             if(model.availableAnimations.count > 0){
@@ -139,6 +141,15 @@ struct ImmersiveModelView: View {
             let collidingFloorEntity = makeCollidingFloor()
             content.add(collidingFloorEntity)
             
+            // Add hover effect to interactive entities
+            Task {
+                try? await Task.sleep(for: .seconds(1))
+                let inputTargetEntities = model.scene?.performQuery(.init(where: .has(InputTargetComponent.self))).map({ $0 })
+                inputTargetEntities?.forEach {
+                    $0.components.set(HoverEffectComponent())
+                }
+            }
+            
         } update: { content, attachments in
             // Update position, orientation in scene
             if let scene = scene?.findEntity(named: modelName) {
@@ -236,14 +247,26 @@ struct ImmersiveModelView: View {
     ) {
         guard let newActivityStage else { return }
         if newActivityStage.position != navigationData.cameraPosition {
-            navigationData.cameraPosition = newActivityStage.position
+            Task {
+                await animateSceneMovement {
+                    navigationData.cameraPosition = newActivityStage.position
+                }
+            }
         }
         if newActivityStage.rotationY != navigationData.cameraRotation {
-            navigationData.cameraRotation = newActivityStage.rotationY
+            Task {
+                await animateSceneMovement {
+                    navigationData.cameraRotation = newActivityStage.rotationY
+                }
+            }
         }
     }
     
     private func movePositionInScene(value: EntityTargetValue<SpatialTapGesture.Value>) {
+        if value.entity.components.has(ScenePositionPresetComponent.self) {
+            moveAtObjectPosition(value.entity)
+            return
+        }
         let position = value.convert(value.location3D,
                                      from: .local, to: .scene)
         let visualFeedbackEntity = ModelEntity(mesh: .generatePlane(width: 0.3, depth: 0.3, cornerRadius: 0.15),
@@ -259,9 +282,34 @@ struct ImmersiveModelView: View {
             var newPosition = -tapPositionInScene
             newPosition.y = immersiveScene.position(relativeTo: nil).y
             if let newLocalPos = immersiveScene.parent?.convert(position: newPosition, from: nil) {
-                navigationData.cameraPosition = newLocalPos
+                await animateSceneMovement(action: { navigationData.cameraPosition = newLocalPos })
             }
         }
+    }
+    
+    private func moveAtObjectPosition(_ entity: Entity) {
+        guard let immersiveScene = scene?.findEntity(named: modelName) else { return }
+        let newPosition = -entity.position(relativeTo: immersiveScene)
+        if let newLocalPos = immersiveScene.parent?.convert(position: newPosition, from: nil) {
+            Task {
+                await animateSceneMovement {
+                    navigationData.cameraPosition = newLocalPos
+                    let transform = entity.transformMatrix(relativeTo: immersiveScene)
+                    let forward = -transform.columns.2
+                    navigationData.cameraRotation = atan2(forward.x, forward.z) + .pi
+                }
+            }
+        }
+        
+    }
+    
+    func animateSceneMovement(action: @escaping () -> Void) async {
+        guard let immersiveScene = scene?.findEntity(named: modelName) else { return }
+        immersiveScene.setOpacity(0, animated: true)
+        try? await Task.sleep(for: .seconds(0.2))
+        action()
+        try? await Task.sleep(for: .seconds(0.2))
+        immersiveScene.setOpacity(1, animated: true)
     }
     
     func updateInteractiveObject(
@@ -279,7 +327,7 @@ struct ImmersiveModelView: View {
     var translationGesture: some Gesture {
         /// The gesture to move an entity.
         DragGesture()
-            .targetedToAnyEntity()
+            .targetedToEntity(where: .has(DraggableComponent.self))
             .onChanged({ value in
                 /// The entity that the drag gesture targets.
                 let rootEntity = value.entity

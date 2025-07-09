@@ -47,6 +47,172 @@ def Xform "Root"
                 }
             }
         }
+
+        over "Meshes"
+        {
+            over "Sketchfab_model"
+            {
+                over "_6fd31da1d78425ebce4dcada2b787d9_fbx"
+                {
+                    over "RootNode"
+                    {
+                        over "Table_B"
+                        {
+                            over "Table_B_Table_B_0"
+                            {
+                                over "Table_B_Table_B_0"
+                                {
+                                }
+                            }
+
+                            def RealityKitComponent "Collider"
+                            {
+                                uint group = 1
+                                uniform token info:id = "RealityKit.Collider"
+                                uint mask = 4294967295
+                                token type = "Default"
+
+                                def RealityKitStruct "Shape"
+                                {
+                                    float3 extent = (1.7906394, 1.4720205, 0.7)
+                                    token shapeType = "Box"
+
+                                    def RealityKitStruct "pose"
+                                    {
+                                        float3 position = (-0.0107212365, 0, 0.5040002)
+                                    }
+                                }
+                            }
+
+                            def RealityKitComponent "InputTarget"
+                            {
+                                bool allowsDirectInput = 0
+                                bool allowsIndirectInput = 1
+                                uniform token info:id = "RealityKit.InputTarget"
+                            }
+
+                            def RealityKitCustomComponent "RealityKitContent_ScenePositionPresetComponent"
+                            {
+                                uniform token info:id = "RealityKitContent.ScenePositionPresetComponent"
+                            }
+                        }
+
+                        over "Table_A"
+                        {
+                            def RealityKitCustomComponent "RealityKitContent_ScenePositionPresetComponent"
+                            {
+                                uniform token info:id = "RealityKitContent.ScenePositionPresetComponent"
+                            }
+
+                            def RealityKitComponent "Collider"
+                            {
+                                uint group = 1
+                                uniform token info:id = "RealityKit.Collider"
+                                uint mask = 4294967295
+                                token type = "Default"
+
+                                def RealityKitStruct "Shape"
+                                {
+                                    float3 extent = (1.7906394, 1.4720205, 0.7)
+                                    token shapeType = "Box"
+
+                                    def RealityKitStruct "pose"
+                                    {
+                                        float3 position = (-0.01072076, 0, 0.5040002)
+                                    }
+                                }
+                            }
+
+                            def RealityKitComponent "InputTarget"
+                            {
+                                bool allowsDirectInput = 0
+                                bool allowsIndirectInput = 1
+                                uniform token info:id = "RealityKit.InputTarget"
+                            }
+
+                            over "Table_A_Table_A_0"
+                            {
+                            }
+                        }
+
+                        over "Table_C"
+                        {
+                            def RealityKitCustomComponent "RealityKitContent_ScenePositionPresetComponent"
+                            {
+                                uniform token info:id = "RealityKitContent.ScenePositionPresetComponent"
+                            }
+
+                            def RealityKitComponent "Collider"
+                            {
+                                uint group = 1
+                                uniform token info:id = "RealityKit.Collider"
+                                uint mask = 4294967295
+                                token type = "Default"
+
+                                def RealityKitStruct "Shape"
+                                {
+                                    float3 extent = (1.4720205, 1.7906394, 0.7)
+                                    token shapeType = "Box"
+
+                                    def RealityKitStruct "pose"
+                                    {
+                                        float3 position = (0, 0.010721713, 0.5040002)
+                                    }
+                                }
+                            }
+
+                            def RealityKitComponent "InputTarget"
+                            {
+                                bool allowsDirectInput = 0
+                                bool allowsIndirectInput = 1
+                                uniform token info:id = "RealityKit.InputTarget"
+                            }
+
+                            over "Table_C_Table_C_0"
+                            {
+                                over "Table_C_Table_C_0"
+                                {
+                                }
+                            }
+                        }
+
+                        over "Table_D"
+                        {
+                            def RealityKitComponent "Collider"
+                            {
+                                uint group = 1
+                                uniform token info:id = "RealityKit.Collider"
+                                uint mask = 4294967295
+                                token type = "Default"
+
+                                def RealityKitStruct "Shape"
+                                {
+                                    float3 extent = (1.4720205, 1.7906389, 0.7)
+                                    token shapeType = "Box"
+
+                                    def RealityKitStruct "pose"
+                                    {
+                                        float3 position = (0, 0.010721117, 0.5040002)
+                                    }
+                                }
+                            }
+
+                            def RealityKitCustomComponent "RealityKitContent_ScenePositionPresetComponent"
+                            {
+                                uniform token info:id = "RealityKitContent.ScenePositionPresetComponent"
+                            }
+
+                            def RealityKitComponent "InputTarget"
+                            {
+                                bool allowsDirectInput = 0
+                                bool allowsIndirectInput = 1
+                                uniform token info:id = "RealityKit.InputTarget"
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     def "Camera" (

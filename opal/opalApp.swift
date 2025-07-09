@@ -45,7 +45,7 @@ struct opalApp: App {
                 .task(observeGroupSessions)
                 .task {
                     print("Fetching S3 files...")
-                    #if !targetEnvironment(simulator)
+                    #if !targetEnvironment(simulator) && !DEBUG
                     await fetchS3Files()
                     #endif
                 }
