@@ -7,7 +7,7 @@ Website:
 https://www.opaldesigner.com/
 
 Contributors: 
-Vik Parth, Jason Wong, Kris Layng, Ashley Lee
+Vik Parth, Brian Corrieri
 
 ![opal-home](https://github.com/user-attachments/assets/182e77d6-2226-4a08-a9b6-29ec7aaef82d)
 ![opal-coffee](https://github.com/user-attachments/assets/b57d75a9-b06d-469b-9700-c029d6ed3edb)
